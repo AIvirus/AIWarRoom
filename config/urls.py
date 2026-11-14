@@ -4,15 +4,41 @@ from rest_framework.routers import DefaultRouter
 
 from accounts import api as accounts_api
 from accounts import views as accounts_views
+from businesses import api as businesses_api
+from decisions import api as decisions_api
+from intelligence import api as intelligence_api
+from simulations import api as simulations_api
 
 from . import views
 
-# One router for the whole JSON API; each app registers its ViewSets here.
+# One router for the whole JSON API; each app's ViewSets are registered here.
 router = DefaultRouter()
 router.register("organizations", accounts_api.OrganizationViewSet, basename="organization")
+router.register("businesses", businesses_api.BusinessViewSet, basename="business")
+router.register("scenarios", simulations_api.ScenarioViewSet, basename="scenario")
+router.register("runs", simulations_api.SimulationRunViewSet, basename="run")
+router.register("analyses", intelligence_api.AIAnalysisViewSet, basename="analysis")
+router.register("scans", intelligence_api.CompanyScanViewSet, basename="scan")
+router.register("alerts", intelligence_api.AlertViewSet, basename="alert")
+router.register("decisions", decisions_api.DecisionViewSet, basename="decision")
+
+# Components live under their business: /businesses/<id>/components/. Wired by hand
+# (rather than a nested-router package) so the mapping is visible.
+components_list = businesses_api.ComponentViewSet.as_view({"get": "list", "post": "create"})
+components_detail = businesses_api.ComponentViewSet.as_view(
+    {"get": "retrieve", "patch": "partial_update", "delete": "destroy"}
+)
 
 api_v1 = [
     path("me/", accounts_api.me, name="me"),
+    path("scenario-templates/", simulations_api.scenario_templates, name="scenario-templates"),
+    path("inputs/", simulations_api.input_catalog, name="inputs"),
+    path("businesses/<uuid:business_pk>/components/", components_list, name="component-list"),
+    path(
+        "businesses/<uuid:business_pk>/components/<uuid:pk>/",
+        components_detail,
+        name="component-detail",
+    ),
     path("", include(router.urls)),
 ]
 

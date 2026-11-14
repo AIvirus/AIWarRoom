@@ -45,6 +45,10 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "accounts",
+    "businesses",
+    "simulations",
+    "intelligence",
+    "decisions",
 ]
 
 MIDDLEWARE = [
@@ -138,6 +142,9 @@ REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": [
         "rest_framework.renderers.JSONRenderer",
     ],
+    "EXCEPTION_HANDLER": "config.api_errors.api_exception_handler",
+    # Decimals go out as strings ("1250.00"): exact, and JS won't round them silently.
+    "COERCE_DECIMAL_TO_STRING": True,
 }
 
 # --- Gemini ---------------------------------------------------------------------------
