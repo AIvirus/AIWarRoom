@@ -15,23 +15,11 @@ from intelligence.models import AIAnalysis
 from intelligence.services import ai_client
 from intelligence.services.ai_client import Reply, _Retryable
 from intelligence.services.explain import explain_run
+from intelligence.tests.fakes import FakeTransport
 from simulations.models import Scenario
 from simulations.services.run_service import run_scenario
 
 pytestmark = pytest.mark.django_db
-
-
-class FakeTransport:
-    def __init__(self, *script):
-        self.script = list(script)
-        self.requests = []
-
-    def generate(self, **request):
-        self.requests.append(request)
-        step = self.script.pop(0)
-        if isinstance(step, Exception):
-            raise step
-        return step
 
 
 def good_answer(**overrides) -> Reply:

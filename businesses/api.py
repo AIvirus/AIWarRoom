@@ -12,6 +12,7 @@ from rest_framework.response import Response
 
 from accounts.access import OrgScopedMixin, organization_for
 from accounts.models import Membership
+from config.api_errors import DomainError
 
 from .models import BusinessComponent, BusinessProfile
 from .serializers import (
@@ -63,6 +64,52 @@ class BusinessViewSet(OrgScopedMixin, viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         saved = serializer.save()
         return Response(FinancialAssumptionSerializer(saved, many=True).data)
+
+    @action(detail=True, methods=["post"])
+    def scans(self, request, pk=None):
+        """
+        Create a scan of the business website. Returns 202 with the URL of its event
+        stream; opening that stream is what actually runs the scan.
+        """
+        from django.urls import reverse
+
+        from intelligence.models import CompanyScan
+
+        business = self.get_object()
+        url = (request.data.get("url") or business.website_url or "").strip()
+        if not url:
+            raise DomainError("Add the company's website URL first.", {"url": ["required"]})
+        scan = CompanyScan.objects.create(business=business, url=url)
+        events_url = reverse("api:scan-events", args=[scan.id])
+        return Response(
+            {"scan": str(scan.id), "status": scan.status, "events_url": events_url},
+            status=status.HTTP_202_ACCEPTED,
+        )
+
+    @action(detail=True, methods=["get", "post"])
+    def committee(self, request, pk=None):
+        """GET the latest committee review; POST convenes a new one (one Gemini call)."""
+        from intelligence.api import AIAnalysisSerializer, ai_error
+        from intelligence.models import AIAnalysis
+        from intelligence.services import ai_client
+        from intelligence.services.committee import convene
+
+        business = self.get_object()
+        if request.method == "GET":
+            latest = business.analyses.filter(
+                kind=AIAnalysis.Kind.COMMITTEE, status=AIAnalysis.Status.OK
+            ).first()
+            if latest is None:
+                raise DomainError(
+                    "The committee hasn't met yet.", code="not_found", status_code=404
+                )
+            return Response(AIAnalysisSerializer(latest).data)
+        try:
+            analysis = convene(business)
+        except ai_client.AIError as error:
+            raise ai_error(error) from None
+        code = status.HTTP_200_OK if analysis.from_cache else status.HTTP_201_CREATED
+        return Response(AIAnalysisSerializer(analysis).data, status=code)
 
 
 class ComponentViewSet(viewsets.ModelViewSet):

@@ -9,8 +9,23 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from accounts.access import OrgScopedMixin
+from config.api_errors import DomainError
 
 from .models import AIAnalysis, Alert, CompanyScan
+
+# How each AI failure is reported over HTTP.
+AI_ERROR_STATUS = {
+    "ai_unavailable": 503,
+    "ai_rate_limited": 429,
+    "ai_invalid_output": 502,
+    "ai_provider_error": 502,
+}
+
+
+def ai_error(error) -> DomainError:
+    return DomainError(
+        error.message, code=error.code, status_code=AI_ERROR_STATUS.get(error.code, 502)
+    )
 
 
 class AIAnalysisSerializer(serializers.ModelSerializer):
@@ -54,6 +69,7 @@ class CompanyScanSerializer(serializers.ModelSerializer):
             "status",
             "robots_allowed",
             "pages",
+            "log",
             "error",
             "created_at",
             "finished_at",
@@ -86,8 +102,15 @@ class BusinessFilterMixin:
 
 
 class AIAnalysisViewSet(OrgScopedMixin, BusinessFilterMixin, viewsets.ReadOnlyModelViewSet):
+    """Filter with ?business=<id>&kind=site_profile|committee|run_explanation."""
+
     serializer_class = AIAnalysisSerializer
     queryset = AIAnalysis.objects.all()
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        kind = self.request.query_params.get("kind")
+        return queryset.filter(kind=kind) if kind else queryset
 
 
 class CompanyScanViewSet(OrgScopedMixin, BusinessFilterMixin, viewsets.ReadOnlyModelViewSet):

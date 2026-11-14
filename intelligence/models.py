@@ -74,6 +74,7 @@ class AIAnalysis(BaseModel):
 
 class CompanyScan(BaseModel):
     class Status(models.TextChoices):
+        PENDING = "pending", "Waiting to start"
         RUNNING = "running", "Running"
         COMPLETED = "completed", "Completed"
         BLOCKED = "blocked", "Blocked by robots.txt or safety rules"
@@ -83,7 +84,9 @@ class CompanyScan(BaseModel):
         "businesses.BusinessProfile", on_delete=models.CASCADE, related_name="scans"
     )
     url = models.URLField()
-    status = models.CharField(max_length=10, choices=Status.choices, default=Status.RUNNING)
+    status = models.CharField(max_length=10, choices=Status.choices, default=Status.PENDING)
+    # Human-readable log of what the scan did, also streamed live to the browser.
+    log = models.JSONField(default=list)
     robots_allowed = models.BooleanField(null=True)
     # [{url, title, text_hash, prices: [...], products: [...]}] - what we diff next time.
     pages = models.JSONField(default=list)

@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from accounts.access import OrgScopedMixin
 from businesses.api import business_for
 from config.api_errors import DomainError
-from intelligence.api import AIAnalysisSerializer
+from intelligence.api import AIAnalysisSerializer, ai_error
 from intelligence.models import AIAnalysis
 from intelligence.services import ai_client
 from intelligence.services.explain import explain_run
@@ -74,19 +74,9 @@ class SimulationRunViewSet(OrgScopedMixin, viewsets.ReadOnlyModelViewSet):
         try:
             analysis = explain_run(run)
         except ai_client.AIError as error:
-            http_status = AI_ERROR_STATUS.get(error.code, 502)
-            raise DomainError(error.message, code=error.code, status_code=http_status) from None
+            raise ai_error(error) from None
         code = status.HTTP_200_OK if analysis.from_cache else status.HTTP_201_CREATED
         return Response(AIAnalysisSerializer(analysis).data, status=code)
-
-
-# How each AI failure is reported over HTTP.
-AI_ERROR_STATUS = {
-    "ai_unavailable": 503,
-    "ai_rate_limited": 429,
-    "ai_invalid_output": 502,
-    "ai_provider_error": 502,
-}
 
 
 @api_view(["GET"])

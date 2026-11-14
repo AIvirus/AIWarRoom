@@ -62,9 +62,9 @@ def bob_shop(bob):
 
 @pytest.fixture
 def api(alice):
-    """An API client logged in as alice."""
+    """An API client logged in as alice, with a real session (like the browser)."""
     from rest_framework.test import APIClient
 
     client = APIClient()
-    client.force_authenticate(alice)
+    client.force_login(alice)
     return client

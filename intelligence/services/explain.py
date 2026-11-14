@@ -14,7 +14,7 @@ def explain_run(run, transport=None) -> AIAnalysis:
     context = run_context(run)
     allowed = metric_keys(context)
 
-    def only_known_metric_keys(answer: RunExplanation) -> None:
+    def only_known_metric_keys(answer: RunExplanation, sources) -> None:
         # A cited key we never sent means the model is pointing at a number that doesn't
         # exist. Treat it as an invalid answer, which triggers the one repair attempt.
         unknown = answer.cited_metric_keys() - allowed

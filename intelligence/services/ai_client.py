@@ -102,13 +102,16 @@ def load_prompt(task: str) -> Prompt:
     return Prompt(version=version, text=body.strip())
 
 
-def render_user_message(payload: dict, feedback: str | None = None) -> str:
+def render_user_message(
+    payload: dict, feedback: str | None = None, tag: str = "simulation_data"
+) -> str:
     # The data sits inside clearly marked tags; the prompt says text inside is data,
-    # never instructions. That's our main defence against prompt injection via names.
+    # never instructions. That's our main defence against prompt injection, whether it
+    # hides in a scenario name or in the text of a company's website.
     message = (
-        "<simulation_data>\n"
+        f"<{tag}>\n"
         + json.dumps(payload, indent=1, ensure_ascii=False, sort_keys=True)
-        + "\n</simulation_data>"
+        + f"\n</{tag}>"
     )
     if feedback:
         message += (
@@ -186,14 +189,27 @@ def _server_retry_delay(error) -> float | None:
 
 
 def _grounding_sources(response) -> list[dict]:
-    """Links Gemini used via Google Search / URL context, if any."""
-    sources = []
+    """
+    Links Gemini actually used: Google Search results (grounding_metadata) and pages it
+    read with the URL-context tool (url_context_metadata, successful retrievals only).
+    """
+    sources, seen = [], set()
+
+    def add(url, title):
+        if url and url not in seen:
+            seen.add(url)
+            sources.append({"url": url, "title": title or url})
+
     for candidate in response.candidates or []:
-        metadata = getattr(candidate, "grounding_metadata", None)
-        for chunk in getattr(metadata, "grounding_chunks", None) or []:
+        grounding = getattr(candidate, "grounding_metadata", None)
+        for chunk in getattr(grounding, "grounding_chunks", None) or []:
             web = getattr(chunk, "web", None)
-            if web and web.uri:
-                sources.append({"url": web.uri, "title": web.title or web.uri})
+            if web:
+                add(web.uri, web.title)
+        url_context = getattr(candidate, "url_context_metadata", None)
+        for item in getattr(url_context, "url_metadata", None) or []:
+            if "SUCCESS" in str(getattr(item, "url_retrieval_status", "")):
+                add(item.retrieved_url, None)
     return sources
 
 
@@ -232,9 +248,10 @@ def generate(
     schema: type[BaseModel],
     run=None,
     scan=None,
-    check=None,
+    check=None,  # extra rule: check(parsed_answer, sources_used) raises ValueError
     tools: tuple[str, ...] = (),
     model: str | None = None,
+    data_tag: str = "simulation_data",
     transport=None,
 ) -> AIAnalysis:
     prompt = load_prompt(task)
@@ -269,13 +286,13 @@ def generate(
         for _ in range(2):
             reply = _call_with_retries(
                 transport, record, model=model, system=prompt.text,
-                user=render_user_message(payload, feedback), json_schema=json_schema,
+                user=render_user_message(payload, feedback, data_tag), json_schema=json_schema,
                 tools=tools,
             )  # fmt: skip
             try:
                 parsed = schema.model_validate_json(reply.text)
                 if check:
-                    check(parsed)
+                    check(parsed, reply.sources)
                 break
             except (ValidationError, ValueError) as error:
                 parsed, feedback = None, _short_reason(error)

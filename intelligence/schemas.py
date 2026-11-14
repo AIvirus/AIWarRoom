@@ -41,3 +41,79 @@ class RunExplanation(BaseModel):
     def cited_metric_keys(self) -> set[str]:
         keys = {k for f in self.key_findings for k in f.metric_keys}
         return keys | {k for r in self.recommendations for k in r.metric_keys}
+
+
+# --------------------------------------------------------------------------------------
+# Company site profile
+# --------------------------------------------------------------------------------------
+# Where a claim comes from. "site" and "cited" need a URL we actually have; "inference"
+# must NOT carry one, so a guess can never dress itself up as a sourced fact.
+Basis = Literal["site", "cited", "inference"]
+
+
+class Dependency(BaseModel):
+    name: str = Field(max_length=80)
+    kind: Literal["payment", "logistics", "platform", "supplier", "marketplace", "other"]
+    basis: Basis
+    source_url: str | None = None
+
+
+class Competitor(BaseModel):
+    name: str = Field(max_length=80)
+    reason: str = Field(max_length=300)
+    basis: Basis
+    source_url: str | None = None
+
+
+class FutureScenario(BaseModel):
+    title: str = Field(max_length=120)
+    description: str = Field(max_length=400)
+    suggested_template: Literal[
+        "payment_gateway_outage", "warehouse_shutdown", "logistics_failure", "none"
+    ]
+
+
+class SiteProfile(BaseModel):
+    summary: str = Field(max_length=800)
+    offerings: list[str] = Field(default_factory=list, max_length=8)
+    customer_segments: list[str] = Field(default_factory=list, max_length=5)
+    price_positioning: str = Field(max_length=300)
+    dependencies: list[Dependency] = Field(default_factory=list, max_length=10)
+    competitors: list[Competitor] = Field(default_factory=list, max_length=6)
+    weaknesses: list[str] = Field(default_factory=list, max_length=6)
+    future_scenarios: list[FutureScenario] = Field(default_factory=list, max_length=4)
+    limitations: list[str] = Field(min_length=1, max_length=5)
+
+    def sourced_items(self):
+        return [*self.dependencies, *self.competitors]
+
+
+# --------------------------------------------------------------------------------------
+# Expert committee: four desks, one call, disagreement allowed
+# --------------------------------------------------------------------------------------
+class Evidence(BaseModel):
+    text: str = Field(max_length=300)
+    basis: Literal["simulation", "site", "cited", "inference"]
+    source_url: str | None = None
+
+
+class Advisor(BaseModel):
+    role: Literal["finance", "operations", "market_competition", "risk"]
+    desk_name: str = Field(max_length=60)
+    verdict: Literal["proceed", "proceed_with_conditions", "hold", "reconsider"]
+    headline: str = Field(max_length=200)
+    key_concerns: list[str] = Field(min_length=1, max_length=5)
+    drawbacks: list[str] = Field(default_factory=list, max_length=5)
+    scenarios_to_watch: list[str] = Field(default_factory=list, max_length=4)
+    recommended_actions: list[str] = Field(min_length=1, max_length=5)
+    evidence: list[Evidence] = Field(default_factory=list, max_length=6)
+
+
+class Committee(BaseModel):
+    advisors: list[Advisor] = Field(min_length=4, max_length=4)
+    # Where the desks disagree. Part of the output on purpose: no forced consensus.
+    points_of_disagreement: list[str] = Field(default_factory=list, max_length=5)
+    shared_limitations: list[str] = Field(min_length=1, max_length=4)
+
+    def sourced_items(self):
+        return [e for advisor in self.advisors for e in advisor.evidence]

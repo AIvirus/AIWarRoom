@@ -3,9 +3,10 @@
 Test a business before reality does. A teaching project: Django + DRF, PostgreSQL on Neon,
 deterministic simulations and Gemini-written analysis that is labelled as such.
 
-> Status: **Phase 2.4**: deterministic simulation engine plus Gemini explanations of
-> runs (cached, budgeted, schema-validated, number-checked). Company URL analysis and the
-> expert committee arrive in Phase 2.5. See [docs/PLAN.md](docs/PLAN.md).
+> Status: **Phase 2.5**: simulation engine, Gemini run explanations, SSRF-safe company
+> website scans with live progress (SSE), AI site profiles, the expert committee and
+> change alerts. Decisions and the printable brief arrive in Phase 2.6.
+> See [docs/PLAN.md](docs/PLAN.md).
 
 ## Run it locally
 
@@ -91,6 +92,40 @@ version. Tests use a fake transport and never call Google.
 
 Free-tier note: Google may use free-tier prompts to improve its products. Don't send real
 confidential company data while on the free tier.
+
+## Company scans, committee and alerts
+
+| Endpoint | What it does |
+|---|---|
+| `POST businesses/{id}/scans/` | Creates a scan (optional `{"url": ...}`), returns `202` with `events_url` |
+| `GET scans/{id}/events/` | Server-Sent Events: runs the scan and streams each step; reopening replays the log |
+| `GET analyses/?business={id}&kind=site_profile` | The AI profile built from the scanned pages |
+| `POST/GET businesses/{id}/committee/` | Four advisory desks (finance, operations, market and competition, risk) in one Gemini call |
+| `GET alerts/`, `POST alerts/{id}/acknowledge/` | Changes found by comparing a scan with the previous one |
+
+Fetching is in `intelligence/services/url_fetcher.py`: http/https on ports 80 and 443
+only, every DNS answer and every redirect hop must be a public address, robots.txt is
+respected, and pages are capped at 1.5 MB. Extraction and diffing are plain code (no AI),
+so the same page always gives the same result.
+
+Every claim about dependencies, competitors or the market carries a basis: `site` (with
+a URL we fetched), `cited` (with a URL a search tool returned) or `inference` (no URL
+allowed). Answers that break this rule get one repair attempt, then fail.
+
+"Real-time" means on demand: a scan runs when someone asks for it, or on a schedule with
+
+```bash
+python manage.py rescan_companies
+```
+
+Nothing watches sites continuously.
+
+**Free-tier findings (checked 15 Nov 2026 with this project's key):** Google Search
+grounding returns 429 (no free quota) and `gemini-2.5-flash-lite` is no longer offered to
+new keys, so competitor claims here are either named on the site or marked as unverified
+inference. URL context works on `gemini-3.5-flash-lite` and is used automatically when a
+site's own HTML has almost no text (JavaScript-rendered pages). Set
+`GEMINI_GROUNDING_MODEL` only with a plan that includes Search grounding.
 
 ## Latency against Neon
 
