@@ -1,132 +1,132 @@
 # AI WarRoom
 
-Test a business before reality does. A teaching project: Django + DRF, PostgreSQL on Neon,
-deterministic simulations and Gemini-written analysis that is labelled as such.
+**Test a business before reality does.** A teaching project in Django: model a business,
+stress-test it with deterministic simulations, have Gemini explain the results under
+strict guardrails, and record a human decision with a printable brief.
 
-> Status: **Phase 2.7**: the full interface: operations board, business dossier,
-> Situation Board (Three.js system view with a 2D fallback, timeline playback, live
-> what-if sliders) and Idea Bench (cash chart, sensitivity, funnel check), on top of the
-> engine, Gemini analysis, site scans, committee, alerts and decision briefs.
-> Seed data, Postman collection and teaching notes arrive in Phase 2.8.
+| Mode | For | What you get |
+|---|---|---|
+| **Idea Bench** | A business not yet launched | Monthly cash model from price, CAC, conversion, retention and costs; seven cases; sensitivity; a check of your own sales estimate against your funnel |
+| **Situation Board** | An operating company | Knock out the payment gateway, warehouse or courier; compare *wait*, *switch to backup* and *queue* on impact, recovery time and cost; watch it play out hour by hour in a 3D system view |
 
-## Run it locally
+Plus:
+- **Company website scans:** a safe crawler, an AI profile, and alerts when something changes.
+- **An expert committee:** four AI advisory desks that are allowed to disagree.
+- **Decision records:** sign-off by a named person and a print-ready brief.
 
-Requires Python 3.12 or newer.
+> **What it is not.** AI WarRoom supports decisions from the numbers *you* enter and the
+> assumptions it states. It does not predict markets or guarantee outcomes. Every figure
+> comes from the simulation engine or a cited web page. AI text is always labelled, and
+> any number in it that we didn't supply is flagged.
+
+---
+
+## Quick start
+
+Requires Python 3.12+. Works offline with SQLite, except for Gemini and site scans.
 
 ```bash
 python -m venv .venv
 ```
 
 ```bash
-.venv\Scripts\activate        # Windows  (macOS/Linux: source .venv/bin/activate)
+.venv\Scripts\activate
 ```
+
+(macOS/Linux: `source .venv/bin/activate`)
 
 ```bash
 pip install -r requirements-dev.txt
 ```
 
 ```bash
-copy .env.example .env        # macOS/Linux: cp .env.example .env
+copy .env.example .env
 ```
 
-Fill in `.env`. If `DATABASE_URL` is left empty the app uses a local SQLite file, which
-is fine for working offline.
+(macOS/Linux: `cp .env.example .env`.) Then fill in `.env`; see **Configuration** below.
 
 ```bash
 python manage.py migrate
 ```
 
 ```bash
+python manage.py seed_kirana --email you@example.com
+```
+
+```bash
 python manage.py runserver
 ```
 
-Open http://127.0.0.1:8000, set up an organization, and you land on the operations
-board. `http://127.0.0.1:8000/healthz/` reports whether the database is reachable.
+Open http://127.0.0.1:8000 and log in.
+- If the email you seeded with was new, the seed command printed a one-time password.
+- Otherwise use your own password.
 
-## Tests and lint
+You'll find two demo businesses, all figures marked *illustrative*:
+- **Kirana Express:** an online grocer with three disruption runs.
+- **Tiffin Box Co.:** a meal-subscription idea with a 24-month stress test.
+
+## Configuration (`.env`)
+
+| Variable | Purpose |
+|---|---|
+| `DJANGO_SECRET_KEY` | Any long random string. Required in production |
+| `DJANGO_DEBUG` | `True` locally |
+| `DATABASE_URL` | Neon connection string (keep `?sslmode=require`). Empty means local SQLite |
+| `USE_SQLITE` | `True` forces SQLite even if `DATABASE_URL` is set (offline class) |
+| `GEMINI_API_KEY` | From https://aistudio.google.com. Empty means AI features show a clear "off" message; everything else works |
+| `GEMINI_MODEL` | Default `gemini-3.5-flash-lite` |
+| `GEMINI_GROUNDING_MODEL` | Leave empty on the free tier (Search grounding has no free quota; see below) |
+| `AI_DAILY_CALL_BUDGET` | Live Gemini calls per UTC day before the app stops asking (default 200) |
+| `AI_TIMEOUT_SECONDS` | Per-request timeout; two retries follow (default 30) |
+
+## Tests
 
 ```bash
 pytest
 ```
 
 ```bash
-ruff check . && ruff format --check .
-```
-
-Tests use in-memory SQLite (fast, offline, no Neon permissions needed). Run `migrate`
-against Neon to check the real database.
-
-The engine has no Django dependency at all; its tests run with Django switched off:
-
-```bash
 pytest -p no:django simulation_engine
 ```
 
-## The simulation engine
-
-| File | What it models |
-|---|---|
-| `simulation_engine/idea.py` | Month-by-month funnel: CAC from cost per visit and conversion, customers with retention, cash |
-| `simulation_engine/cases.py` | Seven cases (expected, best, worst, reduced demand, higher costs, lower conversion, more competition) as visible input shocks |
-| `simulation_engine/sensitivity.py` | One-at-a-time ±step on eight inputs, sorted by effect on ending cash |
-| `simulation_engine/disruption.py` | Hour-by-hour outage: checkout failures (payment) or a FIFO backlog with rising cancellations (warehouse, courier); wait / backup / queue strategies |
-| `simulation_engine/runner.py` | The single entry point: `run(template_key, assumptions, parameters, components)` |
-
-Every formula is written out in the module docstrings, and the tests check
-hand-calculated values.
-
-## Gemini analysis
-
-`POST /api/v1/runs/{id}/analysis/` asks Gemini to explain a saved run; `GET` returns the
-latest one. Everything goes through `intelligence/services/ai_client.py`:
-
-| Step | What it does |
-|---|---|
-| Cache | Same business + run inputs + prompt version + model: the stored answer comes back (HTTP 200, `from_cache: true`), no API call |
-| Budget | Live calls per UTC day are capped by `AI_DAILY_CALL_BUDGET` |
-| Retries | 429 / 5xx / timeout: two retries, exponential backoff with jitter, honouring Google's retry hint |
-| Validation | Pydantic schema (`intelligence/schemas.py`) plus "only cite metric keys we sent"; one repair attempt, then a recorded failure |
-| Guardrail | Every number in the answer must be a sent number rounded to the digits written; others are stored in `flagged_numbers` |
-
-Prompts live in `intelligence/prompts/` with a version header; change the text, bump the
-version. Tests use a fake transport and never call Google.
-
-Free-tier note: Google may use free-tier prompts to improve its products. Don't send real
-confidential company data while on the free tier.
-
-## Company scans, committee and alerts
-
-| Endpoint | What it does |
-|---|---|
-| `POST businesses/{id}/scans/` | Creates a scan (optional `{"url": ...}`), returns `202` with `events_url` |
-| `GET scans/{id}/events/` | Server-Sent Events: runs the scan and streams each step; reopening replays the log |
-| `GET analyses/?business={id}&kind=site_profile` | The AI profile built from the scanned pages |
-| `POST/GET businesses/{id}/committee/` | Four advisory desks (finance, operations, market and competition, risk) in one Gemini call |
-| `GET alerts/`, `POST alerts/{id}/acknowledge/` | Changes found by comparing a scan with the previous one |
-
-Fetching is in `intelligence/services/url_fetcher.py`: http/https on ports 80 and 443
-only, every DNS answer and every redirect hop must be a public address, robots.txt is
-respected, and pages are capped at 1.5 MB. Extraction and diffing are plain code (no AI),
-so the same page always gives the same result.
-
-Every claim about dependencies, competitors or the market carries a basis: `site` (with
-a URL we fetched), `cited` (with a URL a search tool returned) or `inference` (no URL
-allowed). Answers that break this rule get one repair attempt, then fail.
-
-"Real-time" means on demand: a scan runs when someone asks for it, or on a schedule with
-
 ```bash
-python manage.py rescan_companies
+ruff check . && ruff format --check .
 ```
 
-Nothing watches sites continuously.
+- `pytest` runs the whole suite, about 260 tests in about 5 seconds, on in-memory SQLite.
+  Gemini and websites are faked, so no key or network is needed.
+- The second command runs only the engine with Django switched off, to show it's pure
+  Python.
+- Every engine formula has a test with a hand-calculated expected value; see
+  `docs/formulas.md`.
 
-**Free-tier findings (checked 15 Nov 2026 with this project's key):** Google Search
-grounding returns 429 (no free quota) and `gemini-2.5-flash-lite` is no longer offered to
-new keys, so competitor claims here are either named on the site or marked as unverified
-inference. URL context works on `gemini-3.5-flash-lite` and is used automatically when a
-site's own HTML has almost no text (JavaScript-rendered pages). Set
-`GEMINI_GROUNDING_MODEL` only with a plan that includes Search grounding.
+## How it fits together
+
+```
+Browser: Django templates + small ES modules (Three.js for the 3D view)
+   │  pages (session login)                 JSON /api/v1/ (same session + CSRF)
+   ▼                                          ▼
+thin views ─────────────────────────► services/ ◄─────────────── thin DRF ViewSets
+                                   │        │        │
+          simulation_engine/  ◄────┘        │        └──► intelligence/services/
+          plain Python, Decimal,            │             ai_client (only Gemini caller),
+          no Django imports                 │             guardrails, url_fetcher (SSRF-safe),
+                                            ▼             scan_service, committee
+                                  PostgreSQL on Neon (or SQLite)
+```
+
+| App / package | Owns |
+|---|---|
+| `accounts/` | Email login, organizations, memberships, org-scoped access (`access.py`) |
+| `businesses/` | Business profile, assumptions with sources, components and dependencies, seed command |
+| `simulations/` | Scenarios, runs (frozen input snapshot), results, preview, run pages |
+| `simulation_engine/` | The maths: catalogue, idea model, cases, sensitivity, disruptions, runner |
+| `intelligence/` | Gemini client, prompts, guardrails, URL fetcher, scans, committee, alerts |
+| `decisions/` | Decision workflow, brief builder, printable page |
+| `config/` | Settings split, URLs, one API error shape, health check |
+
+Design rationale: `docs/DESIGN_NOTE.md`. Original plan: `docs/PLAN.md`.
+Module-by-module teaching map: `docs/TEACHING_NOTES.md`.
 
 ## Screens
 
@@ -134,80 +134,78 @@ site's own HTML has almost no text (JavaScript-rendered pages). Set
 |---|---|
 | `/` | Operations board: businesses, open alerts, recent decisions |
 | `/businesses/new/` | Add an idea or an operating company |
-| `/businesses/{id}/` | Dossier: assumption ledger with sources, scenarios, components, site scan (live log), committee, decisions |
+| `/businesses/{id}/` | Dossier: assumption ledger, scenarios, components, site scan with live log, committee, decisions |
 | `/runs/{id}/` | Situation Board (disruptions) or Idea Bench (idea stress test) |
-| `/decisions/{id}/brief/` | Printable decision brief with sign-off buttons |
+| `/decisions/{id}/brief/` | Decision brief with sign-off buttons; print or save as PDF |
 
-The interface is Django templates plus small ES modules in `static/js/`. There's no
-build step and no front-end framework. Three.js (pinned `0.170.0`, loaded from jsDelivr)
-draws the system view; `?view=2d`, a missing WebGL or a failed load switches to an SVG
-schematic with the same data. With `prefers-reduced-motion` the flows stand still and
-nothing animates unless you press Play. Sliders call `POST /api/v1/simulate/preview/`,
-so every number on screen still comes from the engine.
+How the screens behave:
+- Sliders call the preview endpoint, so every number shown still comes from the engine.
+  "Save as a new run" freezes the what-if as a new run.
+- The 3D view falls back to an SVG schematic with `?view=2d`, without WebGL, or if
+  Three.js fails to load.
+- With `prefers-reduced-motion`, nothing moves unless you press Play.
 
-## Decisions and the brief
+## API
 
-A decision moves `proposed → approved → in_progress → done`, and can be `rejected` from any
-open state (then re-opened to `proposed`). Every status change is appended to its history
-with who, when and an optional note; approving or rejecting records the sign-off. New
-decisions always start as `proposed`, and no AI code path creates or changes a decision.
-
-| Endpoint / page | What it does |
-|---|---|
-| `PATCH /api/v1/decisions/{id}/` | `{"status": "approved", "note": "..."}`; illegal jumps return the allowed options |
-| `GET /api/v1/decisions/{id}/report/` | The brief as structured JSON |
-| `/decisions/{id}/brief/` | The same brief as a printable page (browser print → PDF) |
-
-The brief is built only from stored data (`decisions/services/brief.py`): assumptions
-from the run's frozen snapshot with their source tags, the outcome table with the chosen
-response marked, engine notes, the AI reading and committee (labelled, with flagged
-numbers listed), the decision history, and a "What this brief is not" box.
-
-## Latency against Neon
-
-The engine takes 4–10 ms. Each database query to Neon (ap-southeast-1) costs about
-67 ms from a laptop in India, and `runserver` opens a new connection for every request.
-Measured preview round trips: about 0.85 s threaded, about 0.43 s with
-`runserver --nothreading`. A server deployed in the same region as the database, or
-SQLite locally, removes most of this.
-
-## Layout so far
-
-| Path | What it is |
-|---|---|
-| `config/settings/` | `base.py` shared, `local.py` laptop, `production.py` strict, `test.py` |
-| `common/` | `BaseModel` (UUID + timestamps) and `OrgScopedQuerySet` |
-| `accounts/` | User (email login), Organization, Membership, sign-up service, access mixins |
-| `businesses/` | BusinessProfile, FinancialAssumption, BusinessComponent (+ dependency rules) |
-| `simulations/` | Scenario, SimulationRun (frozen input snapshot), SimulationResult |
-| `intelligence/` | AIAnalysis, CompanyScan, Alert |
-| `decisions/` | Decision |
-| `simulation_engine/` | Plain Python, no Django. `catalog.py` defines every input and scenario template |
-| `config/api_errors.py` | One error shape for the whole API |
-| `templates/`, `static/css/` | Base layout and design tokens |
-
-## API (all under `/api/v1/`, session login)
+All endpoints are under `/api/v1/` and use session login. Import
+`docs/postman_collection.json` (30 requests, in order). It logs in, models a business,
+simulates, calls the AI, scans a site and records a decision. A test replays the
+collection on every run so it can't drift from the API.
 
 | Endpoint | Methods |
 |---|---|
-| `me/` | GET |
-| `inputs/`, `scenario-templates/` | GET: what the engine accepts, with units and bounds |
-| `businesses/` | GET, POST; `{id}/` GET, PATCH, DELETE (archives; owners only) |
+| `me/`, `inputs/`, `scenario-templates/` | GET |
+| `businesses/` · `{id}/` | GET, POST · GET, PATCH, DELETE (archives; owners only) |
 | `businesses/{id}/assumptions/` | GET, PUT (bulk upsert) |
-| `businesses/{id}/components/` | GET, POST; `{cid}/` GET, PATCH, DELETE |
-| `scenarios/` | GET (`?business=`), POST; `{id}/` GET, PATCH, DELETE |
-| `runs/`, `analyses/`, `scans/` | GET (read-only history) |
-| `alerts/` | GET; `{id}/acknowledge/` POST |
-| `decisions/` | GET, POST; `{id}/` GET, PATCH, DELETE |
+| `businesses/{id}/components/` · `{cid}/` | GET, POST · GET, PATCH, DELETE |
+| `businesses/{id}/scans/` | POST → `202` with `events_url` (Server-Sent Events) |
+| `businesses/{id}/committee/` | GET, POST |
+| `scenarios/` · `{id}/run/` | GET, POST, PATCH, DELETE · POST (runs and saves) |
+| `simulate/preview/` | POST (runs, saves nothing) |
+| `runs/` · `{id}/analysis/` | GET · GET, POST (201 new, 200 cached) |
+| `analyses/`, `scans/` | GET (`?business=`, `?kind=`) |
+| `alerts/` · `{id}/acknowledge/` | GET · POST |
+| `decisions/` · `{id}/` · `{id}/report/` | GET, POST · GET, PATCH, DELETE · GET |
 
-Errors always look like `{"error": {"code": "...", "message": "...", "fields": {...}}}`.
-Another organization's record answers `404 not_found`, exactly like a missing one.
+Errors always look like `{"error": {"code", "message", "fields"}}`. Another
+organization's record answers `404`, exactly like a missing one.
 
-## Settings at a glance
+## Commands
 
-| Variable | Purpose |
+| Command | Does |
 |---|---|
-| `DATABASE_URL` | Neon connection string (`sslmode=require`). Empty means SQLite. |
-| `USE_SQLITE` | `True` forces SQLite even if `DATABASE_URL` is set. |
-| `GEMINI_API_KEY`, `GEMINI_MODEL` | Gemini access; default model `gemini-3.5-flash-lite`. |
-| `AI_DAILY_CALL_BUDGET` | Cap on live Gemini calls per day, to protect the free tier. |
+| `python manage.py seed_kirana --email E [--reset]` | Loads the two demo businesses and runs their scenarios (no AI calls) |
+| `python manage.py rescan_companies [--business ID]` | Re-scans every business website and raises alerts for changes. Schedule it with cron or Task Scheduler; there's no always-on watcher |
+
+## Gemini: what's real on the free tier
+
+These were checked live with this project's key in November 2026. They change, so
+re-check them in Google AI Studio.
+
+- **SDK:** `google-genai` (the old `google-generativeai` is deprecated).
+- **Model:** `gemini-3.5-flash-lite` works with JSON-schema output.
+- **Google Search grounding returns 429:** there is no free quota for it. The
+  `gemini-2.5-flash-lite` fallback is no longer offered to new keys. So competitor claims
+  are either named on a fetched page, with its URL, or marked **unverified AI inference**.
+- **URL context works,** and is used automatically when a site's HTML has almost no
+  text.
+- **Privacy:** Google may use free-tier prompts to improve its products. Don't send
+  confidential company data on the free tier.
+
+## Known limits
+
+- **Model scope:**
+  - Price and demand are independent inputs; there's no price elasticity.
+  - Failures spread one step to direct dependents only.
+  - In warehouse and courier outages, the backup runs only during the outage.
+  - The hourly demand curve is illustrative.
+- **The number guardrail flags any figure the AI derived itself,** even a correct
+  difference. That's by design: the prompt forbids new calculations.
+- **DNS rebinding isn't fully closed** in the URL fetcher (documented in the code).
+- **Latency to Neon:** about 67 ms per query from India to `ap-southeast-1`, and
+  `runserver` opens a fresh connection per request, so pages take about 1 s. A server
+  deployed near the database, or SQLite locally, is much faster.
+- **CDNs:** fonts and Three.js load from Google Fonts and jsDelivr (Three.js is pinned
+  to `0.170.0`). Without internet, pages fall back to system fonts and the 2D schematic.
+- **No Monte Carlo, no background workers, no multi-org admin, no email or push
+  notifications.**
