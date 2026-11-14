@@ -1,6 +1,5 @@
 from django.contrib.auth import login
 from django.contrib.auth import views as auth_views
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_http_methods
 
@@ -24,9 +23,3 @@ def signup(request):
         login(request, user)
         return redirect("home")
     return render(request, "accounts/signup.html", {"form": form})
-
-
-@login_required
-def home(request):
-    # Placeholder operations dashboard; real panels arrive with the business models.
-    return render(request, "home.html")

@@ -1,0 +1,21 @@
+{% load warroom %}
+{# The committee review: four desks, each with its own verdict. Disagreement is shown, not hidden. #}
+<div class="panel-body" style="padding-bottom: 0">
+  <span class="ai-label">AI analysis</span><span class="meta mono">{{ c.created_at|date:"d M, H:i" }} UTC · {{ c.model_name }}</span>
+</div>
+<div class="desks">
+{% for a in c.output.advisors %}
+  <div class="desk">
+    <span class="label">{{ a.desk_name }}</span> <span class="verdict {{ a.verdict }}">{{ a.verdict|humanize_key }}</span>
+    <h4>{{ a.headline }}</h4>
+    <ul>
+      {% for k in a.key_concerns|slice:":2" %}<li>{{ k }}</li>{% endfor %}
+      {% for r in a.recommended_actions|slice:":2" %}<li><em>Do:</em> {{ r }}</li>{% endfor %}
+    </ul>
+  </div>
+{% endfor %}
+</div>
+{% if c.output.points_of_disagreement %}
+  <div class="honesty" style="margin: var(--s3)"><strong>Where the desks disagree:</strong> {{ c.output.points_of_disagreement|join:" " }}</div>
+{% endif %}
+{% if c.flagged_numbers %}<div class="flagged" style="margin: var(--s3)">{{ c.flagged_numbers|length }} number(s) in the committee's text are not from the data it was given: {% for f in c.flagged_numbers %}<span class="mono">{{ f.literal }}</span>{% if not forloop.last %}, {% endif %}{% endfor %}.</div>{% endif %}

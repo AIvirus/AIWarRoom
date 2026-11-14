@@ -1,0 +1,15 @@
+{# Record a human decision from this run. It starts as "proposed"; sign-off happens on the brief. #}
+<section class="panel ticked" id="decide" aria-labelledby="p-decide">
+  <div class="panel-head"><span class="panel-id">{{ panel_id }}</span><h2 id="p-decide">Record a decision</h2>
+    <span class="aside">you decide; the AI only advises</span></div>
+  <form class="panel-body" method="post" action="{% url 'decisions:create' run.pk %}">
+    {% csrf_token %}
+    <div class="form-grid">
+      {% with field=decision_form.title %}{% include "accounts/_field.html" %}{% endwith %}
+      {% with field=decision_form.chosen_strategy %}{% include "accounts/_field.html" %}{% endwith %}
+      {% with field=decision_form.owner %}{% include "accounts/_field.html" %}{% endwith %}
+    </div>
+    {% with field=decision_form.rationale %}{% include "accounts/_field.html" %}{% endwith %}
+    <button class="btn btn-primary" type="submit">Record as proposed</button>
+  </form>
+</section>

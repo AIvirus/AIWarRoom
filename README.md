@@ -3,10 +3,11 @@
 Test a business before reality does. A teaching project: Django + DRF, PostgreSQL on Neon,
 deterministic simulations and Gemini-written analysis that is labelled as such.
 
-> Status: **Phase 2.6**: simulation engine, Gemini run explanations, safe company
-> website scans with live progress, the expert committee, change alerts, and decision
-> records with a printable brief. The full interface (Situation Board, Idea Bench, 3D
-> system view) arrives in Phase 2.7. See [docs/PLAN.md](docs/PLAN.md).
+> Status: **Phase 2.7**: the full interface: operations board, business dossier,
+> Situation Board (Three.js system view with a 2D fallback, timeline playback, live
+> what-if sliders) and Idea Bench (cash chart, sensitivity, funnel check), on top of the
+> engine, Gemini analysis, site scans, committee, alerts and decision briefs.
+> Seed data, Postman collection and teaching notes arrive in Phase 2.8.
 
 ## Run it locally
 
@@ -126,6 +127,23 @@ new keys, so competitor claims here are either named on the site or marked as un
 inference. URL context works on `gemini-3.5-flash-lite` and is used automatically when a
 site's own HTML has almost no text (JavaScript-rendered pages). Set
 `GEMINI_GROUNDING_MODEL` only with a plan that includes Search grounding.
+
+## Screens
+
+| URL | Screen |
+|---|---|
+| `/` | Operations board: businesses, open alerts, recent decisions |
+| `/businesses/new/` | Add an idea or an operating company |
+| `/businesses/{id}/` | Dossier: assumption ledger with sources, scenarios, components, site scan (live log), committee, decisions |
+| `/runs/{id}/` | Situation Board (disruptions) or Idea Bench (idea stress test) |
+| `/decisions/{id}/brief/` | Printable decision brief with sign-off buttons |
+
+The interface is Django templates plus small ES modules in `static/js/`. There's no
+build step and no front-end framework. Three.js (pinned `0.170.0`, loaded from jsDelivr)
+draws the system view; `?view=2d`, a missing WebGL or a failed load switches to an SVG
+schematic with the same data. With `prefers-reduced-motion` the flows stand still and
+nothing animates unless you press Play. Sliders call `POST /api/v1/simulate/preview/`,
+so every number on screen still comes from the engine.
 
 ## Decisions and the brief
 

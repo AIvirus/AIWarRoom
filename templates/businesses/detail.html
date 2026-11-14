@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+{% load static warroom %}
+{% block title %}{{ business.name }} · AI WarRoom{% endblock %}
+{% block content %}
+<div class="page">
+  <header class="page-head">
+    <p class="crumbs"><a href="{% url 'home' %}">Operations board</a> /</p>
+    <h1>{{ business.name }}</h1>
+    {% if business.mode == "idea" %}<span class="tag idea">Idea</span>{% else %}<span class="tag ops">Operating</span>{% endif %}
+    <span class="chip">{{ business.industry }}</span>
+    {% if business.website_url %}<a class="chip" href="{{ business.website_url }}" rel="noopener" target="_blank">{{ business.website_url }}</a>{% endif %}
+  </header>
+
+  <div class="cols-main-side">
+    <div class="stack">
+      {# ---------------- Assumptions ---------------- #}
+      <section class="panel ticked" id="assumptions" aria-labelledby="p-assume">
+        <div class="panel-head"><span class="panel-id">B-01</span><h2 id="p-assume">Assumption ledger</h2>
+          <span class="aside">every value carries its source</span></div>
+        <form method="post" action="{% url 'business-assumptions' business.pk %}">
+          {% csrf_token %}
+          <div class="table-scroll"><table class="ledger">
+            <thead><tr><th>Input</th><th class="num">Value</th><th>Unit</th><th>Source</th></tr></thead>
+            <tbody>
+            {% for spec, value, source in assumptions_form.rows %}
+              <tr>
+                <td><label for="{{ value.id_for_label }}">{{ spec.label }}</label>{% if spec.help %}<span class="help">{{ spec.help }}</span>{% endif %}</td>
+                <td class="num" style="width: 11rem">{{ value }}</td>
+                <td><span class="unit">{{ spec.unit }}</span></td>
+                <td style="width: 10rem"><label class="sr-only" for="{{ source.id_for_label }}">{{ source.label }}</label>{{ source }}</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table></div>
+          <div class="panel-foot btn-row">
+            <button class="btn btn-primary btn-sm" type="submit">Save assumptions</button>
+            <span>Leave a value blank to remove it. Saved runs keep the values they were run with.</span>
+          </div>
+        </form>
+      </section>
+
+      {# ---------------- Scenarios ---------------- #}
+      <section class="panel ticked" id="scenarios" aria-labelledby="p-scen">
+        <div class="panel-head"><span class="panel-id">B-02</span><h2 id="p-scen">Scenarios</h2></div>
+        <div class="table-scroll"><table class="ledger">
+          <thead><tr><th>Scenario</th><th>Type</th><th>Last run</th><th></th></tr></thead>
+          <tbody>
+          {% for row in scenarios %}
+            <tr>
+              <td class="row-title">{{ row.scenario.name }}</td>
+              <td>{{ row.scenario.template.name }}</td>
+              <td>{% if row.last_run %}<a href="{% url 'run-detail' row.last_run.pk %}">Open {% if business.mode == "idea" %}bench{% else %}board{% endif %}</a>
+                  <span class="help mono">{{ row.last_run.created_at|date:"d M, H:i" }} UTC</span>
+                {% elif row.missing %}<span class="help">Needs: {% for k in row.missing %}{{ k|humanize_key }}{% if not forloop.last %}, {% endif %}{% endfor %}</span>
+                {% else %}<span class="unit">Not run</span>{% endif %}</td>
+              <td class="num"><form class="inline-form" method="post" action="{% url 'business-scenario-run' business.pk row.scenario.pk %}">{% csrf_token %}
+                <button class="btn btn-sm" type="submit" {% if row.missing %}disabled title="Add the missing assumptions first"{% endif %}>Run</button></form></td>
+            </tr>
+          {% empty %}
+            <tr class="empty-row"><td colspan="4">No scenarios yet. {% if business.mode == "idea" %}Add an idea stress test below to see best, expected and worst cases.{% else %}Add a disruption below: payment gateway, warehouse or courier.{% endif %}</td></tr>
+          {% endfor %}
+          </tbody>
+        </table></div>
+        <form class="panel-body form-grid" method="post" action="{% url 'business-scenario-create' business.pk %}">
+          {% csrf_token %}
+          {% with field=scenario_form.template_key %}{% include "accounts/_field.html" %}{% endwith %}
+          {% with field=scenario_form.name %}{% include "accounts/_field.html" %}{% endwith %}
+          <div class="field"><button class="btn btn-primary" type="submit">Create and run</button></div>
+        </form>
+      </section>
+
+      {# ---------------- Components (operating only) ---------------- #}
+      {% if business.mode == "operating" %}
+      <section class="panel ticked" id="components" aria-labelledby="p-comp">
+        <div class="panel-head"><span class="panel-id">B-03</span><h2 id="p-comp">Components and dependencies</h2></div>
+        <div class="table-scroll"><table class="ledger">
+          <thead><tr><th>Component</th><th>Kind</th><th class="num">Criticality</th><th>Depends on</th><th></th></tr></thead>
+          <tbody>
+          {% for c in components %}
+            <tr>
+              <td class="row-title">{{ c.name }}{% if c.fallback_note %}<span class="help">Fallback: {{ c.fallback_note }}</span>{% endif %}</td>
+              <td>{{ c.get_kind_display }}</td>
+              <td class="num">{{ c.criticality }}/5</td>
+              <td>{% for d in c.depends_on.all %}{{ d.name }}{% if not forloop.last %}, {% endif %}{% empty %}<span class="unit">nothing</span>{% endfor %}</td>
+              <td class="num"><form class="inline-form" method="post" action="{% url 'business-component-delete' business.pk c.pk %}">{% csrf_token %}
+                <button class="btn-link" type="submit" aria-label="Remove {{ c.name }}">Remove</button></form></td>
+            </tr>
+          {% empty %}
+            <tr class="empty-row"><td colspan="5">No components yet. Add the payment gateway, warehouse and courier so the system view shows your real names.</td></tr>
+          {% endfor %}
+          </tbody>
+        </table></div>
+        <form class="panel-body form-grid" method="post" action="{% url 'business-component-create' business.pk %}">
+          {% csrf_token %}
+          {% for field in component_form %}{% include "accounts/_field.html" %}{% endfor %}
+          <div class="field"><button class="btn" type="submit">Add component</button></div>
+        </form>
+      </section>
+      {% endif %}
+
+      {# ---------------- Committee ---------------- #}
+      <section class="panel ticked" id="committee" aria-labelledby="p-com">
+        <div class="panel-head"><span class="panel-id">B-04</span><h2 id="p-com">Expert committee</h2>
+          <span class="aside">four desks · one AI call</span></div>
+        {% if committee %}
+          {% include "simulations/_committee.html" with c=committee %}
+        {% else %}
+          <p class="state">The committee hasn't met. It reviews your latest runs and site profile from four angles (finance, operations, market and competition, risk) and is allowed to disagree.</p>
+        {% endif %}
+        <div class="panel-foot btn-row">
+          <button class="btn btn-sm" type="button" data-ai-action="{% url 'api:business-committee' business.pk %}" data-status="committee-status" data-anchor="committee" data-busy="Convening the committee. Usually 5–10 seconds.">{% if committee %}Reconvene{% else %}Convene the committee{% endif %}</button>
+          <span id="committee-status"></span>
+        </div>
+      </section>
+    </div>
+
+    <div class="stack">
+      {# ---------------- Runs ---------------- #}
+      <section class="panel ticked" aria-labelledby="p-runs">
+        <div class="panel-head"><span class="panel-id">B-05</span><h2 id="p-runs">Run history</h2></div>
+        {% for run in runs %}
+          <div class="alert-row">
+            <span class="sev {% if run.status == 'failed' %}critical{% endif %}" aria-hidden="true"></span>
+            <div><p>{% if run.status == "completed" %}<a href="{% url 'run-detail' run.pk %}">{{ run.scenario.name }}</a>{% else %}{{ run.scenario.name }}{% endif %}</p>
+              <span class="meta">{{ run.get_status_display|upper }} · {{ run.created_at|date:"d M, H:i" }} UTC · {{ run.input_hash|slice:":8" }}</span>
+              {% if run.error %}<span class="meta" style="color: var(--fault)">{{ run.error }}</span>{% endif %}</div>
+            <span></span>
+          </div>
+        {% empty %}<p class="state">No runs yet.</p>{% endfor %}
+      </section>
+
+      {# ---------------- Company site ---------------- #}
+      {% if business.mode == "operating" %}
+      <section class="panel ticked" id="site" aria-labelledby="p-site">
+        <div class="panel-head"><span class="panel-id">B-06</span><h2 id="p-site">Company site</h2>
+          {% if latest_scan %}<span class="aside">last scan {{ latest_scan.created_at|date:"d M, H:i" }} UTC · {{ latest_scan.get_status_display|lower }}</span>{% endif %}</div>
+        {% if business.website_url %}
+          <div class="panel-body">
+            <p class="unit" style="margin-top: 0">On-demand read of public pages. Respects robots.txt; private network addresses are refused. Nothing watches the site between scans.</p>
+            <div class="btn-row"><button class="btn btn-sm" type="button" data-scan-start="{% url 'api:business-scans' business.pk %}">{% if latest_scan %}Re-scan now{% else %}Scan the site{% endif %}</button>
+              <span id="scan-status"></span></div>
+          </div>
+          <ol class="log" id="scan-log" aria-live="polite" hidden></ol>
+          {% for alert in alerts %}
+            <div class="alert-row">
+              <span class="sev {{ alert.severity }}" aria-hidden="true"></span>
+              <div><p>{{ alert.summary }}</p><span class="meta">{{ alert.get_kind_display|upper }}</span></div>
+              <form class="inline-form" method="post" action="{% url 'alert-acknowledge' alert.pk %}">{% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.path }}#site"><button class="btn btn-sm" type="submit">Ack</button></form>
+            </div>
+          {% endfor %}
+          {% if site_profile %}
+            {% with p=site_profile.output %}
+            <div class="panel-body ai-block" style="margin: var(--s3)">
+              <span class="ai-label">AI analysis</span><span class="meta">site profile · {{ site_profile.created_at|date:"d M, H:i" }} UTC</span>
+              <p>{{ p.summary }}</p>
+              {% if p.dependencies %}<h4>Dependencies it names</h4><ul>{% for d in p.dependencies %}<li>{{ d.name }} <span class="basis {{ d.basis }}">{{ d.basis }}</span></li>{% endfor %}</ul>{% endif %}
+              {% if p.competitors %}<h4>Competitors</h4><ul>{% for c in p.competitors %}<li>{{ c.name }} <span class="basis {{ c.basis }}">{% if c.basis == "inference" %}unverified inference{% else %}{{ c.basis }}{% endif %}</span>{% if c.source_url %} · <a href="{{ c.source_url }}" rel="noopener" target="_blank">source</a>{% endif %}<br><span class="unit">{{ c.reason }}</span></li>{% endfor %}</ul>{% endif %}
+              {% if p.future_scenarios %}<h4>Scenarios worth testing</h4><ul>{% for s in p.future_scenarios %}<li>{{ s.title }}{% if s.suggested_template != "none" %} <span class="unit">→ {{ s.suggested_template|humanize_key }}</span>{% endif %}</li>{% endfor %}</ul>{% endif %}
+              {% if site_profile.flagged_numbers %}<div class="flagged">{{ site_profile.flagged_numbers|length }} number(s) here are not from the site extract.</div>{% endif %}
+            </div>
+            {% endwith %}
+          {% endif %}
+        {% else %}
+          <p class="state">No website on file. Add a public URL to the profile to read pricing, products and named providers on demand.</p>
+        {% endif %}
+      </section>
+      {% endif %}
+
+      {# ---------------- Decisions ---------------- #}
+      <section class="panel ticked" aria-labelledby="p-dec">
+        <div class="panel-head"><span class="panel-id">B-07</span><h2 id="p-dec">Decisions</h2></div>
+        {% for d in decisions %}
+          <div class="alert-row"><span class="sev {% if d.status == 'proposed' %}warn{% elif d.status == 'rejected' %}critical{% endif %}" aria-hidden="true"></span>
+            <div><p><a href="{% url 'decisions:brief' d.pk %}">{{ d.title }}</a></p><span class="meta">{{ d.get_status_display|upper }} · {{ d.owner|default:"unassigned" }}</span></div><span></span></div>
+        {% empty %}<p class="state">None yet. Record one from a run after comparing the responses.</p>{% endfor %}
+      </section>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script type="module" src="{% static 'js/ai-actions.js' %}"></script>
+<script type="module" src="{% static 'js/scan.js' %}"></script>
+{% endblock %}

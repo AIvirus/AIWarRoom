@@ -12,12 +12,15 @@ No WebSockets, no Redis, no Channels: just a Django view that returns a generato
 
 import json
 
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import StreamingHttpResponse
-from django.shortcuts import get_object_or_404
-from django.views.decorators.http import require_GET
+from django.shortcuts import get_object_or_404, redirect
+from django.utils import timezone
+from django.utils.http import url_has_allowed_host_and_scheme
+from django.views.decorators.http import require_GET, require_POST
 
-from .models import CompanyScan
+from .models import Alert, CompanyScan
 from .services.scan_service import scan_steps
 
 
@@ -61,3 +64,18 @@ def replay(scan):
         yield sse(event)
     if scan.status in {CompanyScan.Status.PENDING, CompanyScan.Status.RUNNING}:
         yield sse({"step": "busy", "message": "This scan is already running in another tab."})
+
+
+@login_required
+@require_POST
+def alert_acknowledge(request, pk):
+    alert = get_object_or_404(Alert.objects.for_user(request.user), pk=pk)
+    if alert.acknowledged_at is None:
+        alert.acknowledged_at, alert.acknowledged_by = timezone.now(), request.user
+        alert.save(update_fields=["acknowledged_at", "acknowledged_by", "updated_at"])
+        messages.success(request, "Alert acknowledged.")
+    target = request.POST.get("next", "")
+    # Only go back to a page on this site: an open redirect is a phishing tool.
+    if not url_has_allowed_host_and_scheme(target, {request.get_host()}):
+        target = "home"
+    return redirect(target)

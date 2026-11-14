@@ -1,0 +1,29 @@
+{% load warroom %}
+{# Gemini's reading of the SAVED run. Always labelled; flagged numbers listed. #}
+<section class="panel ticked" id="analyst" aria-labelledby="p-ai">
+  <div class="panel-head"><span class="panel-id">{{ panel_id }}</span><h2 id="p-ai">Analyst reading</h2>
+    <span class="aside">explains the saved run, not unsaved slider changes</span></div>
+  {% if analysis %}
+    {% with o=analysis.output %}
+    <div class="panel-body ai-block" style="margin: var(--s3)">
+      <span class="ai-label">AI analysis</span><span class="meta">{{ analysis.model_name }} · prompt {{ analysis.prompt_version }} · {{ analysis.created_at|date:"d M, H:i" }} UTC</span>
+      <h3>{{ o.headline }}</h3>
+      <p>{{ o.what_happened }}</p>
+      {% if o.trade_offs %}<h4>Trade-offs</h4><ul>{% for t in o.trade_offs %}<li>{{ t }}</li>{% endfor %}</ul>{% endif %}
+      {% if o.risks %}<h4>Risks</h4><ul>{% for t in o.risks %}<li>{{ t }}</li>{% endfor %}</ul>{% endif %}
+      {% if o.recommendations %}<h4>Suggestions</h4><ul>{% for r in o.recommendations %}<li>{{ r.action }} <span class="unit">({{ r.confidence }} confidence)</span></li>{% endfor %}</ul>{% endif %}
+      {% if o.assumptions_to_check %}<h4>Check these assumptions</h4><ul>{% for a in o.assumptions_to_check %}<li>{{ a }}</li>{% endfor %}</ul>{% endif %}
+      {% if analysis.flagged_numbers %}
+        <div class="flagged" role="note"><strong>{{ analysis.flagged_numbers|length }} number(s) above are not from the simulation:</strong>
+          {% for f in analysis.flagged_numbers %}<span class="mono">{{ f.literal }}</span>{% if not forloop.last %}, {% endif %}{% endfor %}. Treat them as unverified.</div>
+      {% endif %}
+    </div>
+    {% endwith %}
+  {% else %}
+    <p class="state">No reading yet. The analyst explains what the engine calculated in plain language. It can't change the numbers, and any figure it writes that isn't in the run is flagged.</p>
+  {% endif %}
+  <div class="panel-foot btn-row">
+    <button class="btn btn-sm" type="button" data-ai-action="{% url 'api:run-analysis' run.pk %}" data-status="ai-status" data-anchor="analyst" data-busy="Asking the analyst. Usually 5–10 seconds.">{% if analysis %}Ask again{% else %}Ask the analyst{% endif %}</button>
+    <span id="ai-status"></span>
+  </div>
+</section>

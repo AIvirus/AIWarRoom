@@ -35,6 +35,9 @@ body {
   background: var(--ink); color: var(--sheet); border: 0; padding: 10px 16px; cursor: pointer;
 }
 .toolbar button:hover { background: var(--signal); }
+.toolbar-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.toolbar-actions form { margin: 0; }
+.toolbar button.quiet { background: transparent; color: var(--fault); border: 1px solid var(--fault); }
 
 .sheet {
   max-width: 900px; margin: 0 auto 48px; background: var(--sheet);

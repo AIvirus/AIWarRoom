@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load static warroom %}
+{% block title %}Situation board · {{ run.scenario.name }} · AI WarRoom{% endblock %}
+{% block head %}
+  {# Three.js is pinned to an exact version and only loaded by the 3D view. #}
+  <script type="importmap">{"imports": {"three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"}}</script>
+{% endblock %}
+{% block content %}
+<div class="page" style="max-width: 1480px">
+  <header class="page-head">
+    <p class="crumbs"><a href="{% url 'home' %}">Operations board</a> / <a href="{% url 'business-detail' run.business.pk %}">{{ run.business.name }}</a> /</p>
+    <h1>{{ run.scenario.name }}</h1>
+    <span class="chip">{{ template.name }}</span>
+    <span class="chip" id="mode-chip">Saved run · {{ run.created_at|date:"d M, H:i" }} UTC</span>
+    <div class="spacer"></div>
+    <span class="unit mono">engine {{ run.engine_version }} · inputs {{ run.input_hash|slice:":8" }}</span>
+  </header>
+
+  <div class="board">
+    {# ---------------- Console ---------------- #}
+    <section class="panel ticked" aria-labelledby="p-console">
+      <div class="panel-head"><span class="panel-id">S-01</span><h2 id="p-console">Response console</h2></div>
+      <div class="panel-body">
+        <fieldset class="strategies" id="strategies">
+          <legend>Response to show</legend>
+        </fieldset>
+        <div id="controls" style="margin-top: var(--s3)"></div>
+        <p class="state" id="preview-status" aria-live="polite"></p>
+        <div class="btn-row" id="whatif-actions" hidden>
+          <button class="btn btn-sm btn-primary" type="button" id="save-run">Save as a new run</button>
+          <button class="btn btn-sm" type="button" id="reset">Back to saved run</button>
+        </div>
+      </div>
+    </section>
+
+    {# ---------------- System view ---------------- #}
+    <section class="panel ticked stage-panel" aria-labelledby="p-stage">
+      <div class="panel-head"><span class="panel-id">S-02</span><h2 id="p-stage">System view</h2>
+        <span class="aside" id="view-kind">loading</span></div>
+      <div class="stage" id="stage" role="img" aria-label="Diagram of the business as connected components; a text table follows for screen readers."></div>
+      <div class="stage-legend" aria-hidden="true">
+        <span>Normal</span><span class="l-degraded">Degraded</span><span class="l-failed">Down</span>
+        <em>Moving dots: orders getting through. Fewer dots, less flow.</em>
+      </div>
+      <table class="sr-only" aria-live="polite"><caption>Component health at the selected hour</caption><tbody id="sr-health"></tbody></table>
+    </section>
+
+    {# ---------------- Gauges ---------------- #}
+    <section class="panel ticked gauges-panel" aria-labelledby="p-gauges">
+      <div class="panel-head"><span class="panel-id">S-03</span><h2 id="p-gauges">At <span id="gauge-hour">T+0</span></h2></div>
+      <div class="gauges" id="gauges" aria-live="polite"></div>
+    </section>
+  </div>
+
+  {# ---------------- Timeline ---------------- #}
+  <section class="panel ticked" style="margin-top: var(--s3)" aria-labelledby="p-time">
+    <div class="panel-head"><span class="panel-id">S-04</span><h2 id="p-time">Timeline</h2>
+      <span class="aside">hour 0 = outage starts · ← → to step</span></div>
+    <div class="timeline">
+      <button class="btn btn-sm" type="button" id="play" aria-pressed="false">Play</button>
+      <div class="clock" id="clock">T+00<small>18:00</small></div>
+      <div class="track">
+        <div class="outage" id="outage-band" aria-hidden="true"></div>
+        <label class="sr-only" for="scrubber">Hour of the simulation</label>
+        <input type="range" id="scrubber" min="0" max="71" value="0" step="1">
+        <div class="ticks" id="ticks" aria-hidden="true"></div>
+      </div>
+      <button class="btn btn-sm" type="button" id="speed" aria-label="Playback speed">1×</button>
+    </div>
+  </section>
+
+  <div class="cols-2" style="margin-top: var(--s3)">
+    {# ---------------- Comparison ---------------- #}
+    <section class="panel ticked" aria-labelledby="p-cmp">
+      <div class="panel-head"><span class="panel-id">S-05</span><h2 id="p-cmp">Responses compared</h2>
+        <span class="aside">engine facts, no winner declared</span></div>
+      <div class="table-scroll"><table class="ledger" id="comparison"></table></div>
+      <p class="panel-foot" id="engine-notes"></p>
+    </section>
+    {% include "simulations/_analysis.html" with panel_id="S-06" %}
+  </div>
+
+  <div class="cols-2" style="margin-top: var(--s3)">
+    <section class="panel ticked" aria-labelledby="p-com">
+      <div class="panel-head"><span class="panel-id">S-07</span><h2 id="p-com">Expert committee</h2></div>
+      {% if committee %}{% include "simulations/_committee.html" with c=committee %}
+      {% else %}<p class="state">No committee review yet. Convene it from the <a href="{% url 'business-detail' run.business.pk %}#committee">business page</a>.</p>{% endif %}
+    </section>
+    {% include "simulations/_decision.html" with panel_id="S-08" %}
+  </div>
+</div>
+{{ page_data|json_script:"page-data" }}
+{% endblock %}
+{% block scripts %}
+<script type="module" src="{% static 'js/ai-actions.js' %}"></script>
+<script type="module" src="{% static 'js/board/main.js' %}"></script>
+{% endblock %}

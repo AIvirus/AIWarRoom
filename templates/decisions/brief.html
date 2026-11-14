@@ -12,8 +12,17 @@
 <body>
 {% with d=brief.decision run=brief.run out=brief.outcomes %}
   <nav class="toolbar" aria-label="Brief actions">
-    <a href="{% url 'home' %}">← Operations board</a>
-    <button type="button" onclick="window.print()">Print or save as PDF</button>
+    <a href="{% if run %}{% url 'run-detail' run.id %}{% else %}{% url 'business-detail' decision.business_id %}{% endif %}">← Back</a>
+    {% if messages %}<span role="status">{% for m in messages %}{{ m }} {% endfor %}</span>{% endif %}
+    <span class="toolbar-actions">
+      {% for value, label in next_statuses %}
+        <form method="post" action="{% url 'decisions:status' decision.pk %}">{% csrf_token %}
+          <input type="hidden" name="status" value="{{ value }}">
+          <button type="submit" class="{% if value == 'rejected' %}quiet{% endif %}">Mark {{ label|lower }}</button>
+        </form>
+      {% endfor %}
+      <button type="button" onclick="window.print()">Print or save as PDF</button>
+    </span>
   </nav>
 
   <article class="sheet" aria-labelledby="brief-title">

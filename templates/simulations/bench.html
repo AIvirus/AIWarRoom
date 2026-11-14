@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% load static warroom %}
+{% block title %}Idea bench · {{ run.scenario.name }} · AI WarRoom{% endblock %}
+{% block content %}
+<div class="page" style="max-width: 1480px">
+  <header class="page-head">
+    <p class="crumbs"><a href="{% url 'home' %}">Operations board</a> / <a href="{% url 'business-detail' run.business.pk %}">{{ run.business.name }}</a> /</p>
+    <h1>{{ run.scenario.name }}</h1>
+    <span class="chip">{{ template.name }}</span>
+    <span class="chip" id="mode-chip">Saved run · {{ run.created_at|date:"d M, H:i" }} UTC</span>
+    <div class="spacer"></div>
+    <span class="unit mono">engine {{ run.engine_version }} · inputs {{ run.input_hash|slice:":8" }}</span>
+  </header>
+
+  <div class="bench">
+    <section class="panel ticked" aria-labelledby="p-ledger">
+      <div class="panel-head"><span class="panel-id">I-01</span><h2 id="p-ledger">Assumption ledger</h2></div>
+      <div class="panel-body">
+        <p class="unit" style="margin-top: 0">Move a value to see every case respond. Nothing is saved until you choose to.</p>
+        <div id="controls"></div>
+        <p class="state" id="preview-status" aria-live="polite"></p>
+        <div class="btn-row" id="whatif-actions" hidden>
+          <button class="btn btn-sm btn-primary" type="button" id="save-run">Save and run again</button>
+          <button class="btn btn-sm" type="button" id="reset">Back to saved run</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel ticked" aria-labelledby="p-cash">
+      <div class="panel-head"><span class="panel-id">I-02</span><h2 id="p-cash">Cash position, month by month</h2>
+        <span class="aside">dashed: your investment · red: ₹0</span></div>
+      <div class="chart" id="cash-chart"></div>
+      <div class="inspect">
+        <label for="inspect-month" id="inspect-label">Month</label>
+        <input type="range" id="inspect-month" min="1" max="24" value="24" step="1">
+        <ul id="inspect-values" aria-live="polite"></ul>
+      </div>
+      <table class="sr-only" id="cash-table"></table>
+    </section>
+
+    <section class="panel ticked readout-panel" aria-labelledby="p-read">
+      <div class="panel-head"><span class="panel-id">I-03</span><h2 id="p-read">Expected case</h2></div>
+      <div class="readout" id="readout" aria-live="polite"></div>
+      <div class="honesty" id="honesty" style="margin: var(--s3)"></div>
+      <p class="panel-foot" id="warnings"></p>
+    </section>
+  </div>
+
+  <div class="cols-2" style="margin-top: var(--s3)">
+    <section class="panel ticked" aria-labelledby="p-sens">
+      <div class="panel-head"><span class="panel-id">I-04</span><h2 id="p-sens">Which assumption matters most</h2>
+        <span class="aside">one input at a time</span></div>
+      <div class="chart" id="tornado"></div>
+      <p class="panel-foot" id="tornado-note"></p>
+    </section>
+    <section class="panel ticked" aria-labelledby="p-cases">
+      <div class="panel-head"><span class="panel-id">I-05</span><h2 id="p-cases">Seven cases</h2>
+        <span class="aside">select one to highlight it</span></div>
+      <div class="table-scroll"><table class="ledger" id="cases"></table></div>
+      <p class="panel-foot">Case sizes are illustrative defaults, not market research. Price and demand move independently in this model.</p>
+    </section>
+  </div>
+
+  <div class="cols-2" style="margin-top: var(--s3)">
+    {% include "simulations/_analysis.html" with panel_id="I-06" %}
+    {% include "simulations/_decision.html" with panel_id="I-07" %}
+  </div>
+</div>
+{{ page_data|json_script:"page-data" }}
+{% endblock %}
+{% block scripts %}
+<script type="module" src="{% static 'js/ai-actions.js' %}"></script>
+<script type="module" src="{% static 'js/bench/main.js' %}"></script>
+{% endblock %}

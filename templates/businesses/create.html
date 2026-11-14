@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Add a business · AI WarRoom{% endblock %}
+{% block content %}
+<div class="page" style="max-width: 760px">
+  <header class="page-head">
+    <p class="crumbs"><a href="{% url 'home' %}">Operations board</a> /</p>
+    <h1>Add a business</h1>
+  </header>
+  <section class="panel ticked" aria-labelledby="p-new">
+    <div class="panel-head"><span class="panel-id">B-00</span><h2 id="p-new">Profile</h2></div>
+    <form class="panel-body" method="post" novalidate>
+      {% csrf_token %}
+      {% for field in form %}{% include "accounts/_field.html" %}{% endfor %}
+      <div class="btn-row">
+        <button class="btn btn-primary" type="submit">Add to the board</button>
+        <a class="btn-link" href="{% url 'home' %}">Cancel</a>
+      </div>
+    </form>
+  </section>
+</div>
+{% endblock %}

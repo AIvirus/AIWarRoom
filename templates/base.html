@@ -4,12 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}AI WarRoom{% endblock %}</title>
-  {# Fonts load from Google Fonts for now; they get self-hosted in the frontend phase. #}
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
   <link rel="stylesheet" href="{% static 'css/tokens.css' %}">
   <link rel="stylesheet" href="{% static 'css/base.css' %}">
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
   {% block head %}{% endblock %}
 </head>
 <body>
@@ -17,7 +17,8 @@
   <header class="statusbar" role="banner">
     <a class="brand" href="{% url 'home' %}">AI WarRoom</a>
     {% if user.is_authenticated %}
-      <div class="cell"><span class="label">Org</span><span>{{ current_org.name|default:"—" }}</span></div>
+      <div class="cell"><span class="label">Org</span><span>{{ current_org.name|default:"none" }}</span></div>
+      {% block status_extra %}{% endblock %}
       <div class="spacer"></div>
       <div class="cell hide-sm"><span class="label">Operator</span><span>{{ user }}</span></div>
       <div class="cell hide-sm"><span class="label">UTC</span><span class="mono" data-utc-clock>{% now "H:i" %}</span></div>
@@ -30,15 +31,20 @@
     {% endif %}
   </header>
 
+  {% if messages %}
+    <div class="flash" role="status">
+      {% for message in messages %}<p class="{{ message.tags }}">{{ message }}</p>{% endfor %}
+    </div>
+  {% endif %}
+
   <main id="main">{% block content %}{% endblock %}</main>
 
   <script>
-    // Keep the status-bar clock honest without a library. Updates once a minute is enough.
+    // Keep the status-bar clock honest without a library.
     (function () {
       const cells = document.querySelectorAll("[data-utc-clock]");
       const tick = () => {
-        const now = new Date();
-        const hhmm = now.toISOString().slice(11, 16);
+        const hhmm = new Date().toISOString().slice(11, 16);
         cells.forEach((cell) => { cell.textContent = hhmm; });
       };
       tick();

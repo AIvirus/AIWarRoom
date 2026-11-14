@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% load warroom %}
+{% block title %}Operations board · AI WarRoom{% endblock %}
+{% block content %}
+<div class="page">
+  <header class="page-head">
+    <h1>Operations board</h1>
+    <span class="chip">{{ businesses|length }} on the board</span>
+    <div class="spacer"></div>
+    <a class="btn btn-primary" href="{% url 'business-create' %}">Add a business</a>
+  </header>
+
+  <div class="cols-main-side">
+    <section class="panel ticked" aria-labelledby="p-biz">
+      <div class="panel-head"><span class="panel-id">D-01</span><h2 id="p-biz">Businesses</h2></div>
+      {% if businesses %}
+      <div class="table-scroll"><table class="ledger">
+        <thead><tr><th>Name</th><th>Mode</th><th>Last run</th><th class="num">Open alerts</th></tr></thead>
+        <tbody>
+        {% for row in businesses %}
+          <tr>
+            <td><a class="row-title" href="{% url 'business-detail' row.business.pk %}">{{ row.business.name }}</a>
+              <span class="help">{{ row.business.industry }}</span></td>
+            <td>{% if row.business.mode == "idea" %}<span class="tag idea">Idea</span>{% else %}<span class="tag ops">Operating</span>{% endif %}</td>
+            <td>{% if row.last_run %}<a href="{% url 'run-detail' row.last_run.pk %}">{{ row.last_run.scenario.name }}</a>
+              <span class="help mono">{{ row.last_run.created_at|date:"d M, H:i" }} UTC</span>{% else %}<span class="unit">No runs yet</span>{% endif %}</td>
+            <td class="num">{{ row.open_alerts|default:"·" }}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table></div>
+      {% else %}
+      <div class="empty">
+        <span class="label">Nothing on the board yet</span>
+        <h2>Start with one business.</h2>
+        <p>An idea you haven't launched gets the Idea Bench: price, demand, CAC and costs under seven cases. An operating company gets the Situation Board: knock out the payment gateway, warehouse or courier and compare responses.</p>
+        <a class="btn btn-primary" href="{% url 'business-create' %}">Add a business</a>
+      </div>
+      {% endif %}
+    </section>
+
+    <div class="stack">
+      <section class="panel ticked" aria-labelledby="p-alerts">
+        <div class="panel-head"><span class="panel-id">D-02</span><h2 id="p-alerts">Alerts</h2><span class="aside">from site re-scans</span></div>
+        {% for alert in alerts %}
+          <div class="alert-row">
+            <span class="sev {{ alert.severity }}" aria-hidden="true"></span>
+            <div><p>{{ alert.summary }}</p>
+              <span class="meta">{{ alert.get_severity_display|upper }} · {{ alert.business.name }} · {{ alert.created_at|date:"d M, H:i" }} UTC</span></div>
+            <form class="inline-form" method="post" action="{% url 'alert-acknowledge' alert.pk %}">{% csrf_token %}
+              <input type="hidden" name="next" value="{{ request.path }}">
+              <button class="btn btn-sm" type="submit" aria-label="Acknowledge: {{ alert.summary }}">Ack</button>
+            </form>
+          </div>
+        {% empty %}
+          <p class="state">No open alerts. Alerts appear when a re-scan of a company website finds new prices, products, pages or competitors.</p>
+        {% endfor %}
+      </section>
+
+      <section class="panel ticked" aria-labelledby="p-dec">
+        <div class="panel-head"><span class="panel-id">D-03</span><h2 id="p-dec">Decisions</h2></div>
+        {% for d in decisions %}
+          <div class="alert-row">
+            <span class="sev {% if d.status == 'rejected' %}critical{% elif d.status == 'proposed' %}warn{% endif %}" aria-hidden="true"></span>
+            <div><p><a href="{% url 'decisions:brief' d.pk %}">{{ d.title }}</a></p>
+              <span class="meta">{{ d.get_status_display|upper }} · {{ d.business.name }} · {{ d.owner|default:"unassigned" }}</span></div>
+            <span></span>
+          </div>
+        {% empty %}
+          <p class="state">No decisions recorded. Record one from any run once you've compared the responses.</p>
+        {% endfor %}
+      </section>
+    </div>
+  </div>
+</div>
+{% endblock %}

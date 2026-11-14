@@ -3,8 +3,8 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
 from accounts import api as accounts_api
-from accounts import views as accounts_views
 from businesses import api as businesses_api
+from businesses import views as businesses_views
 from decisions import api as decisions_api
 from intelligence import api as intelligence_api
 from intelligence import views as intelligence_views
@@ -46,9 +46,16 @@ api_v1 = [
 ]
 
 urlpatterns = [
-    path("", accounts_views.home, name="home"),
+    path("", businesses_views.dashboard, name="home"),
     path("accounts/", include("accounts.urls")),
+    path("businesses/", include("businesses.urls")),
+    path("runs/", include("simulations.urls")),
     path("decisions/", include("decisions.urls")),
+    path(
+        "alerts/<uuid:pk>/acknowledge/",
+        intelligence_views.alert_acknowledge,
+        name="alert-acknowledge",
+    ),
     path("api/v1/", include((api_v1, "api"), namespace="api")),
     path("admin/", admin.site.urls),
     path("healthz/", views.healthz, name="healthz"),
