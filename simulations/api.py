@@ -1,12 +1,15 @@
-from rest_framework import viewsets
-from rest_framework.decorators import api_view
+from rest_framework import serializers, status, viewsets
+from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
 
 from accounts.access import OrgScopedMixin
+from businesses.api import business_for
+from config.api_errors import DomainError
 from simulation_engine import catalog
 
 from .models import Scenario, SimulationRun
 from .serializers import ScenarioSerializer, SimulationRunSerializer
+from .services.run_service import SimulationInputError, preview, run_scenario
 
 
 class ScenarioViewSet(OrgScopedMixin, viewsets.ModelViewSet):
@@ -23,6 +26,16 @@ class ScenarioViewSet(OrgScopedMixin, viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
+
+    @action(detail=True, methods=["post"])
+    def run(self, request, pk=None):
+        """Freeze the inputs, run the engine, save the run. 201 with the full result."""
+        scenario = self.get_object()
+        try:
+            run = run_scenario(scenario, request.user)
+        except SimulationInputError as error:
+            raise DomainError(str(error), error.fields, code="simulation_input_error") from None
+        return Response(SimulationRunSerializer(run).data, status=status.HTTP_201_CREATED)
 
 
 class SimulationRunViewSet(OrgScopedMixin, viewsets.ReadOnlyModelViewSet):
@@ -68,3 +81,30 @@ def input_catalog(request):
             for mode in (catalog.IDEA, catalog.OPERATING)
         }
     )
+
+
+class PreviewRequest(serializers.Serializer):
+    business = serializers.UUIDField()
+    template_key = serializers.ChoiceField(choices=sorted(catalog.TEMPLATES))
+    parameters = serializers.DictField(required=False, default=dict)
+    # What-if values for assumptions, e.g. {"average_order_value": "650"} from a slider.
+    assumptions = serializers.DictField(required=False, default=dict)
+
+
+@api_view(["POST"])
+def simulate_preview(request):
+    """
+    Run the engine on what-if values WITHOUT saving anything. The sliders call this on
+    every change; the engine answers in milliseconds, so this can be "live".
+    """
+    body = PreviewRequest(data=request.data)
+    body.is_valid(raise_exception=True)
+    data = body.validated_data
+    business = business_for(request.user, data["business"])
+    if catalog.TEMPLATES[data["template_key"]].mode != business.mode:
+        raise DomainError("This scenario doesn't apply to this kind of business.")
+    try:
+        result = preview(business, data["template_key"], data["parameters"], data["assumptions"])
+    except SimulationInputError as error:
+        raise DomainError(str(error), error.fields, code="simulation_input_error") from None
+    return Response(result)

@@ -210,6 +210,7 @@ class Template:
     component_kind: str = ""  # for disruptions: which component fails
     share_input: str = ""  # for disruptions: which assumption says how much traffic it carries
     loss_mode: str = ""  # "checkout" (orders fail now) or "fulfilment" (orders wait)
+    strategies: tuple[tuple[str, str], ...] = ()  # (key, label) of response strategies
 
 
 _DISRUPTION_COMMON = (
@@ -233,12 +234,51 @@ _BACKUP = (
         "backup_activation_cost", "Backup one-off activation cost", "INR", D("0"), default="5000"
     ),
 )
-_RETRY = (
-    Field("retry_success_rate", "Retry success", **PERCENT, default="55"),
-    Field("retry_window_hours", "Retry window", "hours", D("0"), D("72"), "24"),
+# Same parameter keys, different meaning per loss mode, so the labels say what they do.
+_RETRY_CHECKOUT = (
+    Field("retry_success_rate", "Queued payments that succeed on retry", **PERCENT, default="55"),
+    Field(
+        "retry_window_hours",
+        "Retry window",
+        "hours",
+        D("0"),
+        D("72"),
+        "24",
+        help="Payments older than this are dropped from the queue.",
+    ),
     Field("retry_cost_per_order", "Retry cost", "INR/order", D("0"), default="3"),
 )
-_OPERATING_CORE = ("daily_orders", "average_order_value", "contribution_margin", "hourly_capacity")
+_QUEUE_FULFILMENT = (
+    Field(
+        "retry_success_rate",
+        "Would-be cancellations kept by proactive notice",
+        **PERCENT,
+        default="55",
+        help="Customers told 'your order ships by X' who wait instead of cancelling.",
+    ),
+    Field(
+        "retry_window_hours",
+        "Promise window",
+        "hours",
+        D("0"),
+        D("72"),
+        "24",
+        help="Notice only helps for delays up to this long.",
+    ),
+    Field("retry_cost_per_order", "Notice and handling cost", "INR/order", D("0"), default="3"),
+)
+_CHECKOUT_STRATEGIES = (
+    ("wait", "Wait for recovery"),
+    ("backup", "Switch to backup gateway"),
+    ("queue_retry", "Queue and retry payments"),
+)
+_FULFILMENT_STRATEGIES = (
+    ("wait", "Wait and clear the backlog"),
+    ("backup", "Switch to backup provider"),
+    ("queue_retry", "Queue and notify customers"),
+)
+_CHECKOUT_CORE = ("daily_orders", "average_order_value", "contribution_margin")
+_FULFILMENT_CORE = _CHECKOUT_CORE + ("hourly_capacity",)
 
 _TEMPLATE_LIST = [
     Template(
@@ -269,11 +309,12 @@ _TEMPLATE_LIST = [
         kind="disruption",
         mode=OPERATING,
         description="The primary payment gateway stops authorising payments. Checkouts fail; some customers come back later.",
-        parameters=_DISRUPTION_COMMON + _BACKUP + _RETRY,
-        required_inputs=_OPERATING_CORE + ("primary_gateway_share", "recapture_rate"),
+        parameters=_DISRUPTION_COMMON + _BACKUP + _RETRY_CHECKOUT,
+        required_inputs=_CHECKOUT_CORE + ("primary_gateway_share", "recapture_rate"),
         component_kind="payment",
         share_input="primary_gateway_share",
         loss_mode="checkout",
+        strategies=_CHECKOUT_STRATEGIES,
     ),
     Template(
         key="warehouse_shutdown",
@@ -281,12 +322,13 @@ _TEMPLATE_LIST = [
         kind="disruption",
         mode=OPERATING,
         description="The main warehouse stops picking and packing. Orders keep arriving and wait; the longer they wait, the more get cancelled.",
-        parameters=_DISRUPTION_COMMON + _BACKUP + _RETRY,
-        required_inputs=_OPERATING_CORE
+        parameters=_DISRUPTION_COMMON + _BACKUP + _QUEUE_FULFILMENT,
+        required_inputs=_FULFILMENT_CORE
         + ("main_warehouse_share", "cancel_rate_per_delay_hour", "max_cancel_rate"),
         component_kind="warehouse",
         share_input="main_warehouse_share",
         loss_mode="fulfilment",
+        strategies=_FULFILMENT_STRATEGIES,
     ),
     Template(
         key="logistics_failure",
@@ -294,12 +336,13 @@ _TEMPLATE_LIST = [
         kind="disruption",
         mode=OPERATING,
         description="The main courier stops collecting parcels. Packed orders pile up and customers cancel as delays grow.",
-        parameters=_DISRUPTION_COMMON + _BACKUP + _RETRY,
-        required_inputs=_OPERATING_CORE
+        parameters=_DISRUPTION_COMMON + _BACKUP + _QUEUE_FULFILMENT,
+        required_inputs=_FULFILMENT_CORE
         + ("logistics_partner_share", "cancel_rate_per_delay_hour", "max_cancel_rate"),
         component_kind="logistics",
         share_input="logistics_partner_share",
         loss_mode="fulfilment",
+        strategies=_FULFILMENT_STRATEGIES,
     ),
 ]
 TEMPLATES: dict[str, Template] = {t.key: t for t in _TEMPLATE_LIST}

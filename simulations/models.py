@@ -72,6 +72,9 @@ class SimulationRun(BaseModel):
     # layer reuse an earlier explanation instead of spending free-tier quota.
     input_hash = models.CharField(max_length=64, db_index=True)
     engine_version = models.CharField(max_length=20)
+    # Run-level outputs: sensitivity table, funnel check, strategy comparison.
+    summary = models.JSONField(default=dict)
+    warnings = models.JSONField(default=list)
     error = models.TextField(blank=True)
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL, related_name="+"

@@ -108,6 +108,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # --- Auth -----------------------------------------------------------------------------
 AUTH_USER_MODEL = "accounts.User"  # custom from day one: swapping it later is painful
+
+# Sessions are read from an in-memory cache first and only fall back to the database.
+# Against a remote database (Neon) that saves one network round trip on every request.
+SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
 LOGIN_URL = "accounts:login"
 LOGIN_REDIRECT_URL = "home"
 LOGOUT_REDIRECT_URL = "accounts:login"

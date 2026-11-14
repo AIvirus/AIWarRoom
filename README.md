@@ -3,8 +3,9 @@
 Test a business before reality does. A teaching project: Django + DRF, PostgreSQL on Neon,
 deterministic simulations and Gemini-written analysis that is labelled as such.
 
-> Status: **Phase 2.2**: all data models and their JSON API, with org-level access
-> control and validation. Simulations run in Phase 2.3. See [docs/PLAN.md](docs/PLAN.md).
+> Status: **Phase 2.3**: deterministic simulation engine (idea cases, sensitivity,
+> payment / warehouse / courier disruptions) with saved runs and a live preview endpoint.
+> Gemini analysis arrives in Phase 2.4. See [docs/PLAN.md](docs/PLAN.md).
 
 ## Run it locally
 
@@ -52,6 +53,33 @@ ruff check . && ruff format --check .
 
 Tests use in-memory SQLite (fast, offline, no Neon permissions needed). Run `migrate`
 against Neon to check the real database.
+
+The engine has no Django dependency at all; its tests run with Django switched off:
+
+```bash
+pytest -p no:django simulation_engine
+```
+
+## The simulation engine
+
+| File | What it models |
+|---|---|
+| `simulation_engine/idea.py` | Month-by-month funnel: CAC from cost per visit and conversion, customers with retention, cash |
+| `simulation_engine/cases.py` | Seven cases (expected, best, worst, reduced demand, higher costs, lower conversion, more competition) as visible input shocks |
+| `simulation_engine/sensitivity.py` | One-at-a-time ±step on eight inputs, sorted by effect on ending cash |
+| `simulation_engine/disruption.py` | Hour-by-hour outage: checkout failures (payment) or a FIFO backlog with rising cancellations (warehouse, courier); wait / backup / queue strategies |
+| `simulation_engine/runner.py` | The single entry point: `run(template_key, assumptions, parameters, components)` |
+
+Every formula is written out in the module docstrings, and the tests check
+hand-calculated values.
+
+## Latency against Neon
+
+The engine takes 4–10 ms. Each database query to Neon (ap-southeast-1) costs about
+67 ms from a laptop in India, and `runserver` opens a new connection for every request.
+Measured preview round trips: about 0.85 s threaded, about 0.43 s with
+`runserver --nothreading`. A server deployed in the same region as the database, or
+SQLite locally, removes most of this.
 
 ## Layout so far
 

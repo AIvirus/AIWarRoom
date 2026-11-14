@@ -83,6 +83,8 @@ class SimulationRunSerializer(serializers.ModelSerializer):
             "engine_version",
             "input_hash",
             "input_snapshot",
+            "summary",
+            "warnings",
             "error",
             "results",
             "created_at",

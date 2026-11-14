@@ -27,7 +27,24 @@ CODES = {
 }
 
 
+class DomainError(exceptions.APIException):
+    """
+    A request that is well-formed but can't be carried out as asked, e.g. "this scenario
+    needs a contribution margin first". Raise with a message and optional per-field hints.
+    """
+
+    status_code = 422
+    default_code = "unprocessable"
+
+    def __init__(self, message: str, fields: dict | None = None, code: str | None = None):
+        super().__init__(detail=message, code=code or self.default_code)
+        self.fields = fields or {}
+        self.error_code = code or self.default_code
+
+
 def _code_for(exc) -> str:
+    if isinstance(exc, DomainError):
+        return exc.error_code
     for exc_type, code in CODES.items():
         if isinstance(exc, exc_type):
             return code
@@ -58,7 +75,7 @@ def api_exception_handler(exc, context):
         fields = detail if isinstance(detail, dict) else {"non_field_errors": detail}
         message = "Some fields need attention."
     else:
-        fields = {}
+        fields = getattr(exc, "fields", {})
         message = str(response.data.get("detail", "")) if isinstance(response.data, dict) else ""
         if code == "not_found":
             message = "Not found."  # same text whether it's missing or someone else's

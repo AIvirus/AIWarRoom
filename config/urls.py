@@ -33,6 +33,7 @@ api_v1 = [
     path("me/", accounts_api.me, name="me"),
     path("scenario-templates/", simulations_api.scenario_templates, name="scenario-templates"),
     path("inputs/", simulations_api.input_catalog, name="inputs"),
+    path("simulate/preview/", simulations_api.simulate_preview, name="simulate-preview"),
     path("businesses/<uuid:business_pk>/components/", components_list, name="component-list"),
     path(
         "businesses/<uuid:business_pk>/components/<uuid:pk>/",
