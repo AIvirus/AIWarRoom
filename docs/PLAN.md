@@ -1,6 +1,8 @@
 # AI WarRoom: Phase 1 plan
 
-Status: **proposal, waiting for approval**. Nothing below has been built yet.
+Status: **built** (phases 2.1 to 2.8). This is the original plan, kept for reference; where the
+build differs (e.g. no htmx/Alpine, no Search grounding on the free tier), the README and
+`docs/TEACHING_NOTES.md` describe what actually exists.
 Decisions locked in Phase 0: Gemini `gemini-3.5-flash-lite` by default (optional `gemini-2.5-flash-lite` for Search-grounded lookups), session auth with one org per user, INR + fictional "Kirana Express" seed, `old_code/` kept out of git, Python 3.12+ (tested on the local 3.14).
 
 ---

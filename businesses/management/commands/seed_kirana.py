@@ -148,4 +148,4 @@ class Command(BaseCommand):
                 created_by=user,
             )
             run = run_scenario(scenario, user)
-            self.stdout.write(f"  ran “{name}”: /runs/{run.pk}/")
+            self.stdout.write(f"  ran \"{name}\": /runs/{run.pk}/")
