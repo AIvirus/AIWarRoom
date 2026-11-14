@@ -1,0 +1,33 @@
+# Secrets: never commit. Copy .env.example to .env instead.
+.env
+.env.*
+!.env.example
+
+# Reference-only code from a previous implementation (not part of this project)
+old_code/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Django
+db.sqlite3
+db.sqlite3-journal
+staticfiles/
+media/
+*.log
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local editor/agent config
+.claude/

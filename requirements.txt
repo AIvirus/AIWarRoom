@@ -1,0 +1,11 @@
+# Runtime dependencies, pinned. Checked on Python 3.12 and 3.14 (2026-11-15).
+Django==5.2.19              # LTS (supported to April 2028)
+djangorestframework==3.18.3
+dj-database-url==3.1.2      # parses DATABASE_URL (Neon) into Django settings
+psycopg[binary]==3.3.9      # PostgreSQL driver
+python-dotenv==1.2.4        # loads .env in development
+pydantic==2.14.3            # validates every LLM response
+google-genai==3.3.0         # official Gemini SDK (replaces deprecated google-generativeai)
+requests==2.34.2            # URL analyzer HTTP client
+beautifulsoup4==4.15.0      # readable-text extraction from HTML
+whitenoise==6.12.0          # serves static files without a separate web server

@@ -1,0 +1,43 @@
+/*
+  Design tokens. Every colour, font and spacing value in the project comes from here.
+  Concept: an operations log / control-room panel. Warm graphite, bone text,
+  one signal colour (sodium amber) and one alarm colour reserved for failures.
+*/
+:root {
+  /* Neutrals */
+  --ink: #16150f;        /* page background: warm graphite, not blue-black */
+  --panel: #1f1e17;      /* panels sit one step above the page */
+  --panel-2: #29281f;    /* inputs, hovered rows */
+  --rule: #3a382d;       /* 1px hairlines and grid */
+  --bone: #e9e5d6;       /* primary text */
+  --dim: #a29d89;        /* labels and secondary text (WCAG AA on --ink and --panel) */
+
+  /* Signal: live state, selection, "this changed", focus */
+  --signal: #f2a900;
+  --signal-ink: #16150f; /* text placed on top of --signal */
+
+  /* Alarm: ONLY for failed components and losses. Never decorative. */
+  --fault: #e5484d;
+
+  /* Type */
+  --font-ui: "Barlow Semi Condensed", "Arial Narrow", system-ui, sans-serif;
+  --font-data: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.75rem;
+  --text-xxl: 2.5rem;
+
+  /* Space on an 8px grid */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 16px;
+  --s4: 24px;
+  --s5: 32px;
+  --s6: 48px;
+
+  --radius: 2px;         /* square corners; instruments are not pills */
+  --statusbar-h: 36px;
+}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Log in · AI WarRoom{% endblock %}
+{% block content %}
+<div class="auth">
+  {% include "accounts/_brief.html" %}
+  <section class="panel ticked" aria-labelledby="login-title">
+    <div class="panel-head"><span class="panel-id">A-01</span><h1 id="login-title">Operator log in</h1></div>
+    <div class="panel-body">
+      {% if form.non_field_errors %}
+        <div class="notice" role="alert">{% for e in form.non_field_errors %}{{ e }}{% endfor %}</div>
+      {% endif %}
+      <form method="post" novalidate>
+        {% csrf_token %}
+        {% include "accounts/_field.html" with field=form.username %}
+        {% include "accounts/_field.html" with field=form.password %}
+        <input type="hidden" name="next" value="{{ next }}">
+        <button class="btn btn-primary" type="submit">Log in</button>
+      </form>
+      <p class="auth-switch">New here? <a href="{% url 'accounts:signup' %}">Set up an organization</a>.</p>
+    </div>
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Set up an organization · AI WarRoom{% endblock %}
+{% block content %}
+<div class="auth">
+  {% include "accounts/_brief.html" %}
+  <section class="panel ticked" aria-labelledby="signup-title">
+    <div class="panel-head"><span class="panel-id">A-02</span><h1 id="signup-title">Set up an organization</h1></div>
+    <div class="panel-body">
+      <form method="post" novalidate>
+        {% csrf_token %}
+        {% include "accounts/_field.html" with field=form.full_name %}
+        {% include "accounts/_field.html" with field=form.email %}
+        {% include "accounts/_field.html" with field=form.org_name %}
+        {% include "accounts/_field.html" with field=form.password %}
+        <button class="btn btn-primary" type="submit">Create organization</button>
+      </form>
+      <p class="auth-switch">Already have an account? <a href="{% url 'accounts:login' %}">Log in</a>.</p>
+    </div>
+  </section>
+</div>
+{% endblock %}
