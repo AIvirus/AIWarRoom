@@ -71,7 +71,7 @@ def test_valid_answer_is_saved_with_model_prompt_version_and_no_flags(run, setti
     analysis = explain_run(run, transport=transport)
     assert analysis.status == "ok"
     assert analysis.model_name == settings.GEMINI_MODEL
-    assert analysis.prompt_version == "run-explanation/1"
+    assert analysis.prompt_version == "run-explanation/2"
     assert analysis.attempts == 1
     assert analysis.flagged_numbers == []
     assert analysis.output["headline"].startswith("Queueing")

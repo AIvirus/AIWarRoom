@@ -3,10 +3,10 @@
 Test a business before reality does. A teaching project: Django + DRF, PostgreSQL on Neon,
 deterministic simulations and Gemini-written analysis that is labelled as such.
 
-> Status: **Phase 2.5**: simulation engine, Gemini run explanations, SSRF-safe company
-> website scans with live progress (SSE), AI site profiles, the expert committee and
-> change alerts. Decisions and the printable brief arrive in Phase 2.6.
-> See [docs/PLAN.md](docs/PLAN.md).
+> Status: **Phase 2.6**: simulation engine, Gemini run explanations, safe company
+> website scans with live progress, the expert committee, change alerts, and decision
+> records with a printable brief. The full interface (Situation Board, Idea Bench, 3D
+> system view) arrives in Phase 2.7. See [docs/PLAN.md](docs/PLAN.md).
 
 ## Run it locally
 
@@ -126,6 +126,24 @@ new keys, so competitor claims here are either named on the site or marked as un
 inference. URL context works on `gemini-3.5-flash-lite` and is used automatically when a
 site's own HTML has almost no text (JavaScript-rendered pages). Set
 `GEMINI_GROUNDING_MODEL` only with a plan that includes Search grounding.
+
+## Decisions and the brief
+
+A decision moves `proposed → approved → in_progress → done`, and can be `rejected` from any
+open state (then re-opened to `proposed`). Every status change is appended to its history
+with who, when and an optional note; approving or rejecting records the sign-off. New
+decisions always start as `proposed`, and no AI code path creates or changes a decision.
+
+| Endpoint / page | What it does |
+|---|---|
+| `PATCH /api/v1/decisions/{id}/` | `{"status": "approved", "note": "..."}`; illegal jumps return the allowed options |
+| `GET /api/v1/decisions/{id}/report/` | The brief as structured JSON |
+| `/decisions/{id}/brief/` | The same brief as a printable page (browser print → PDF) |
+
+The brief is built only from stored data (`decisions/services/brief.py`): assumptions
+from the run's frozen snapshot with their source tags, the outcome table with the chosen
+response marked, engine notes, the AI reading and committee (labelled, with flagged
+numbers listed), the decision history, and a "What this brief is not" box.
 
 ## Latency against Neon
 

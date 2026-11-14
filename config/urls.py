@@ -48,6 +48,7 @@ api_v1 = [
 urlpatterns = [
     path("", accounts_views.home, name="home"),
     path("accounts/", include("accounts.urls")),
+    path("decisions/", include("decisions.urls")),
     path("api/v1/", include((api_v1, "api"), namespace="api")),
     path("admin/", admin.site.urls),
     path("healthz/", views.healthz, name="healthz"),

@@ -47,6 +47,17 @@ class Decision(BaseModel):
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL, related_name="+"
     )
+    # Who approved or rejected it, and when: the human sign-off the brief prints.
+    decided_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+    decided_at = models.DateTimeField(null=True, blank=True)
+    # Every status change: [{"at", "by", "from", "to", "note"}]. Append-only by convention.
+    history = models.JSONField(default=list)
 
     ORG_PATH = "business__organization"
     objects = OrgScopedQuerySet.as_manager()
