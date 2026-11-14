@@ -8,10 +8,12 @@ export const LAYOUT = {
   revenue: { x: 7.8, z: -1.7, label: "Revenue" },
   warehouse: { x: 5.2, z: 1.7, label: "Warehouse" },
   logistics: { x: 7.8, z: 1.7, label: "Courier" },
-  supplier: { x: 2.6, z: 3.4, label: "Suppliers" },
+  supplier: { x: 0, z: 2.6, label: "Suppliers" },
 };
 
 // Orders move along these edges: browse -> pay -> revenue, and pick -> ship -> deliver.
+// The third value bends an edge: deliveries return to customers as an arc around the
+// front of the scene instead of cutting straight through the warehouse.
 export const FLOWS = [
   ["customers", "storefront"],
   ["storefront", "payment"],
@@ -19,8 +21,13 @@ export const FLOWS = [
   ["storefront", "warehouse"],
   ["supplier", "warehouse"],
   ["warehouse", "logistics"],
-  ["logistics", "customers"],
+  ["logistics", "customers", 4.6],
 ];
+
+// The control point of an edge's curve on the floor plane (straight edges: the midpoint).
+export function controlPoint(from, to, bend = 0) {
+  return { x: (from.x + to.x) / 2, z: (from.z + to.z) / 2 + bend };
+}
 
 export function buildTopology(components, failedKind) {
   const nodes = Object.entries(LAYOUT).map(([kind, place]) => {
@@ -49,6 +56,7 @@ export function healthAt(row, topology) {
     health[node.id] = values.length ? Math.min(...values) : 1;
   }
   const flows = topology.flows.map(([a, b]) => Math.min(health[a], health[b]));
+  // (A bent edge's third value is ignored here: health only depends on the endpoints.)
   return { health, flows };
 }
 

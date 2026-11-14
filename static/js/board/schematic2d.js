@@ -2,7 +2,7 @@
 // user asks for it (?view=2d), or as a lighter option on low-end machines. Same layout,
 // same data, same update() call as the 3D view.
 
-import { stateOf } from "./topology.js";
+import { controlPoint, stateOf } from "./topology.js";
 
 const NS = "http://www.w3.org/2000/svg";
 const el = (name, attrs = {}) => {
@@ -14,7 +14,14 @@ const el = (name, attrs = {}) => {
 export function createSchematic2D(container, topology, { reducedMotion }) {
   // Isometric-style projection so the 2D view reads like the 3D one.
   const project = ({ x, z }) => ({ px: (x - z) * 46, py: (x + z) * 23 });
-  const points = topology.nodes.map(project);
+  const arcPoints = topology.flows.filter((f) => f[2]).map(([a, b, bend]) => {
+    const from = topology.nodes.find((n) => n.id === a);
+    const to = topology.nodes.find((n) => n.id === b);
+    const c = controlPoint(from, to, bend);
+    // The curve's midpoint is halfway between the chord's midpoint and the control point.
+    return project({ x: (from.x + to.x) / 4 + c.x / 2, z: (from.z + to.z) / 4 + c.z / 2 });
+  });
+  const points = [...topology.nodes.map(project), ...arcPoints];
   const pad = 80;
   const minX = Math.min(...points.map((p) => p.px)) - pad;
   const minY = Math.min(...points.map((p) => p.py)) - pad;
@@ -33,7 +40,7 @@ export function createSchematic2D(container, topology, { reducedMotion }) {
       .flow.degraded { stroke: var(--signal); }
       .flow.moving { animation: march 1.2s linear infinite; }
       @keyframes march { to { stroke-dashoffset: -24; } }
-      .rail { stroke: var(--rule); stroke-width: 1; }
+      .rail { stroke: var(--dim); stroke-width: 1; opacity: .45; fill: none; }
       .tile { fill: var(--panel-2); stroke: var(--rule); }
       .tile.degraded { stroke: var(--signal); stroke-width: 2; }
       .tile.failed { fill: url(#hatch); stroke: var(--fault); stroke-width: 2; }
@@ -42,12 +49,15 @@ export function createSchematic2D(container, topology, { reducedMotion }) {
       .value.degraded { fill: var(--signal); } .value.failed { fill: var(--fault); }
     </style>`;
 
-  const flows = topology.flows.map(([a, b]) => {
-    const from = project(topology.nodes.find((n) => n.id === a));
-    const to = project(topology.nodes.find((n) => n.id === b));
-    const coords = { x1: from.px, y1: from.py, x2: to.px, y2: to.py };
-    svg.append(el("line", { ...coords, class: "rail" }));
-    const line = el("line", { ...coords, class: "flow" });
+  const flows = topology.flows.map(([a, b, bend]) => {
+    const fromNode = topology.nodes.find((n) => n.id === a);
+    const toNode = topology.nodes.find((n) => n.id === b);
+    const from = project(fromNode);
+    const to = project(toNode);
+    const c = project(controlPoint(fromNode, toNode, bend));
+    const d = `M${from.px},${from.py} Q${c.px},${c.py} ${to.px},${to.py}`;
+    svg.append(el("path", { d, class: "rail" }));
+    const line = el("path", { d, class: "flow" });
     svg.append(line);
     return line;
   });

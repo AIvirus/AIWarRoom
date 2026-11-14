@@ -10,6 +10,16 @@ const el = (name, attrs = {}, text) => {
   return node;
 };
 
+// Round tick values (₹10L, ₹20L... not ₹37.7L) that cover [lo, hi] in about `count` steps.
+function niceTicks(lo, hi, count) {
+  const raw = (hi - lo) / count;
+  const power = 10 ** Math.floor(Math.log10(raw));
+  const step = [1, 2, 2.5, 5, 10].map((k) => k * power).find((s) => s >= raw);
+  const ticks = [];
+  for (let v = Math.ceil(lo / step) * step; v <= hi; v += step) ticks.push(v);
+  return ticks;
+}
+
 // ---------------------------------------------------------------------------------------
 // Cash position over time, one line per case. Expected is heavy; the focused case is amber.
 // ---------------------------------------------------------------------------------------
@@ -27,8 +37,7 @@ export function cashChart(container, cases, { focus, cursor, investment }) {
     "aria-label": "Cash at the end of each month for every case. A table version follows." });
 
   const grid = el("g", { class: "grid" });
-  for (let i = 0; i <= 4; i++) {
-    const v = yMin + ((yMax - yMin) * i) / 4;
+  for (const v of niceTicks(yMin, yMax, 5)) {
     grid.append(el("line", { x1: m.left, x2: W - m.right, y1: y(v), y2: y(v), opacity: 0.4 }));
     grid.append(el("text", { x: m.left - 8, y: y(v) + 4, "text-anchor": "end" }, moneyShort(v)));
   }
@@ -39,7 +48,8 @@ export function cashChart(container, cases, { focus, cursor, investment }) {
 
   // Zero cash is where the business can't pay its bills: marked in the alarm colour.
   svg.append(el("line", { class: "zero", x1: m.left, x2: W - m.right, y1: y(0), y2: y(0) }));
-  svg.append(el("text", { x: W - m.right + 6, y: y(0) + 4, fill: "var(--fault)" }, "₹0 cash"));
+  // Label sits just inside the plot's left edge, where it can't collide with case labels.
+  svg.append(el("text", { x: m.left + 6, y: y(0) - 5, fill: "var(--fault)" }, "₹0 cash"));
   svg.append(el("line", { class: "invest", x1: m.left, x2: W - m.right, y1: y(investment), y2: y(investment) }));
 
   // Draw others first so the expected and focused lines sit on top.

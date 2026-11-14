@@ -4,6 +4,7 @@ from django.utils.text import slugify
 from simulation_engine import catalog
 
 from .models import BusinessComponent, BusinessProfile, FinancialAssumption
+from .services.snapshot import plain
 
 
 class BusinessForm(forms.ModelForm):
@@ -45,7 +46,8 @@ class AssumptionsForm(forms.Form):
                 max_digits=16,
                 decimal_places=4,
                 help_text=spec.help,
-                initial=current.value.normalize() if current else None,
+                # plain(): 2400.0000 -> "2400". normalize() alone would show "2.4E+3".
+                initial=plain(current.value) if current else None,
                 widget=forms.NumberInput(attrs={"step": "any", "inputmode": "decimal"}),
             )
             source_key = f"{spec.key}__source"

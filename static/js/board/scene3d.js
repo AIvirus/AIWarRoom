@@ -7,7 +7,7 @@
 
 import * as THREE from "three";
 
-import { stateOf } from "./topology.js";
+import { controlPoint, stateOf } from "./topology.js";
 
 const PARTICLES_PER_FLOW = 14;
 const SPEED = 0.12; // edge lengths per second
@@ -21,6 +21,7 @@ export function createScene3D(container, topology, { reducedMotion }) {
     failed: colour("--fault"),
     plinth: colour("--panel-2"),
     rule: colour("--rule"),
+    rail: colour("--dim"), // edges: faint, but visible against the graphite floor
   };
 
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -74,14 +75,19 @@ export function createScene3D(container, topology, { reducedMotion }) {
   }
 
   // ---- Flows -------------------------------------------------------------------------
-  const flows = topology.flows.map(([a, b]) => {
+  const flows = topology.flows.map(([a, b, bend]) => {
     const from = topology.nodes.find((n) => n.id === a);
     const to = topology.nodes.find((n) => n.id === b);
-    const start = new THREE.Vector3(from.x, 0.06, from.z);
-    const end = new THREE.Vector3(to.x, 0.06, to.z);
+    const c = controlPoint(from, to, bend);
+    // Every edge is a curve; a straight one just has its control point in the middle.
+    const curve = new THREE.QuadraticBezierCurve3(
+      new THREE.Vector3(from.x, 0.06, from.z),
+      new THREE.Vector3(c.x, 0.06, c.z),
+      new THREE.Vector3(to.x, 0.06, to.z),
+    );
     const line = new THREE.Line(
-      new THREE.BufferGeometry().setFromPoints([start, end]),
-      new THREE.LineBasicMaterial({ color: palette.rule }),
+      new THREE.BufferGeometry().setFromPoints(curve.getPoints(bend ? 40 : 1)),
+      new THREE.LineBasicMaterial({ color: palette.rail, transparent: true, opacity: 0.55 }),
     );
     const particles = new THREE.InstancedMesh(
       new THREE.BoxGeometry(0.1, 0.1, 0.1),
@@ -90,7 +96,7 @@ export function createScene3D(container, topology, { reducedMotion }) {
     );
     particles.count = PARTICLES_PER_FLOW;
     scene.add(line, particles);
-    return { start, end, particles, strength: 1 };
+    return { curve, particles, strength: 1 };
   });
 
   // ---- Sizing: fit the whole layout into the container at any aspect ratio ------------
@@ -102,13 +108,16 @@ export function createScene3D(container, topology, { reducedMotion }) {
     renderer.setSize(width, height, false);
     camera.updateMatrixWorld();
     let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    const include = (v, padX, padY) => {
+      const p = v.clone().applyMatrix4(camera.matrixWorldInverse);
+      minX = Math.min(minX, p.x - padX); maxX = Math.max(maxX, p.x + padX);
+      minY = Math.min(minY, p.y - padY); maxY = Math.max(maxY, p.y + padY);
+    };
     for (const { node } of nodes.values()) {
-      for (const y of [0, 1.4]) {
-        const p = new THREE.Vector3(node.x, y, node.z).applyMatrix4(camera.matrixWorldInverse);
-        minX = Math.min(minX, p.x - 0.9); maxX = Math.max(maxX, p.x + 0.9);
-        minY = Math.min(minY, p.y - 0.6); maxY = Math.max(maxY, p.y + 0.9);
-      }
+      include(new THREE.Vector3(node.x, 0, node.z), 0.9, 0.6);
+      include(new THREE.Vector3(node.x, 1.4, node.z), 0.9, 0.9);
     }
+    for (const flow of flows) for (const p of flow.curve.getPoints(8)) include(p, 0.3, 0.3);
     const aspect = width / height;
     let w = maxX - minX, h = maxY - minY;
     if (w / h > aspect) h = w / aspect; else w = h * aspect;
@@ -139,7 +148,7 @@ export function createScene3D(container, topology, { reducedMotion }) {
       for (let i = 0; i < visible; i++) {
         const offset = reducedMotion ? 0 : clock * SPEED;
         const s = ((i + 0.5) / PARTICLES_PER_FLOW + offset) % 1;
-        position.lerpVectors(flow.start, flow.end, s);
+        flow.curve.getPoint(s, position);
         matrix.makeTranslation(position.x, position.y, position.z);
         flow.particles.setMatrixAt(i, matrix);
       }

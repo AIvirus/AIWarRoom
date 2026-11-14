@@ -46,7 +46,8 @@
 .ledger a:hover { text-decoration: underline; }
 .ledger .row-title { font-weight: 600; }
 .ledger input, .ledger select { padding: 6px 8px; }
-.ledger .unit { color: var(--dim); font-family: var(--font-data); font-size: var(--text-xs); }
+.unit { color: var(--dim); font-family: var(--font-data); font-size: var(--text-xs); }
+p.unit { font-family: var(--font-ui); font-size: var(--text-sm); }
 .ledger .help { display: block; color: var(--dim); font-size: var(--text-xs); max-width: 48ch; }
 .table-scroll { overflow-x: auto; }
 

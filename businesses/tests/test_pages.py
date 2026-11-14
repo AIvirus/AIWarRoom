@@ -238,3 +238,11 @@ def test_other_orgs_pages_are_404(web, bob_shop):
 def test_pages_require_login(client, alice_shop):
     for url in ["/", f"/businesses/{alice_shop.pk}/", "/businesses/new/"]:
         assert client.get(url).status_code == 302
+
+
+def test_ledger_shows_plain_numbers_not_exponents(web, alice_shop):
+    """Decimal.normalize() turns 2400 into '2.4E+3'; the ledger must show 2400."""
+    fill(alice_shop, {"daily_orders": "2400", "hourly_capacity": "180"})
+    html = web.get(f"/businesses/{alice_shop.pk}/").content.decode()
+    assert 'value="2400"' in html and 'value="180"' in html
+    assert "E+" not in html
