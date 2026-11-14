@@ -5,6 +5,10 @@ from rest_framework.response import Response
 from accounts.access import OrgScopedMixin
 from businesses.api import business_for
 from config.api_errors import DomainError
+from intelligence.api import AIAnalysisSerializer
+from intelligence.models import AIAnalysis
+from intelligence.services import ai_client
+from intelligence.services.explain import explain_run
 from simulation_engine import catalog
 
 from .models import Scenario, SimulationRun
@@ -51,6 +55,38 @@ class SimulationRunViewSet(OrgScopedMixin, viewsets.ReadOnlyModelViewSet):
         queryset = super().get_queryset()
         business_id = self.request.query_params.get("business")
         return queryset.filter(business_id=business_id) if business_id else queryset
+
+    @action(detail=True, methods=["get", "post"])
+    def analysis(self, request, pk=None):
+        """
+        GET:  the latest AI explanation of this run (404 if none yet).
+        POST: ask Gemini for one. 201 when newly generated, 200 when served from cache.
+        """
+        run = self.get_object()
+        if request.method == "GET":
+            latest = run.analyses.filter(
+                kind=AIAnalysis.Kind.RUN_EXPLANATION, status=AIAnalysis.Status.OK
+            ).first()
+            if latest is None:
+                raise DomainError("No AI analysis for this run yet.", code="not_found",
+                                  status_code=404)  # fmt: skip
+            return Response(AIAnalysisSerializer(latest).data)
+        try:
+            analysis = explain_run(run)
+        except ai_client.AIError as error:
+            http_status = AI_ERROR_STATUS.get(error.code, 502)
+            raise DomainError(error.message, code=error.code, status_code=http_status) from None
+        code = status.HTTP_200_OK if analysis.from_cache else status.HTTP_201_CREATED
+        return Response(AIAnalysisSerializer(analysis).data, status=code)
+
+
+# How each AI failure is reported over HTTP.
+AI_ERROR_STATUS = {
+    "ai_unavailable": 503,
+    "ai_rate_limited": 429,
+    "ai_invalid_output": 502,
+    "ai_provider_error": 502,
+}
 
 
 @api_view(["GET"])

@@ -3,9 +3,9 @@
 Test a business before reality does. A teaching project: Django + DRF, PostgreSQL on Neon,
 deterministic simulations and Gemini-written analysis that is labelled as such.
 
-> Status: **Phase 2.3**: deterministic simulation engine (idea cases, sensitivity,
-> payment / warehouse / courier disruptions) with saved runs and a live preview endpoint.
-> Gemini analysis arrives in Phase 2.4. See [docs/PLAN.md](docs/PLAN.md).
+> Status: **Phase 2.4**: deterministic simulation engine plus Gemini explanations of
+> runs (cached, budgeted, schema-validated, number-checked). Company URL analysis and the
+> expert committee arrive in Phase 2.5. See [docs/PLAN.md](docs/PLAN.md).
 
 ## Run it locally
 
@@ -72,6 +72,25 @@ pytest -p no:django simulation_engine
 
 Every formula is written out in the module docstrings, and the tests check
 hand-calculated values.
+
+## Gemini analysis
+
+`POST /api/v1/runs/{id}/analysis/` asks Gemini to explain a saved run; `GET` returns the
+latest one. Everything goes through `intelligence/services/ai_client.py`:
+
+| Step | What it does |
+|---|---|
+| Cache | Same business + run inputs + prompt version + model: the stored answer comes back (HTTP 200, `from_cache: true`), no API call |
+| Budget | Live calls per UTC day are capped by `AI_DAILY_CALL_BUDGET` |
+| Retries | 429 / 5xx / timeout: two retries, exponential backoff with jitter, honouring Google's retry hint |
+| Validation | Pydantic schema (`intelligence/schemas.py`) plus "only cite metric keys we sent"; one repair attempt, then a recorded failure |
+| Guardrail | Every number in the answer must be a sent number rounded to the digits written; others are stored in `flagged_numbers` |
+
+Prompts live in `intelligence/prompts/` with a version header; change the text, bump the
+version. Tests use a fake transport and never call Google.
+
+Free-tier note: Google may use free-tier prompts to improve its products. Don't send real
+confidential company data while on the free tier.
 
 ## Latency against Neon
 

@@ -156,6 +156,7 @@ GEMINI_API_KEY = env_str("GEMINI_API_KEY")
 GEMINI_MODEL = env_str("GEMINI_MODEL") or "gemini-3.5-flash-lite"
 GEMINI_GROUNDING_MODEL = env_str("GEMINI_GROUNDING_MODEL")
 AI_DAILY_CALL_BUDGET = int(env_str("AI_DAILY_CALL_BUDGET", "200") or 200)
+AI_TIMEOUT_SECONDS = int(env_str("AI_TIMEOUT_SECONDS", "30") or 30)
 
 LOGGING = {
     "version": 1,

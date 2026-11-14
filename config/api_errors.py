@@ -36,10 +36,18 @@ class DomainError(exceptions.APIException):
     status_code = 422
     default_code = "unprocessable"
 
-    def __init__(self, message: str, fields: dict | None = None, code: str | None = None):
+    def __init__(
+        self,
+        message: str,
+        fields: dict | None = None,
+        code: str | None = None,
+        status_code: int | None = None,
+    ):
         super().__init__(detail=message, code=code or self.default_code)
         self.fields = fields or {}
         self.error_code = code or self.default_code
+        if status_code:
+            self.status_code = status_code
 
 
 def _code_for(exc) -> str:

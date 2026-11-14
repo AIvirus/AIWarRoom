@@ -54,9 +54,15 @@ class AIAnalysis(BaseModel):
     # Links the AI cited: fetched pages or Google Search grounding results.
     sources = models.JSONField(default=list)
     error = models.TextField(blank=True)
+    # Live API calls this analysis cost (retries and the repair attempt included).
+    # Summed per day to enforce AI_DAILY_CALL_BUDGET.
+    attempts = models.PositiveSmallIntegerField(default=0)
 
     ORG_PATH = "business__organization"
     objects = OrgScopedQuerySet.as_manager()
+
+    # Set (not stored) when an answer is served from cache instead of a new call.
+    from_cache = False
 
     class Meta:
         ordering = ["-created_at"]

@@ -33,8 +33,11 @@ class AIAnalysisSerializer(serializers.ModelSerializer):
             "sources",
             "error",
             "created_at",
+            "from_cache",
         ]
         read_only_fields = fields
+
+    from_cache = serializers.BooleanField(read_only=True)
 
     def get_label(self, obj) -> str:
         # Shipped with every payload so no client can forget to show it.
