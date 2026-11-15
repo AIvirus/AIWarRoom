@@ -271,3 +271,8 @@ def test_committee_endpoint(api, reviewed_shop, monkeypatch):
     assert api.post(url).status_code == 201
     assert api.post(url).status_code == 200  # same inputs: cached
     assert api.get(url).json()["kind"] == "committee"
+
+
+def test_unread_alerts_sort_first_on_every_database():
+    """PostgreSQL sorts NULLs last by default, so the ordering must ask for NULLS FIRST."""
+    assert "NULLS FIRST" in str(Alert.objects.all().query).upper()

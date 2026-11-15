@@ -133,7 +133,8 @@ class Alert(BaseModel):
     objects = OrgScopedQuerySet.as_manager()
 
     class Meta:
-        ordering = ["acknowledged_at", "-created_at"]  # unacknowledged first
+        # Unacknowledged first. Said explicitly: PostgreSQL sorts empty values LAST by default.
+        ordering = [models.F("acknowledged_at").asc(nulls_first=True), "-created_at"]
 
     def __str__(self):
         return self.summary
