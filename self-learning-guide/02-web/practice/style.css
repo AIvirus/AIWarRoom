@@ -1,0 +1,15 @@
+body {
+  font-family: sans-serif;
+  background: #16150f;
+  color: #e9e5d6;
+  padding: 24px;
+}
+
+h1 {
+  color: #f2a900;
+}
+
+input {
+  font-size: 18px;
+  width: 6em;
+}
