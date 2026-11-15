@@ -2,7 +2,7 @@ import pytest
 from rest_framework.test import APIClient
 
 from accounts.models import Membership
-from businesses.models import BusinessComponent, BusinessProfile
+from businesses.models import BusinessComponent, BusinessProfile, FinancialAssumption
 
 pytestmark = pytest.mark.django_db
 
@@ -167,3 +167,35 @@ def test_criticality_must_be_1_to_5(api, alice_shop):
         url, {"key": "x", "name": "X", "kind": "supplier", "criticality": 9}, format="json"
     )
     assert response.status_code == 400
+
+
+# --- Model rules --------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    ("key", "value", "field"),
+    [("daily_ordrs", "1", "key"), ("daily_orders", "-1", "value")],
+)
+def test_assumption_form_shows_catalogue_errors_on_its_fields(alice_shop, key, value, field):
+    """The admin builds a form like this one; an error on a non-field name would crash it."""
+    from django.forms import modelform_factory
+
+    form_class = modelform_factory(FinancialAssumption, fields=["key", "value", "source"])
+    form = form_class(data={"key": key, "value": value, "source": "user"})
+    form.instance.business = alice_shop
+    assert not form.is_valid()
+    assert list(form.errors) == [field]
+
+
+# --- Accounts without an organization -----------------------------------------------
+
+
+def test_user_without_an_organization_gets_403_not_a_crash(django_user_model):
+    """createsuperuser makes a user with no organization; creating a business must not 500."""
+    root = django_user_model.objects.create_superuser(email="root@kirana.test", password="x")
+    client = APIClient()
+    client.force_authenticate(root)
+    response = client.post("/api/v1/businesses/", {"mode": "idea", "name": "X"}, format="json")
+    assert response.status_code == 403
+    assert "organization" in response.json()["error"]["message"]
+    assert not BusinessProfile.objects.exists()

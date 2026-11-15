@@ -40,9 +40,10 @@ class BusinessViewSet(OrgScopedMixin, viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         # The organization comes from the logged-in user, never from the request body.
-        serializer.save(
-            organization=organization_for(self.request.user), created_by=self.request.user
-        )
+        organization = organization_for(self.request.user)
+        if organization is None:  # e.g. a superuser made with createsuperuser
+            raise PermissionDenied("Your account isn't part of an organization yet.")
+        serializer.save(organization=organization, created_by=self.request.user)
 
     def perform_destroy(self, instance):
         """DELETE archives: past runs and decisions must stay readable. Owners only."""
@@ -133,7 +134,3 @@ class ComponentViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(business=self.get_business())
-
-    def destroy(self, request, *args, **kwargs):
-        super().destroy(request, *args, **kwargs)
-        return Response(status=status.HTTP_204_NO_CONTENT)

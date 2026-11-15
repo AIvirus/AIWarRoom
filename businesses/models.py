@@ -82,7 +82,10 @@ class FinancialAssumption(BaseModel):
         try:
             self.value = catalog.parse_input(self.key, self.value)
         except catalog.CatalogError as error:
-            raise ValidationError(error.errors) from None
+            # Name a real form field (the admin crashes on any other name): the key if it's
+            # unknown, otherwise the value.
+            field = "value" if self.key in catalog.INPUTS else "key"
+            raise ValidationError({field: error.errors[self.key]}) from None
 
     def save(self, *args, **kwargs):
         # The unit always comes from the catalogue, never from the client.

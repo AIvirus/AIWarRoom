@@ -263,3 +263,11 @@ def test_pages_load_no_assets_from_other_hosts(web, alice_shop, alice_idea):
         html = web.get(url).content.decode()
         for host in ("googleapis", "gstatic", "jsdelivr", "unpkg", "cdnjs"):
             assert host not in html, f"{url} loads from {host}"
+
+
+def test_create_page_explains_when_the_user_has_no_organization(client, django_user_model):
+    root = django_user_model.objects.create_superuser(email="root@kirana.test", password="x")
+    client.force_login(root)
+    response = client.post("/businesses/new/", {"mode": "idea", "name": "X"}, follow=True)
+    assert "isn&#x27;t part of an organization" in response.content.decode()
+    assert not BusinessProfile.objects.exists()

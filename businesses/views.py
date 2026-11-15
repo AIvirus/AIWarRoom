@@ -66,10 +66,14 @@ def dashboard(request):
 
 @login_required
 def business_create(request):
+    organization = organization_for(request.user)
+    if organization is None:  # e.g. a superuser made with createsuperuser
+        messages.error(request, "Your account isn't part of an organization yet.")
+        return redirect("home")
     form = BusinessForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
         business = form.save(commit=False)
-        business.organization = organization_for(request.user)
+        business.organization = organization
         business.created_by = request.user
         business.save()
         messages.success(request, f"{business.name} is on the board. Add its numbers next.")

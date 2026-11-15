@@ -12,7 +12,7 @@ no AI call is made: seeding costs no Gemini quota.
 
 import secrets
 
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 
 from accounts.access import organization_for
@@ -107,6 +107,8 @@ class Command(BaseCommand):
             self.stdout.write(self.style.WARNING(f"Created {email} with password: {password}"))
             self.stdout.write("  (shown once; change it after logging in if you keep the account)")
         organization = organization_for(user)
+        if organization is None:
+            raise CommandError(f"{email} isn't part of an organization; use another email.")
 
         for spec in (KIRANA, TIFFIN):
             existing = BusinessProfile.objects.filter(organization=organization, name=spec["name"])

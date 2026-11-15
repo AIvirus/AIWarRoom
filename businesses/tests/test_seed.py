@@ -43,3 +43,11 @@ def test_seed_creates_a_missing_user_and_prints_the_password_once():
     user = User.objects.get(email="demo@example.test")
     password = output.split("password: ")[1].split()[0]
     assert user.check_password(password)
+
+
+def test_seed_refuses_a_user_without_an_organization(django_user_model):
+    from django.core.management.base import CommandError
+
+    django_user_model.objects.create_superuser(email="root@kirana.test", password="x")
+    with pytest.raises(CommandError, match="organization"):
+        seed("--email", "root@kirana.test")

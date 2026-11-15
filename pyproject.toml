@@ -7,6 +7,14 @@ extend-exclude = ["old_code", "*/migrations/*"]
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "DJ"]
 
+[tool.ruff.lint.isort]
+# Our own packages, named so imports are grouped the same way even in a half-built copy
+# of the project (the self-learning guide builds it one app at a time).
+known-first-party = [
+    "accounts", "businesses", "common", "config", "decisions", "intelligence",
+    "simulation_engine", "simulations",
+]
+
 [tool.ruff.lint.per-file-ignores]
 # Catalogue tables keep one input per line so they read like a spec sheet.
 "simulation_engine/catalog.py" = ["E501"]
