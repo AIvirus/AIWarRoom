@@ -1,0 +1,184 @@
+{% load static warroom %}<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Brief: {{ brief.decision.title }} · AI WarRoom</title>
+  <link rel="stylesheet" href="{% static 'fonts/fonts.css' %}">
+  <link rel="stylesheet" href="{% static 'css/brief.css' %}">
+</head>
+<body>
+{% with d=brief.decision run=brief.run out=brief.outcomes %}
+  <nav class="toolbar" aria-label="Brief actions">
+    <a href="{% url 'home' %}">← Back</a>
+    {% if messages %}<span role="status">{% for m in messages %}{{ m }} {% endfor %}</span>{% endif %}
+    <span class="toolbar-actions">
+      {% for value, label in next_statuses %}
+        <form method="post" action="{% url 'decisions:status' decision.pk %}">{% csrf_token %}
+          <input type="hidden" name="status" value="{{ value }}">
+          <button type="submit" class="{% if value == 'rejected' %}quiet{% endif %}">Mark {{ label|lower }}</button>
+        </form>
+      {% endfor %}
+      <button type="button" onclick="window.print()">Print or save as PDF</button>
+    </span>
+  </nav>
+
+  <article class="sheet" aria-labelledby="brief-title">
+    <header class="masthead">
+      <span>AI WarRoom · Decision brief</span>
+      <span class="mono">{{ brief.business.name }} · generated {{ brief.generated_at|when }}</span>
+    </header>
+
+    <h1 class="title" id="brief-title">{{ d.title }}</h1>
+    <p class="subtitle">
+      {% if run %}Based on “{{ run.scenario }}” ({{ run.template }}), run {{ run.created_at|when }}.
+      {% else %}Not linked to a simulation run.{% endif %}
+    </p>
+
+    <dl class="facts">
+      <div><dt>Status</dt><dd class="status-{{ d.status }}">{{ d.status_label }}</dd></div>
+      <div><dt>Owner</dt><dd>{{ d.owner|default:"Unassigned" }}</dd></div>
+      <div><dt>Chosen response</dt><dd>{{ d.chosen_label|default:d.chosen_strategy|default:"Not chosen yet" }}</dd></div>
+      <div><dt>Signed off</dt><dd>{% if d.decided_by %}{{ d.decided_by }}, {{ d.decided_at|when }}{% else %}Not yet{% endif %}</dd></div>
+      <div><dt>Business</dt><dd>{{ brief.business.name }} <span class="meta-line">({{ brief.business.mode }})</span></dd></div>
+      <div><dt>Recorded</dt><dd>{{ d.created_at|when }}</dd></div>
+    </dl>
+
+    <section aria-labelledby="s1">
+      <h2 id="s1"><span class="n">01</span>Decision and rationale</h2>
+      {% if d.rationale %}<p class="rationale">{{ d.rationale|linebreaksbr }}</p>
+      {% else %}<p class="empty">No rationale recorded. A brief without a reason is hard to defend later; add one before sign-off.</p>{% endif %}
+    </section>
+
+    <section aria-labelledby="s2">
+      <h2 id="s2"><span class="n">02</span>What was tested</h2>
+      {% if run %}
+        <div class="table-wrap"><table>
+          <thead><tr><th>Parameter</th><th class="num">Value</th></tr></thead>
+          <tbody>
+          {% for p in run.parameters %}
+            <tr><td>{{ p.label }}</td><td class="num">{{ p.value|figure:p.unit }}</td></tr>
+          {% endfor %}
+          </tbody>
+        </table></div>
+        <p class="meta-line">Run <span class="mono">{{ run.id }}</span> · engine <span class="mono">{{ run.engine_version }}</span> · inputs fingerprint <span class="mono">{{ run.input_hash|slice:":12" }}</span></p>
+      {% else %}
+        <p class="empty">This decision isn't linked to a simulation run, so there are no modelled outcomes. Link a run to show the numbers it was based on.</p>
+      {% endif %}
+    </section>
+
+    <section aria-labelledby="s3">
+      <h2 id="s3"><span class="n">03</span>Assumptions</h2>
+      {% if brief.assumptions.rows %}
+        <p class="meta-line">
+          {% if brief.assumptions.frozen %}As frozen when the run was made; later edits to the business don't change them.
+          {% else %}Current values: no run is linked, so these may have changed since the decision.{% endif %}
+          Tags: USR user input · ILL illustrative · SITE from company site · WHAT-IF slider value.
+        </p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Assumption</th><th class="num">Value</th><th>Source</th></tr></thead>
+          <tbody>
+          {% for a in brief.assumptions.rows %}
+            <tr><td>{{ a.label }}</td><td class="num">{{ a.value|figure:a.unit }}</td><td><span class="tag {{ a.source|source_tag }}">{{ a.source|source_tag }}</span></td></tr>
+          {% endfor %}
+          </tbody>
+        </table></div>
+      {% else %}<p class="empty">No assumptions recorded.</p>{% endif %}
+    </section>
+
+    <section aria-labelledby="s4">
+      <h2 id="s4"><span class="n">04</span>Modelled outcomes</h2>
+      {% if out %}
+        <div class="table-wrap"><table>
+          <thead><tr>
+            <th scope="col">Measure</th>
+            {% for c in out.cases %}<th scope="col" class="num{% if c.key == out.chosen %} chosen{% endif %}">{% if c.key == out.chosen %}<span class="pick">Chosen</span>{% endif %}{{ c.label }}</th>{% endfor %}
+          </tr></thead>
+          <tbody>
+          {% for row in out.rows %}
+            <tr><th scope="row">{{ row.label }}</th>
+              {% for cell in row.cells %}<td class="num{% if cell.case == out.chosen %} chosen{% endif %}">{{ cell.value|figure:row.unit }}</td>{% endfor %}
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table></div>
+        {% if run.comparison %}
+          <p class="meta-line">Engine comparison (facts, not a recommendation): lowest total impact <span class="mono">{{ run.comparison.lowest_total_impact|humanize_key }}</span> · lowest response cost <span class="mono">{{ run.comparison.lowest_response_cost|humanize_key }}</span> · fastest recovery <span class="mono">{{ run.comparison.fastest_recovery|default:"n/a"|humanize_key }}</span></p>
+        {% endif %}
+        {% if run.case_definitions %}
+          <p class="meta-line">Case definitions:
+          {% for key, shocks in run.case_definitions.items %}{% if shocks %}<span class="mono">{{ key }}</span>: {{ shocks|join:", " }}{% if not forloop.last %} · {% endif %}{% endif %}{% endfor %}</p>
+        {% endif %}
+        {% if brief.warnings %}
+          <p class="meta-line"><strong>Engine notes:</strong> {{ brief.warnings|join:" " }}</p>
+        {% endif %}
+      {% else %}<p class="empty">No modelled outcomes for this decision.</p>{% endif %}
+    </section>
+
+    <section aria-labelledby="s5">
+      <h2 id="s5"><span class="n">05</span>Analyst reading</h2>
+      {% with ai=brief.ai_explanation %}
+      {% if ai %}
+        <div class="ai">
+          <span class="ai-label">AI analysis</span>
+          <p class="meta-line">{{ ai.label }} {{ ai.model }} · prompt {{ ai.prompt_version }} · {{ ai.created_at|when }}</p>
+          <h3>{{ ai.headline }}</h3>
+          <p>{{ ai.what_happened }}</p>
+          {% if ai.trade_offs %}<h3>Trade-offs</h3><ul>{% for t in ai.trade_offs %}<li>{{ t }}</li>{% endfor %}</ul>{% endif %}
+          {% if ai.risks %}<h3>Risks</h3><ul>{% for r in ai.risks %}<li>{{ r }}</li>{% endfor %}</ul>{% endif %}
+          {% if ai.recommendations %}<h3>Suggestions</h3><ul>{% for r in ai.recommendations %}<li>{{ r.action }} <span class="meta-line">({{ r.confidence }} confidence) {{ r.rationale }}</span></li>{% endfor %}</ul>{% endif %}
+          {% if ai.assumptions_to_check %}<h3>Check these assumptions</h3><ul>{% for a in ai.assumptions_to_check %}<li>{{ a }}</li>{% endfor %}</ul>{% endif %}
+          {% if ai.flagged_numbers %}
+            <div class="flags" role="note"><strong>{{ ai.flagged_numbers|length }} number(s) in this text are not from the simulation:</strong>
+              {% for f in ai.flagged_numbers %}<span class="mono">{{ f.literal }}</span>{% if not forloop.last %}, {% endif %}{% endfor %}. Treat them as unverified.</div>
+          {% endif %}
+        </div>
+      {% else %}<p class="empty">No AI reading of this run. It's optional: the outcomes above stand on their own.</p>{% endif %}
+      {% endwith %}
+    </section>
+
+    <section aria-labelledby="s6">
+      <h2 id="s6"><span class="n">06</span>Expert committee</h2>
+      {% with c=brief.committee %}
+      {% if c %}
+        <p class="meta-line"><span class="ai-label">AI analysis</span> Four advisory desks, one review, {{ c.created_at|when }}. Desks argue from their own mandates and may disagree.</p>
+        <div class="desks">
+        {% for a in c.advisors %}
+          <div class="desk">
+            <span class="meta-line">{{ a.desk_name }}</span> <span class="verdict {{ a.verdict }}">{{ a.verdict|humanize_key }}</span>
+            <h3>{{ a.headline }}</h3>
+            <ul>{% for k in a.key_concerns %}<li>{{ k }}</li>{% endfor %}{% for r in a.recommended_actions %}<li><em>Do:</em> {{ r }}</li>{% endfor %}</ul>
+          </div>
+        {% endfor %}
+        </div>
+        {% if c.points_of_disagreement %}
+          <div class="disagree"><strong>Where the desks disagree:</strong> {{ c.points_of_disagreement|join:" " }}</div>
+        {% endif %}
+        {% if c.flagged_numbers %}<div class="flags">{{ c.flagged_numbers|length }} unverified number(s) in the committee text.</div>{% endif %}
+      {% else %}<p class="empty">The committee hasn't reviewed this business yet.</p>{% endif %}
+      {% endwith %}
+    </section>
+
+    <section aria-labelledby="s7">
+      <h2 id="s7"><span class="n">07</span>Decision history</h2>
+      <ol class="history">
+      {% for h in d.history %}
+        <li><span class="mono">{{ h.at|when }}</span> · {{ h.by|default:"system" }} · {% if h.from %}{{ h.from|humanize_key }} → {% endif %}{{ h.to|humanize_key }}{% if h.note %}: “{{ h.note }}”{% endif %}</li>
+      {% empty %}<li class="empty">No changes recorded.</li>
+      {% endfor %}
+      </ol>
+    </section>
+
+    <section aria-labelledby="s8">
+      <h2 id="s8"><span class="n">08</span>What this brief is not</h2>
+      <div class="not-this"><ul>{% for line in brief.what_this_is_not %}<li>{{ line }}</li>{% endfor %}</ul></div>
+    </section>
+
+    <footer class="sheet-foot">
+      <span>Decision <span class="mono">{{ d.id }}</span></span>
+      <span>Built only from saved data; nothing on this page was recalculated.</span>
+    </footer>
+  </article>
+{% endwith %}
+</body>
+</html>
