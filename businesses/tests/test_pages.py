@@ -136,7 +136,7 @@ def test_disruption_scenario_runs_and_opens_the_situation_board(web, alice_shop)
     page = web.get(response.url)
     html = page.content.decode()
     assert "System view" in html and "Responses compared" in html
-    assert "three@0.170.0" in html  # pinned Three.js version
+    assert "vendor/three-0.170.0/three.module.min.js" in html  # self-hosted, pinned
     data = page_data(page)
     assert [r["case_key"] for r in data["run"]["results"]] == ["wait", "backup", "queue_retry"]
     assert data["template"]["loss_mode"] == "checkout"
@@ -246,3 +246,20 @@ def test_ledger_shows_plain_numbers_not_exponents(web, alice_shop):
     html = web.get(f"/businesses/{alice_shop.pk}/").content.decode()
     assert 'value="2400"' in html and 'value="180"' in html
     assert "E+" not in html
+
+
+def test_pages_load_no_assets_from_other_hosts(web, alice_shop, alice_idea):
+    """Fonts and Three.js are self-hosted so the app works in a room with no internet."""
+    fill(alice_shop, SHOP)
+    fill(alice_idea, IDEA)
+    board = web.post(
+        f"/businesses/{alice_shop.pk}/scenarios/",
+        {"template_key": "payment_gateway_outage", "name": "PG"},
+    ).url
+    bench = web.post(
+        f"/businesses/{alice_idea.pk}/scenarios/", {"template_key": "idea_cases", "name": "Plan"}
+    ).url
+    for url in ["/", f"/businesses/{alice_shop.pk}/", board, bench, "/accounts/login/"]:
+        html = web.get(url).content.decode()
+        for host in ("googleapis", "gstatic", "jsdelivr", "unpkg", "cdnjs"):
+            assert host not in html, f"{url} loads from {host}"

@@ -2,8 +2,9 @@
 {% load static warroom %}
 {% block title %}Situation board · {{ run.scenario.name }} · AI WarRoom{% endblock %}
 {% block head %}
-  {# Three.js is pinned to an exact version and only loaded by the 3D view. #}
-  <script type="importmap">{"imports": {"three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"}}</script>
+  {# Three.js r170, self-hosted (MIT, see static/vendor/three-0.170.0/LICENSE.txt). #}
+  {# Only the 3D view imports it, so the 2D schematic never downloads it. #}
+  <script type="importmap">{"imports": {"three": "{% static 'vendor/three-0.170.0/three.module.min.js' %}"}}</script>
 {% endblock %}
 {% block content %}
 <div class="page" style="max-width: 1480px">

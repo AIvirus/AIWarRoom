@@ -205,7 +205,9 @@ re-check them in Google AI Studio.
 - **Latency to Neon:** about 67 ms per query from India to `ap-southeast-1`, and
   `runserver` opens a fresh connection per request, so pages take about 1 s. A server
   deployed near the database, or SQLite locally, is much faster.
-- **CDNs:** fonts and Three.js load from Google Fonts and jsDelivr (Three.js is pinned
-  to `0.170.0`). Without internet, pages fall back to system fonts and the 2D schematic.
+- **Self-hosted assets:** fonts (`static/fonts/`, SIL Open Font License) and Three.js
+  r170 (`static/vendor/three-0.170.0/`, MIT) are served by the app itself, so the
+  interface, including the 3D view, works with no internet. A test fails if any page
+  links to a CDN again.
 - **No Monte Carlo, no background workers, no multi-org admin, no email or push
   notifications.**

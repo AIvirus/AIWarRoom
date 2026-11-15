@@ -13,7 +13,7 @@ thing in a day. Modules 3 and 4 are the hands-on core; 5 and 7 are demo-and-read
 - Run `python manage.py migrate` and `python manage.py seed_kirana --email you@example.com`.
 - Open http://127.0.0.1:8000.
 - Without internet, set `USE_SQLITE=True`. Everything except Gemini and site scans works
-  offline, though fonts and Three.js come from CDNs (see README).
+  offline, including fonts and the 3D view (both are self-hosted).
 
 ---
 
