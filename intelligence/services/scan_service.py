@@ -145,9 +145,18 @@ def run_scan(scan, **kwargs) -> CompanyScan:
 
 
 def _competitor_names(scan) -> set[str]:
-    analysis = scan.analyses.filter(
-        kind=AIAnalysis.Kind.SITE_PROFILE, status=AIAnalysis.Status.OK
-    ).first()
+    # The profile in force when that scan finished. Not `scan.analyses`: a scan whose
+    # profile came from the cache shares an earlier scan's row and has none of its own.
+    analysis = (
+        AIAnalysis.objects.filter(
+            business=scan.business,
+            kind=AIAnalysis.Kind.SITE_PROFILE,
+            status=AIAnalysis.Status.OK,
+            created_at__lte=scan.finished_at,
+        )
+        .order_by("-created_at")
+        .first()
+    )
     if not analysis:
         return set()
     return {c["name"] for c in analysis.output.get("competitors", [])}

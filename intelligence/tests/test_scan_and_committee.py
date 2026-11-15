@@ -101,6 +101,16 @@ def test_rescan_raises_alerts_for_what_changed(shop):
     assert "Zepto" in alerts["new_competitor"].summary
 
 
+def test_unchanged_site_scanned_three_times_raises_no_alerts(shop):
+    """Scans 2 and 3 reuse the cached profile, which stays linked to scan 1."""
+    site = {SITE: home_html()}
+    run_scan(new_scan(shop), fetcher=FakeFetcher(site), transport=FakeTransport(profile_answer()))
+    for _ in range(2):  # an empty FakeTransport fails if it's called: the cache must answer
+        run_scan(new_scan(shop), fetcher=FakeFetcher(site), transport=FakeTransport())
+    assert AIAnalysis.objects.count() == 1
+    assert Alert.objects.count() == 0
+
+
 def test_robots_disallow_stops_the_scan(shop):
     scan = run_scan(new_scan(shop), fetcher=FakeFetcher({SITE: "x"}, disallowed={SITE}))
     assert scan.status == "blocked" and scan.robots_allowed is False
