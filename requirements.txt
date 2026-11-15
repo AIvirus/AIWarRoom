@@ -9,3 +9,4 @@ google-genai==3.3.0         # official Gemini SDK (replaces deprecated google-ge
 requests==2.34.2            # URL analyzer HTTP client
 beautifulsoup4==4.15.0      # readable-text extraction from HTML
 whitenoise==6.12.0          # serves static files without a separate web server
+gunicorn==27.0.1            # production web server (Linux; used inside Docker)

@@ -1,0 +1,24 @@
+# Never copied into the image. Secrets above all: the host provides real ones.
+.env
+.env.*
+!.env.example
+
+# Local-only things the image doesn't need (and would only make it bigger)
+.git
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+db.sqlite3
+staticfiles/
+media/
+*.log
+.vscode/
+.idea/
+.claude/
+old_code/
+self-learning-guide/
+docs/
+*.pdf

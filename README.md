@@ -93,7 +93,7 @@ pytest -p no:django simulation_engine
 ruff check . && ruff format --check .
 ```
 
-- `pytest` runs the whole suite, about 260 tests in about 5 seconds, on in-memory SQLite.
+- `pytest` runs the whole suite, about 270 tests in about 5 seconds, on in-memory SQLite.
   Gemini and websites are faked, so no key or network is needed.
 - The second command runs only the engine with Django switched off, to show it's pure
   Python.
@@ -176,6 +176,30 @@ organization's record answers `404`, exactly like a missing one.
 |---|---|
 | `python manage.py seed_kirana --email E [--reset]` | Loads the two demo businesses and runs their scenarios (no AI calls) |
 | `python manage.py rescan_companies [--business ID]` | Re-scans every business website and raises alerts for changes. Schedule it with cron or Task Scheduler; there's no always-on watcher |
+
+## Docker and deployment
+
+```bash
+docker compose up --build
+```
+
+Runs the production image (gunicorn, WhiteNoise, `DEBUG` off) with its own PostgreSQL
+container at http://localhost:8000. Your Neon database isn't touched.
+`config/settings/docker_local.py` relaxes only HTTPS and database SSL, which a laptop
+can't provide.
+
+- **`Dockerfile`:** Python 3.12 slim; installs the requirements, runs `collectstatic`,
+  and runs as a non-root user. On start it runs `migrate`, then gunicorn on `$PORT`.
+- **`.github/workflows/ci.yml`:** on every push it runs ruff, pytest and a Docker build.
+- **Hosting (for example Render, Docker runtime):** set these variables:
+  - `DJANGO_SECRET_KEY`
+  - `DATABASE_URL` (a separate Neon database)
+  - `DJANGO_ALLOWED_HOSTS`
+  - `DJANGO_CSRF_TRUSTED_ORIGINS`
+  - `GEMINI_API_KEY`
+  - `AI_DAILY_CALL_BUDGET`
+
+  Step by step: `self-learning-guide/11-deploy/`.
 
 ## Gemini: what's real on the free tier
 
