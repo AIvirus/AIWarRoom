@@ -2,7 +2,7 @@
 
 **Time:** 30 minutes · **Before this:** [4.3](03-settings.md).
 
-## 📖 Read
+## Read
 
 Two small pieces are used by **every** table in AI WarRoom, so they live in a shared
 folder called `common`:
@@ -35,7 +35,7 @@ into SQL:
 a list-like set of rows that you can keep narrowing down. Our `OrgScopedQuerySet` adds
 one extra method, `for_user(user)`, which narrows the rows to the user's organization.
 
-## ⌨️ Do
+## Do
 
 Create a folder `common` in `my-warroom`, with an empty `__init__.py` file and these
 three files.
@@ -116,7 +116,7 @@ class CommonConfig(AppConfig):
     name = "common"
 ```
 
-## 🔍 Line by line
+## Line by line
 
 ### `common/models.py`
 
@@ -172,12 +172,12 @@ class CommonConfig(AppConfig):
 - **Line 7** · `name = "common"` must match the folder name and the entry in
   `INSTALLED_APPS`.
 
-## ✅ Check
+## Check
 
 Nothing to run yet. Check that `common/` has four files: `__init__.py`, `models.py`,
 `querysets.py`, `apps.py`.
 
-## ❓ Quiz
+## Quiz
 
 1. What three columns does every table get from `BaseModel`?
 2. Why is it `default=uuid.uuid4` and not `default=uuid.uuid4()`?

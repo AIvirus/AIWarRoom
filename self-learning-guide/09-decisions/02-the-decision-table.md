@@ -2,7 +2,7 @@
 
 **Time:** 30 minutes · **Before this:** [9.1](01-humans-decide.md).
 
-## 📖 Read
+## Read
 
 The `decisions` app has existed since Part 4 (you made it empty, with the others). Now it
 gets its one table, `Decision`. Most fields you know by now: text, a choice list, links to
@@ -13,7 +13,7 @@ other tables. Two are new ideas:
 - **`history = models.JSONField(default=list)`**: a list of dictionaries stored in one
   column, like the scan log in Part 8.
 
-## ⌨️ Do
+## Do
 
 ### 1. `decisions/models.py`
 
@@ -121,13 +121,13 @@ Migrations for 'decisions':
 python manage.py migrate
 ```
 
-## ✅ Check
+## Check
 
 Open **http://127.0.0.1:8000/admin/** (start the server first). There's a new
 **Decisions** section. Click **Add**: you'll see every field, with "Proposed" already
 chosen as the status.
 
-## 🔍 Line by line
+## Line by line
 
 ### `decisions/models.py`
 
@@ -164,14 +164,14 @@ chosen as the status.
 - **Lines 1–3** · The admin, and our table.
 - **Lines 6–9** · Register it, with useful columns and a filter by status.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
 | `No changes detected in app 'decisions'` | Is the file saved? Is `"decisions"` in `INSTALLED_APPS` (lesson 4.3)? |
 | `fields.E304 Reverse accessor ... clashes` | `created_by` and `decided_by` need `related_name="+"` (lines 48 and 56). |
 
-## ❓ Quiz
+## Quiz
 
 1. A run is deleted. What happens to a decision linked to it?
 2. Why `default=list` and not `default=[]`?

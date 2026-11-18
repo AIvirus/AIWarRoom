@@ -2,7 +2,7 @@
 
 **Time:** 45 minutes · **Before this:** [4.4](04-shared-building-blocks.md).
 
-## 📖 Read
+## Read
 
 AI WarRoom needs three tables to answer "who is this, and what may they see?":
 
@@ -32,7 +32,7 @@ columns"). Then **migrate** applies it to the database.
 
 Migration files are saved in Git, so every copy of the project builds the same tables.
 
-## ⌨️ Do
+## Do
 
 Replace `accounts/models.py` with:
 
@@ -184,7 +184,7 @@ python manage.py runserver
 
 Open **http://127.0.0.1:8000/admin/** and log in with that email and password.
 
-## ✅ Check
+## Check
 
 - `makemigrations` printed:
 
@@ -205,7 +205,7 @@ Open **http://127.0.0.1:8000/admin/** and log in with that email and password.
 > you'll see `accounts_user`, `accounts_organization` and more. Django names each table
 > `app_model`.
 
-## 🔍 Line by line
+## Line by line
 
 ### `accounts/models.py`
 
@@ -286,7 +286,7 @@ The admin site is a free back office for looking at and editing data.
   organization page. `extra = 0` means no empty extra rows.
 - **Lines 27–30** · Show organizations with three columns, and their memberships inline.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -295,7 +295,7 @@ The admin site is a free back office for looking at and editing data.
 | `django.db.utils.OperationalError` (with Neon) | Check `DATABASE_URL` in `.env` (lesson 3.3), or leave it empty to use SQLite. |
 | `You have ... unapplied migration(s)` when running the server | You forgot `migrate`. |
 
-## ❓ Quiz
+## Quiz
 
 1. Why does `set_password` store a hash instead of the password?
 2. What does `related_name="memberships"` let you write?

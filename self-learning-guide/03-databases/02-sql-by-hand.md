@@ -2,7 +2,7 @@
 
 **Time:** 45 minutes · **Before this:** [3.1](01-what-is-a-database.md).
 
-## 📖 Read
+## Read
 
 **SQL** (Structured Query Language, said "S-Q-L" or "sequel") is the language for talking
 to relational databases. Five commands cover most needs:
@@ -24,7 +24,7 @@ messages often show it.
 
 We'll practise with **SQLite**, a small database built into Python. No install needed.
 
-## ⌨️ Do
+## Do
 
 Make a folder `databases` in your `learning` folder, and in it `sql_practice.py`:
 
@@ -82,7 +82,7 @@ print("Rows matching a tricky name:", safe)
 python sql_practice.py
 ```
 
-## ✅ Check
+## Check
 
 ```text
 [('Raju Chai', 'Pune'), ('Meena Tea', 'Nashik')]
@@ -92,7 +92,7 @@ python sql_practice.py
 Rows matching a tricky name: []
 ```
 
-## 🔍 Line by line
+## Line by line
 
 **Line 2** · `import sqlite3` loads Python's built-in SQLite tools.
 
@@ -135,7 +135,7 @@ The `?` marks are **placeholders**: SQLite fills them, in order, from each tuple
 Meena's (90) is left out.
 
 **Line 32** · `UPDATE stalls SET city = 'Mumbai' WHERE name = 'Meena Tea'`: change a
-value, but **only** in the rows matching `WHERE`. ⚠️ An `UPDATE` without `WHERE` changes
+value, but **only** in the rows matching `WHERE`. An `UPDATE` without `WHERE` changes
 **every** row.
 
 **Line 33** · `.fetchone()` returns just the first result: `('Mumbai',)`. The comma shows
@@ -158,7 +158,7 @@ never as a command: it just finds no stall with that strange name, so we get `[]
 **Rule: never build SQL by gluing in user text.** Django always uses placeholders for
 you.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | It means |
 |---|---|
@@ -166,7 +166,7 @@ you.
 | `sqlite3.OperationalError: near "...": syntax error` | A typo in the SQL, often a missing comma between columns. |
 | `sqlite3.IntegrityError: NOT NULL constraint failed` | You tried to save a row without a required value. That's the database protecting you. |
 
-## ❓ Quiz
+## Quiz
 
 1. Which SQL command reads data?
 2. What's dangerous about `UPDATE stalls SET city = 'Delhi'` (with no WHERE)?

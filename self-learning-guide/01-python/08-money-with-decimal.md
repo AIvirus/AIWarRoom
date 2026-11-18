@@ -2,7 +2,7 @@
 
 **Time:** 20 minutes · **Before this:** [1.7](07-modules-and-packages.md).
 
-## 📖 Read
+## Read
 
 Try this in your head: 0.1 + 0.2 = 0.3. Now ask Python:
 
@@ -10,7 +10,7 @@ Try this in your head: 0.1 + 0.2 = 0.3. Now ask Python:
 print(0.1 + 0.2)
 ```
 
-It prints `0.30000000000000004`. 😮
+It prints `0.30000000000000004`.
 
 That isn't a bug in Python. Computers store `float` numbers in binary (only 0s and 1s),
 and many simple decimals, like 0.1, can't be stored exactly in binary, just as 1/3 can't
@@ -23,7 +23,7 @@ The fix is **`Decimal`**, which does maths the way an accountant does, with deci
 The one rule: **create a Decimal from text** (`Decimal("0.1")`), not from a float
 (`Decimal(0.1)`), or the float's error comes along with it.
 
-## ⌨️ Do
+## Do
 
 Make `decimal_money.py`:
 
@@ -51,7 +51,7 @@ print(Decimal(0.1))
 python decimal_money.py
 ```
 
-## ✅ Check
+## Check
 
 ```text
 0.30000000000000004
@@ -62,7 +62,7 @@ python decimal_money.py
 0.1000000000000000055511151231257827021181583404541015625
 ```
 
-## 🔍 Line by line
+## Line by line
 
 **Line 2** · Import `Decimal` (the number type) and `ROUND_HALF_UP` (a rounding rule) from
 Python's built-in `decimal` module.
@@ -85,17 +85,17 @@ silently rounds.
 decimal places, the normal shop way (5 and above rounds up)": `10.79`. AI WarRoom has a
 helper called `round2` that does exactly this.
 
-**Line 16** · ⚠️ The mistake to avoid: `Decimal(0.1)` **without quotes** copies the
+**Line 16** · The mistake to avoid: `Decimal(0.1)` **without quotes** copies the
 float's error exactly, all 55 digits of it. Always use quotes.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
 | `TypeError: unsupported operand type(s) for +: 'decimal.Decimal' and 'float'` | Python refuses to mix Decimal with float, to protect you. Make both Decimals: `Decimal("6.5")`. |
 | `NameError: name 'Decimal' is not defined` | You forgot line 2's import. |
 
-## ❓ Quiz
+## Quiz
 
 1. Why does `0.1 + 0.2` not print `0.3`?
 2. Which is right: `Decimal(19.99)` or `Decimal("19.99")`?

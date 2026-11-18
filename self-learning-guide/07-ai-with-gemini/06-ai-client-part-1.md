@@ -2,7 +2,7 @@
 
 **Time:** 50 minutes · **Before this:** [7.5](05-the-number-guardrail.md).
 
-## 📖 Read
+## Read
 
 `intelligence/services/ai_client.py` is **the only file in the whole app that talks to
 Gemini**. Every AI feature goes through its one public function, `generate(...)`. That
@@ -38,7 +38,7 @@ Each kind of failure gets its own error class with a short **code**. The API tur
 code into an HTTP status and a message a person can understand (lesson 7.8). The app
 never shows a Python traceback to a user.
 
-## ⌨️ Do
+## Do
 
 Create `intelligence/services/ai_client.py`. Type these three pieces now; lesson 7.7
 adds the rest.
@@ -278,7 +278,7 @@ def default_transport() -> GeminiTransport:
     return GeminiTransport(settings.GEMINI_API_KEY, settings.AI_TIMEOUT_SECONDS)
 ```
 
-## ✅ Check
+## Check
 
 ```bash
 python manage.py shell
@@ -306,7 +306,7 @@ You should see `'run-explanation/2'`, then the data wrapped in tags:
 Type `exit()`. (We use `manage.py shell` this time because the file imports Django
 settings and models.)
 
-## 🔍 Line by line
+## Line by line
 
 ### Piece 1
 
@@ -396,7 +396,7 @@ settings and models.)
 - **Lines 216–221** · The default transport. **No key → a clear message**: "AI analysis
   is off... Simulations still work." The app runs without AI.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -404,7 +404,7 @@ settings and models.)
 | `version` shows the whole first paragraph | Line 2 of the prompt file must be exactly `---`. |
 | `ImportError: cannot import name 'flag_unsupported_numbers'` | Check lesson 7.5's file name: `intelligence/services/guardrails.py`. |
 
-## ❓ Quiz
+## Quiz
 
 1. Why is the transport a separate, swappable class?
 2. Which status codes are retried, and which aren't?

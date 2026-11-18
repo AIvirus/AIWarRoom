@@ -2,7 +2,7 @@
 
 **Time:** 55 minutes · **Before this:** [8.6](06-real-citations.md).
 
-## 📖 Read
+## Read
 
 A scan takes several seconds: robots.txt, six pages, one Gemini call. We'd like the user
 to **see** each step as it happens ("Read /pricing...") instead of staring at a spinner.
@@ -62,7 +62,7 @@ progress dictionary, then does the next step. Three different callers use it:
 Step 3 is **optional**: if there's no key, or the daily budget is used up, the scan still
 reads pages and still finds price changes. The AI makes the scan better, never required.
 
-## ⌨️ Do
+## Do
 
 Create `intelligence/services/scan_service.py`. This lesson types the first three
 pieces; lesson 8.8 adds the last one.
@@ -243,7 +243,7 @@ def _competitor_names(scan) -> set[str]:
     return {c["name"] for c in analysis.output.get("competitors", [])}
 ```
 
-## ✅ Check
+## Check
 
 ```bash
 python manage.py check
@@ -259,7 +259,7 @@ python manage.py shell -c "from intelligence.services import scan_service; print
 `ok`. (`build_site_profile`, used on line 88, comes in the next lesson. Python only looks
 for it when that line actually runs, so importing works already.)
 
-## 🔍 Line by line
+## Line by line
 
 ### Piece 1
 
@@ -357,14 +357,14 @@ for it when that line actually runs, so importing works already.)
 > second scan (served from the cache) had no profile of its own. A test in lesson 8.11
 > scans three times to make sure it never comes back.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
 | `ImportError: cannot import name 'pick_followup_links'` | It's in `site_extractor.py`, lines 144–159 (lesson 8.4). |
 | `IndentationError` in piece 2 | Every `yield` and `try` inside `scan_steps` is indented 4 spaces; lines inside `try`, `except` and `for` another 4. |
 
-## ❓ Quiz
+## Quiz
 
 1. What's the difference between `return` and `yield`?
 2. Gemini is unavailable during a scan. Does the scan fail?

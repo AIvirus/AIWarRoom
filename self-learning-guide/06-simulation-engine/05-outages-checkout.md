@@ -2,7 +2,7 @@
 
 **Time:** 50 minutes · **Before this:** [6.4](04-cases-and-sensitivity.md).
 
-## 📖 Read
+## Read
 
 Now the second half of the app, the **Resilience Room**: what does an outage cost a
 running shop? `disruption.py` is long, so it's split over two lessons. This one covers
@@ -28,7 +28,7 @@ begins (hour `t = 0`). Two things make that realistic:
 | `backup` | After a switch-over delay, a backup gateway takes payments, up to its hourly capacity, at an extra cost per order plus a one-off activation cost. |
 | `queue_retry` | Failed payments are queued and retried when the gateway returns, if they haven't waited longer than the retry window. |
 
-## ⌨️ Do
+## Do
 
 Create `simulation_engine/disruption.py`. Type these three pieces now; lesson 6.6 adds
 the rest to the **same file**.
@@ -216,7 +216,7 @@ def simulate_checkout(inputs: DisruptionInputs, strategy: str) -> dict:
 There's nothing to run yet: `simulate_checkout` calls `_row` and `_outcome`, which you
 write in lesson 6.6.
 
-## 🔍 Line by line
+## Line by line
 
 ### Piece 1
 
@@ -298,14 +298,14 @@ write in lesson 6.6.
 Compare lines 112–137 with lesson 6.1, Example 2. For "wait": affected 200, recovered
 30 % = 60, lost 140. Same steps, hour by hour.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
 | `AssertionError` on line 49 when importing | A number in the curve is mistyped; the 24 numbers must add up to 1000. |
 | `IndentationError` around line 134 | `else:` must line up with the `if strategy == "queue_retry":` on line 125. |
 
-## ❓ Quiz
+## Quiz
 
 1. An outage starts at 22:00. Which clock hour is `t = 3`?
 2. A 2.25-hour outage: what is `outage_fraction` for hours 0, 1, 2, 3?

@@ -2,7 +2,7 @@
 
 **Time:** 45 minutes · **Before this:** [4.2](02-create-the-project.md).
 
-## 📖 Read
+## Read
 
 **Settings** are the switches and dials of a Django project: which database, which apps,
 where templates live, how passwords are checked, and so on.
@@ -18,7 +18,7 @@ AI WarRoom runs in three places, which need slightly different settings:
 All three start from `base.py`, the settings shared by everyone, and change only what's
 different. So instead of Django's single `settings.py`, we make a **folder** of settings.
 
-## ⌨️ Do
+## Do
 
 1. Delete `config/settings.py`.
 2. Make a folder `config/settings/` with an empty file `__init__.py` inside. (An
@@ -70,7 +70,7 @@ ALLOWED_HOSTS = env_list("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1")
 CSRF_TRUSTED_ORIGINS = env_list("DJANGO_CSRF_TRUSTED_ORIGINS")
 ```
 
-#### 🔍 Lines 1–37
+#### Lines 1–37
 
 - **Lines 1–6** · The file's docstring: what this file is for, and the rule that no
   secret is ever written here.
@@ -158,7 +158,7 @@ TEMPLATES = [
 ]
 ```
 
-#### 🔍 Lines 39–83
+#### Lines 39–83
 
 - **Lines 39–53** · `INSTALLED_APPS`: every app Django should load, in order.
   - **40** `admin`: a ready-made admin website to look at your data (lesson 4.5).
@@ -243,7 +243,7 @@ USE_I18N = True
 USE_TZ = True
 ```
 
-#### 🔍 Lines 85–131
+#### Lines 85–131
 
 - **Lines 85–87** · Comment: Neon if a URL is given, otherwise a local SQLite file.
 - **Line 88** · Read `DATABASE_URL`.
@@ -260,7 +260,7 @@ USE_TZ = True
 - **Line 108** · The type of automatic id column for tables that don't choose their own
   (ours mostly use UUIDs; lesson 4.4).
 - **Line 111** · `AUTH_USER_MODEL = "accounts.User"`: use **our own** User model
-  (lesson 4.5) instead of Django's built-in one. ⚠️ This must be decided **before** the
+  (lesson 4.5) instead of Django's built-in one. This must be decided **before** the
   first migration; changing it later is very painful.
 - **Lines 113–115** · Store sessions in fast memory first, with the database as backup.
   That saves one trip to Neon on every page.
@@ -319,7 +319,7 @@ LOGGING = {
 }
 ```
 
-#### 🔍 Lines 133–168
+#### Lines 133–168
 
 - **Line 134** · Static files are served under addresses starting `/static/`.
 - **Line 135** · They live in `my-warroom/static/`.
@@ -506,12 +506,12 @@ These are the doors a **real web server** uses to run your app on the internet
 Line 5 picks **production** settings by default, because these files are only used on
 real servers; line 6 creates the app object the server calls.
 
-## ✅ Check
+## Check
 
 You can't run anything yet: `AUTH_USER_MODEL` points to `accounts.User`, which you write
 in lesson 4.5. That's expected. Make sure all seven files are saved, then move on.
 
-## ❓ Quiz
+## Quiz
 
 1. Why are the settings split into four files?
 2. What does line 89 of `base.py` decide?

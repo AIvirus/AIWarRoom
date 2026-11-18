@@ -2,7 +2,7 @@
 
 **Time:** 45 minutes · **Before this:** [7.7](07-ai-client-part-2.md).
 
-## 📖 Read
+## Read
 
 Everything is ready; now we use it. Asking for an explanation of a run takes three small
 pieces:
@@ -37,7 +37,7 @@ that doesn't exist, so the answer counts as invalid and gets its one repair atte
 | `ai_invalid_output` | 502 Bad Gateway | Gemini's answer failed validation twice |
 | `ai_provider_error` | 502 Bad Gateway | Gemini refused or couldn't be reached |
 
-## ⌨️ Do
+## Do
 
 ### 1. `intelligence/services/context.py`
 
@@ -372,12 +372,12 @@ router.register("analyses", intelligence_api.AIAnalysisViewSet, basename="analys
 python manage.py check
 ```
 
-## ✅ Check
+## Check
 
 `System check identified no issues (0 silenced).` You'll ask Gemini for a real
 explanation in lesson 7.9.
 
-## 🔍 Line by line
+## Line by line
 
 ### `context.py`
 
@@ -413,7 +413,7 @@ explanation in lesson 7.9.
 
 - **Lines 1–4** · Docstring. ("Phases" means parts of this course.)
 - **Lines 6–14** · Imports.
-- **Lines 16–22** · Each AI error code's HTTP status (the table in 📖 Read).
+- **Lines 16–22** · Each AI error code's HTTP status (the table in Read).
 - **Lines 25–28** · `ai_error(error)` turns an AI error into our `DomainError`
   (lesson 4.7), so it comes out in the one error shape with the right status.
 - **Lines 31–53** · The analysis serializer: everything is output only.
@@ -448,14 +448,14 @@ explanation in lesson 7.9.
 - **Line 9** · Import the intelligence API.
 - **Line 20** · `/api/v1/analyses/` lists your organization's AI answers.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
 | `ImportError: cannot import name 'explain_run'` | Check `intelligence/services/explain.py` exists and is spelled right. |
 | `ImportError` mentioning `committee` | You copied the finished `businesses/api.py`. Keep the Part 5 version until Part 8. |
 
-## ❓ Quiz
+## Quiz
 
 1. Name two things deliberately **not** sent to Gemini, and why.
 2. Gemini cites `"queue_retry.profit"`. What happens?

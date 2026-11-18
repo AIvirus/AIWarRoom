@@ -2,7 +2,7 @@
 
 **Time:** 50 minutes · **Before this:** [7.6](06-ai-client-part-1.md).
 
-## 📖 Read
+## Read
 
 Now the heart of the file: `generate(...)`. It follows the six steps in the docstring
 you typed in lesson 7.6. Here they are as a flow:
@@ -40,7 +40,7 @@ Input should be 'low', 'medium' or 'high'"). Models usually fix it. If the secon
 is wrong too, something is badly off, and more retries would just spend quota. So we
 save a **failed** analysis with the reason and stop.
 
-## ⌨️ Do
+## Do
 
 Add these two pieces to the **end** of `intelligence/services/ai_client.py`.
 
@@ -185,7 +185,7 @@ def _save_failed(record: AIAnalysis, message: str) -> None:
     record.save()
 ```
 
-## ✅ Check
+## Check
 
 ```bash
 python manage.py check
@@ -195,7 +195,7 @@ python manage.py check
 7.9: 15 tests that play back good answers, broken answers, rate limits and timeouts with a
 fake Gemini.
 
-## 🔍 Line by line
+## Line by line
 
 ### Piece 4
 
@@ -270,14 +270,14 @@ fake Gemini.
   problems. Other errors: their text, cut to 500 characters.
 - **Lines 351–354** · `_save_failed`: mark failed, store why, save.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
 | `NameError: name 'Sum' is not defined` | Line 37 (in piece 1) imports it. |
 | `IndentationError` near line 300 | `except AIError` lines up with the `try:` on line 285, not the inner one on line 292. |
 
-## ❓ Quiz
+## Quiz
 
 1. You edit the prompt and raise its version. Will old cached answers be reused?
 2. What's the longest a user waits on retries before getting an answer or an error?

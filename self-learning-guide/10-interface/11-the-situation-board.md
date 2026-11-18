@@ -3,7 +3,7 @@
 **Time:** 60 minutes · **Before this:** [10.10](10-the-idea-bench.md). **Reading
 lesson:** the file is `static/js/board/main.js`.
 
-## 📖 Read
+## Read
 
 The Situation Board uses the same `saved` / `state` / preview pattern as the Idea Bench.
 Three things are new:
@@ -18,7 +18,7 @@ Three things are new:
    to the business. Saving a what-if saves each where it belongs: a PATCH to the scenario,
    a PUT to the assumptions (with a warning first), then a new run.
 
-## ⌨️ Do (read)
+## Do (read)
 
 ### Piece 1: setup (lines 1–39)
 
@@ -407,7 +407,7 @@ createView().then((created) => {
 });
 ```
 
-## ✅ Check
+## Check
 
 Open your Kirana Express run from lesson 6.9 (2-hour gateway outage).
 
@@ -427,7 +427,7 @@ Open your Kirana Express run from lesson 6.9 (2-hour gateway outage).
 6. **Add `?view=2d`** to the address and press Enter: the system view becomes a flat
    drawing, with the same names and states.
 
-## 🔍 Line by line
+## Line by line
 
 ### Piece 1: setup
 
@@ -519,14 +519,14 @@ Open your Kirana Express run from lesson 6.9 (2-hour gateway outage).
 - **Lines 354–361** · Start: remember the chip's text, build the sliders, draw, then
   create the system view. When it's ready, say which kind it is and draw the hour on it.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
 | The subtitle says `2D schematic` without `?view=2d` | Your browser has WebGL turned off, or the console shows why 3D failed. The 2D view shows the same thing. |
 | "Save as a new run" shows an error | Read it: usually a parameter out of range. The API's message is shown as-is. |
 
-## ❓ Quiz
+## Quiz
 
 1. The "Impact so far" gauge: who calculated it?
 2. Why is the 3D code loaded with `await import(...)` instead of at the top?

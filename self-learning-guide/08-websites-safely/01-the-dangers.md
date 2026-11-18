@@ -3,7 +3,7 @@
 **Time:** 25 minutes · **Before this:** [Part 7](../07-ai-with-gemini/README.md).
 **Reading only.**
 
-## 📖 Read
+## Read
 
 ### What a "scan" does
 
@@ -88,7 +88,7 @@ not by the AI. The same page always gives exactly the same result. That matters 
 alerts: if the AI read prices, it might say ₹649 one week and "about ₹650" the next, and
 you'd get an alert for a change that never happened.
 
-## ❓ Quiz
+## Quiz
 
 1. In one sentence, what is SSRF?
 2. Why isn't it enough to refuse addresses whose text contains `localhost` or `127.0.0.1`?

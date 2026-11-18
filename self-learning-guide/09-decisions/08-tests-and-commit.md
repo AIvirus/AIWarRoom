@@ -2,7 +2,7 @@
 
 **Time:** 40 minutes · **Before this:** [9.7](07-the-api-and-try-it.md).
 
-## 📖 Read
+## Read
 
 Three test files arrive in this part. One of them is special: `test_isolation.py`
 creates **one of every record Bob's organization can own**: a business, a component, a
@@ -13,7 +13,7 @@ Every part so far had its own "Bob can't see Alice's things" test. This file che
 the tables in one place, so when you add a new table later, you add one line here and
 it's covered.
 
-## ⌨️ Do
+## Do
 
 ### 1. The tests
 
@@ -48,7 +48,7 @@ git add -A
 git commit -m "Part 9: decisions and the brief"
 ```
 
-## ✅ Check
+## Check
 
 - `pytest` prints `246 passed` (194 before + 52 new).
 - `git log --oneline` shows six commits.
@@ -59,7 +59,7 @@ Run `pytest`. `test_brief_uses_the_frozen_snapshot_not_todays_values` fails: aft
 someone changed daily orders to 9,999, the brief would claim the old decision was based
 on 9,999. Put it back.
 
-## 🔍 What each test proves
+## What each test proves
 
 ### `decisions/tests/test_decision_api.py` (6 tests)
 
@@ -78,15 +78,15 @@ on 9,999. Put it back.
 | Lines | Test | Proves |
 |---|---|---|
 | 43–47 | `test_new_decision_starts_proposed_with_history` | Proposed, two allowed next steps, one history entry. |
-| 50–56 | `test_cannot_create_a_pre_approved_decision` | ⭐ Nobody can create an "already approved" decision. |
-| 59–66 | `test_approval_records_who_and_when_and_the_note` | ⭐ Sign-off: who, when, and the note in the history. |
+| 50–56 | `test_cannot_create_a_pre_approved_decision` | **Key test.** Nobody can create an "already approved" decision. |
+| 59–66 | `test_approval_records_who_and_when_and_the_note` | **Key test.** Sign-off: who, when, and the note in the history. |
 | 69–73 | `test_illegal_jump_is_refused_with_the_allowed_options` | proposed → done is refused, naming the allowed moves. |
 | 76–88 | `test_done_is_final_and_rejected_can_be_reopened` | Done is final; re-opening clears the sign-off. |
 | 91–96 | `test_editing_text_does_not_add_history` | Editing the rationale adds no history. |
 | 99–104 | `test_chosen_strategy_checked_on_patch_against_linked_run` | The strategy check also works when editing. |
-| 110–129 | `test_brief_uses_the_frozen_snapshot_not_todays_values` | ⭐ The brief shows 2,400 even after daily orders changed to 9,999. |
+| 110–129 | `test_brief_uses_the_frozen_snapshot_not_todays_values` | **Key test.** The brief shows 2,400 even after daily orders changed to 9,999. |
 | 132–136 | `test_brief_without_a_run_says_so` | No run → no outcomes, assumptions not frozen. |
-| 139–158 | `test_brief_page_renders_labelled_ai_and_flagged_numbers` | ⭐ The page shows the AI label, the flagged `14,550`, `₹21,000` and the chosen column. |
+| 139–158 | `test_brief_page_renders_labelled_ai_and_flagged_numbers` | **Key test.** The page shows the AI label, the flagged `14,550`, `₹21,000` and the chosen column. |
 | 161–166 | `test_brief_page_is_org_scoped` | Bob gets 404; logged out goes to login. |
 | 172–193 | `test_figure_formats_like_an_indian_finance_team` | 15 tests: every row of lesson 9.5's table, and more. |
 | 196–199 | `test_indian_grouping_and_source_tags` | `1,00,000`, `999`, `ILL`, `WHAT-IF`. |
@@ -96,7 +96,7 @@ on 9,999. Put it back.
 | Lines | Test | Proves |
 |---|---|---|
 | 18–59 | the `bobs_world` fixture | One of every org-owned record, all Bob's. |
-| 73–80 | `test_other_orgs_records_answer_404` | ⭐ 7 tests: every one of Bob's records is a plain "Not found." for Alice. |
+| 73–80 | `test_other_orgs_records_answer_404` | **Key test.** 7 tests: every one of Bob's records is a plain "Not found." for Alice. |
 | 83–96 | `test_other_orgs_records_never_appear_in_lists` | 7 tests: every list is empty for Alice. |
 | 99–107 | `test_other_orgs_records_cannot_be_changed_or_deleted` | Edits, deletes and acknowledgements fail, and nothing changed. |
 | 110–114 | `test_other_orgs_nested_components_answer_404` | Components and assumptions too. |
@@ -104,7 +104,7 @@ on 9,999. Put it back.
 | 136–142 | `test_cannot_link_own_decision_to_another_orgs_run` | Can't link to Bob's run. |
 | 145–151 | `test_cannot_assign_decision_to_user_outside_org` | Can't make Bob the owner. |
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -112,14 +112,14 @@ on 9,999. Put it back.
 | `TemplateDoesNotExist: decisions/brief.html` | It goes in `templates/decisions/brief.html`, in the `my-warroom` folder. |
 | An isolation test gets `200` instead of `404` | That ViewSet is missing `OrgScopedMixin`. The test name tells you which resource. |
 
-## ❓ Quiz
+## Quiz
 
 1. Why does `test_isolation.py` build one of **every** record?
 2. Why must Bob's records answer 404 and not 403?
 
 ---
 
-**Part 9 done! 🎉** AI WarRoom now keeps an honest record of what people decided, why,
+**Part 9 done! ** AI WarRoom now keeps an honest record of what people decided, why,
 and on which numbers, and prints it in a form a reviewer can trust. Next, everything gets
 a proper face: [Part 10 · The interface](../10-interface/README.md).
 

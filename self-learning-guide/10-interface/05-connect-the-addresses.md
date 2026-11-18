@@ -2,7 +2,7 @@
 
 **Time:** 30 minutes · **Before this:** [10.4](04-run-page-view.md).
 
-## 📖 Read
+## Read
 
 Every page needs an address. Each app lists its own in its `urls.py`, and
 `config/urls.py` **includes** them under a prefix:
@@ -20,7 +20,7 @@ Every page needs an address. Each app lists its own in its `urls.py`, and
 After this lesson, `config/urls.py` and `decisions/urls.py` are finished, and the brief's
 "← Back" link can go where it was always meant to: the run's page, or the business's page.
 
-## ⌨️ Do
+## Do
 
 ### 1. `businesses/urls.py`
 
@@ -162,7 +162,7 @@ In `templates/decisions/brief.html`, replace line 13 with:
 
 Delete `templates/home.html`. The dashboard replaces it.
 
-## ✅ Check
+## Check
 
 ```bash
 python manage.py check
@@ -180,7 +180,7 @@ That's expected: the address works and the view runs, but its template comes in 
 lesson. Learning to read this page is useful: the title says **what** went wrong, and
 the line under it says **which** file Django looked for.
 
-## 🔍 Line by line
+## Line by line
 
 ### `businesses/urls.py`
 
@@ -221,7 +221,7 @@ Notice the two `businesses/` prefixes don't clash: `/api/v1/businesses/...` is t
 - With a run: back to `run-detail`. Without: back to the business page.
   `decision.business_id` is the business's id without loading the business.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -229,7 +229,7 @@ Notice the two `businesses/` prefixes don't clash: `/api/v1/businesses/...` is t
 | `NoReverseMatch: Reverse for 'create' not found` (later, on a run page) | `decisions/urls.py` line 10. |
 | The home page still shows the old temporary page | Line 49 of `config/urls.py` must be `businesses_views.dashboard`. |
 
-## ❓ Quiz
+## Quiz
 
 1. Which file decides that business pages live under `/businesses/`?
 2. Why is the yellow `TemplateDoesNotExist` page not a problem right now?

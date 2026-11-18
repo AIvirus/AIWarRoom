@@ -2,7 +2,7 @@
 
 **Time:** 40 minutes · **Before this:** [3.2](02-sql-by-hand.md).
 
-## 📖 Read
+## Read
 
 SQLite is great for practice, but real websites use a **database server**: a separate
 program that many users and many copies of the website can use at once. AI WarRoom uses
@@ -32,7 +32,7 @@ postgresql://alex:AbC123dEf@ep-cool-darkness-a1b2c3d4-pooler.ap-southeast-1.aws.
 | `/neondb` | Which database on that server |
 | `?sslmode=require&...` | Settings: always encrypt the connection |
 
-⚠️ **This string contains your password. It is a secret.**
+**This string contains your password. It is a secret.**
 
 - **Never** paste it into your code.
 - **Never** put it on GitHub. People run robots that search GitHub for leaked passwords
@@ -40,7 +40,7 @@ postgresql://alex:AbC123dEf@ep-cool-darkness-a1b2c3d4-pooler.ap-southeast-1.aws.
 - Instead, put it in a file called **`.env`**, and tell Git to ignore that file (Part 4
   shows how). Your code reads it from there.
 
-## ⌨️ Do
+## Do
 
 ### Step 1 · Make your Neon database
 
@@ -98,7 +98,7 @@ with psycopg.connect(url) as connection:
 python neon_check.py
 ```
 
-## ✅ Check
+## Check
 
 ```text
 Connected! The database says:
@@ -108,7 +108,7 @@ PostgreSQL 18.7 on aarch64-unknown-linux-gnu, compiled by gcc ...
 The version number may be different. Any "Connected!" means it works. If it took a few
 seconds, the database was asleep and just woke up.
 
-## 🔍 Line by line
+## Line by line
 
 **Line 2** · `import os` gives access to the operating system, including **environment
 variables**: named settings a program can read.
@@ -141,7 +141,7 @@ row it returns.
 for a ready-built version, so nothing needs compiling. The quotes stop some terminals
 from misreading the square brackets.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -150,7 +150,7 @@ from misreading the square brackets.
 | `could not translate host name` | Check your internet, and that no space or line break got into the string. |
 | `connection timeout` on a school/office network | Some networks block database ports. Try a phone hotspot. |
 
-## ❓ Quiz
+## Quiz
 
 1. Why do we use Neon instead of SQLite for the real app?
 2. Where must the connection string **never** go?
@@ -158,7 +158,7 @@ from misreading the square brackets.
 
 ---
 
-**Part 3 done! 🎉** Next: [Part 4 · Django foundations](../04-django-foundations/README.md)
+**Part 3 done! ** Next: [Part 4 · Django foundations](../04-django-foundations/README.md)
 
 <details><summary>Quiz answers</summary>
 

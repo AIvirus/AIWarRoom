@@ -28,12 +28,12 @@ By the end, you will understand every line of code in the project.
 1. **Go in order.** Each lesson uses things from the lessons before it. Skipping ahead
    is like starting a story in the middle.
 2. **Every lesson has the same parts:**
-   - 📖 **Read:** the idea, explained simply.
-   - ⌨️ **Do:** what to type and run, exactly.
-   - ✅ **Check:** how to know it worked.
-   - 🔍 **Line by line:** every line of code explained.
-   - 🛠️ **If it didn't work:** the usual mistakes and how to fix them.
-   - ❓ **Quiz:** a few questions. Answers are at the bottom of each lesson.
+   - **Read:** the idea, explained simply.
+   - **Do:** what to type and run, exactly.
+   - **Check:** how to know it worked.
+   - **Line by line:** every line of code explained.
+   - **If it didn't work:** the usual mistakes and how to fix them.
+   - **Quiz:** a few questions. Answers are at the bottom of each lesson.
 3. **Type the code yourself.** Don't copy-paste unless the lesson says so. Your fingers
    learn too.
 4. **When you see an error, don't panic.** Errors are normal. Every programmer sees

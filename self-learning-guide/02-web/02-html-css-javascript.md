@@ -2,7 +2,7 @@
 
 **Time:** 45 minutes · **Before this:** [2.1](01-browser-and-server.md).
 
-## 📖 Read
+## Read
 
 Every web page is made of three languages. Think of a house:
 
@@ -25,7 +25,7 @@ details: `<input id="cups" value="120">`.
 In AI WarRoom, Django builds the HTML (Part 4), CSS gives it the dark control-room look,
 and JavaScript makes the sliders and the 3D view work (Part 10).
 
-## ⌨️ Do
+## Do
 
 In your `web` folder, make these three files.
 
@@ -90,14 +90,14 @@ cupsBox.addEventListener("input", () => {
 Start the server again (`python -m http.server 8765`) and open
 http://localhost:8765/index.html. Change the number of cups.
 
-## ✅ Check
+## Check
 
 - The page is dark with a yellow-orange heading.
 - When you change "Cups sold today" to `200`, "Money in" changes to `3000` straight away,
   without reloading the page.
 - In the terminal, `style.css` and `app.js` now show `200`.
 
-## 🔍 Line by line
+## Line by line
 
 ### `index.html`
 
@@ -191,14 +191,14 @@ these three colours.
 > **Compare with Python:** JavaScript uses `{ }` for blocks instead of indentation, and
 > `;` at the end of lines, but the ideas (variables, functions, if) are the same.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
 | Page is white, not dark | `style.css` isn't loading: check the file name and the `href`, and that the terminal shows `200` for it. |
 | Changing cups does nothing | Open the browser's **Console** (press F12 → Console) to see JavaScript errors. A wrong `id` gives `Cannot read properties of null`. |
 
-## ❓ Quiz
+## Quiz
 
 1. Which language decides colours: HTML, CSS or JS?
 2. Why does the `<script>` tag sit at the end of `<body>`?

@@ -3,7 +3,7 @@
 **Time:** 60 minutes · **Before this:** [10.9](09-javascript-helpers.md). **Reading
 lesson:** the files are already in `static/js/bench/`.
 
-## 📖 Read
+## Read
 
 The Idea Bench answers "what if my price, costs or retention were different?" while you
 drag a slider. Its JavaScript has one pattern you'll see again on the Situation Board:
@@ -27,7 +27,7 @@ The charts are hand-written **SVG** (the drawing language inside web pages: line
 rectangles, text, with coordinates). No chart library: each chart is about 50 lines you
 can read.
 
-## ⌨️ Do (read)
+## Do (read)
 
 ### `static/js/bench/main.js`
 
@@ -402,7 +402,7 @@ export function tornadoChart(container, rows) {
 }
 ```
 
-## ✅ Check
+## Check
 
 Open **Tiffin Box Co.**'s run (from the board). On our test, the "Expected case" readout
 said:
@@ -434,7 +434,7 @@ to ₹1,62,76,155 for a ±10 % change. Get that number right first."
 (Don't click "Save and run again" unless you want to change Tiffin's saved assumptions:
 it asks first, then saves the slider values as "user" inputs and makes a new run.)
 
-## 🔍 Line by line
+## Line by line
 
 ### `main.js`, piece 1: setup
 
@@ -538,7 +538,7 @@ it asks first, then saves the slider values as "user" inputs and makes a new run
   (right) by the step, each labelled "+₹48L at ₹198/order". The biggest bar sets the
   scale. The middle line is ending cash as entered.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -546,7 +546,7 @@ it asks first, then saves the slider values as "user" inputs and makes a new run
 | Sliders move but nothing changes | F12 → Network: is there a `preview/` request? Its response shows the API's error. |
 | The chart is blank | F12 → Console. A typo in `bench.html`'s ids (`cash-chart`) is the usual cause. |
 
-## ❓ Quiz
+## Quiz
 
 1. What's the difference between `saved` and `state`?
 2. You drag a slider for two seconds. Roughly how many preview requests are sent?

@@ -2,14 +2,14 @@
 
 **Time:** 40 minutes · **Before this:** [11.7](07-on-the-internet.md).
 
-## 📖 Read
+## Read
 
 Deploy files are code too, and their mistakes are the expensive kind: a secret copied into
 an image, a server that never migrates, an unsafe setting that slipped through. Five small
 tests guard them. Two of them load `production.py` and `docker_local.py` **for real**,
 with made-up environment variables, and check their switches.
 
-## ⌨️ Do
+## Do
 
 ### 1. The tests
 
@@ -110,16 +110,16 @@ git commit -m "Part 11: deploy"
 git push
 ```
 
-## ✅ Check
+## Check
 
 - `pytest` prints `271 passed` (266 + 5).
-- GitHub shows a ✅ for the commit, and Render deploys it.
+- GitHub shows a green tick for the commit, and Render deploys it.
 
 **Try breaking it on purpose:** delete the `.env` line (line 2) from `.dockerignore` and
 run `pytest`. `test_secrets_never_go_into_the_image_or_the_repository` fails with
 ".dockerignore must exclude .env". Put it back.
 
-## 🔍 Line by line
+## Line by line
 
 - **Lines 1–4** · Docstring: why test deploy files.
 - **Lines 6–12** · `importlib` (run a module again), `runpy` (run a module fresh and get
@@ -150,10 +150,10 @@ Before you share your live address, check each line:
 - [ ] `/no-such-page/` on the live site shows a plain "Not Found" (debug is off).
 - [ ] `http://` redirects to `https://`.
 - [ ] `AI_DAILY_CALL_BUDGET` is set to a number you're happy to spend.
-- [ ] GitHub shows ✅ for your latest commit.
+- [ ] GitHub shows a green tick for your latest commit.
 - [ ] If any secret ever leaked: you made a new one and deleted the old one.
 
-## You've finished 🎉
+## You've finished
 
 Look at what you built, starting from "what is a variable?":
 

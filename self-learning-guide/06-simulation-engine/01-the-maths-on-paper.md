@@ -3,7 +3,7 @@
 **Time:** 40 minutes · **Before this:** [Part 5](../05-business-and-api/README.md).
 **No typing in this lesson.** Get a pencil, paper and a calculator (your phone is fine).
 
-## 📖 Read
+## Read
 
 A computer model is only worth trusting if a person can check it. So before any code,
 you'll work out two answers **by hand**. In lesson 6.9 the tests check that the code gets
@@ -123,7 +123,7 @@ order waits, a few more customers cancel. When the warehouse comes back it clear
 queue, oldest orders first, using its spare capacity. Lesson 6.6 works through this one
 hour by hour, because it needs a table to follow.
 
-## ❓ Quiz
+## Quiz
 
 1. With conversion 4 % instead of 2 %, what is the CAC?
 2. Retention 90 %: how long does a customer stay on average?

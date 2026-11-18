@@ -2,7 +2,7 @@
 
 **Time:** 40 minutes · **Before this:** [1.6](06-classes-and-dataclasses.md).
 
-## 📖 Read
+## Read
 
 ### Modules: code in other files
 
@@ -32,7 +32,7 @@ packages.
 **Rule:** make a venv once per project, and **activate** it every time you open a new
 terminal for that project.
 
-## ⌨️ Do
+## Do
 
 ### Part A · Your own module
 
@@ -71,7 +71,7 @@ print(rupees(12345678))
 python use_money_tools.py
 ```
 
-✅ You should see:
+You should see:
 
 ```text
 ₹450
@@ -116,7 +116,7 @@ Your prompt now starts with `(.venv)`. Install pytest, which we need in lesson 1
 pip install pytest
 ```
 
-✅ Check:
+Check:
 
 ```bash
 pip list
@@ -124,7 +124,7 @@ pip list
 
 You should see `pytest` in the list.
 
-## 🔍 Line by line
+## Line by line
 
 ### `money_tools.py`
 
@@ -177,7 +177,7 @@ folder** and takes the `rupees` function from it. The `.py` is not written.
 | `pip install pytest` | Download pytest from the internet and put it in the active venv. |
 | `pip list` | Show every package in the active venv. |
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -186,7 +186,7 @@ folder** and takes the `rupees` function from it. The `.py` is not written.
 | No `(.venv)` at the start of the prompt | The venv isn't active. Run the activate line again. |
 | `pip: command not found` | Use `python -m pip install pytest`. |
 
-## ❓ Quiz
+## Quiz
 
 1. What's the difference between a module and a package?
 2. Why does each project get its own virtual environment?

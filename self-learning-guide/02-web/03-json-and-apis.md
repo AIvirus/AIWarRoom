@@ -2,7 +2,7 @@
 
 **Time:** 30 minutes · **Before this:** [2.2](02-html-css-javascript.md).
 
-## 📖 Read
+## Read
 
 Web pages are for **people**. But programs also need to talk to programs: the AI WarRoom
 page asks the server "recalculate with outage = 12 hours", and the server talks to
@@ -38,7 +38,7 @@ AI WarRoom has an API at `/api/v1/...`. For example:
 The sliders on the AI WarRoom page call this API in the background, so the page can
 update without reloading, just like your `app.js` in 2.2, but asking the server.
 
-## ⌨️ Do
+## Do
 
 Make `json_practice.py` in your `web` folder:
 
@@ -62,7 +62,7 @@ print(type(back))
 python json_practice.py
 ```
 
-## ✅ Check
+## Check
 
 ```text
 {"name": "Raju Chai", "price_per_cup": 15, "open": true, "phone": null}
@@ -71,7 +71,7 @@ Meena Tea 333
 <class 'dict'>
 ```
 
-## 🔍 Line by line
+## Line by line
 
 **Line 2** · `import json` loads Python's built-in JSON tools.
 
@@ -92,14 +92,14 @@ what Python does when JSON **arrives**, for example Gemini's answer in Part 7.
 
 **Line 12** · Proof: `dict`.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | It means |
 |---|---|
 | `json.decoder.JSONDecodeError: Expecting property name enclosed in double quotes` | JSON needs **double** quotes around keys and text. `{'name': 'x'}` isn't valid JSON. |
 | `TypeError: Object of type Decimal is not JSON serializable` | JSON doesn't know Decimal. AI WarRoom sends money as text, like `"1250.00"`, which is exact and safe. You'll see this in Part 5. |
 
-## ❓ Quiz
+## Quiz
 
 1. What is `True` in JSON?
 2. Which function turns a dictionary into JSON text: `dumps` or `loads`?
@@ -107,7 +107,7 @@ what Python does when JSON **arrives**, for example Gemini's answer in Part 7.
 
 ---
 
-**Part 2 done! 🎉** Next: [Part 3 · Databases](../03-databases/README.md)
+**Part 2 done! ** Next: [Part 3 · Databases](../03-databases/README.md)
 
 <details><summary>Quiz answers</summary>
 

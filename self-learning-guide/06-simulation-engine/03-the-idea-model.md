@@ -2,7 +2,7 @@
 
 **Time:** 45 minutes · **Before this:** [6.2](02-money-helpers.md).
 
-## 📖 Read
+## Read
 
 This file is lesson 6.1's Example 1, written in Python. Read its docstring (lines 4–13)
 side by side with your paper: it's the same chain of steps.
@@ -17,7 +17,7 @@ New Python in this lesson:
 | `next(generator, None)` | The first item a loop produces, or `None` if it produces nothing. |
 | `min(items, key=...)` | The item with the smallest key, e.g. the month with the least cash. |
 
-## ⌨️ Do
+## Do
 
 Create `simulation_engine/idea.py` in three pieces.
 
@@ -229,7 +229,7 @@ def funnel_check(inputs: IdeaInputs, months: list[Month]) -> dict | None:
     }
 ```
 
-## ✅ Check
+## Check
 
 Check the code against your paper from lesson 6.1:
 
@@ -261,7 +261,7 @@ The same numbers as your paper. The extra zeros grow because Decimal remembers h
 decimals went into each multiplication (× 0.80 adds two each month); the **value** is
 identical: 244.0000 is 244. Type `exit()`.
 
-## 🔍 Line by line
+## Line by line
 
 ### Piece 1
 
@@ -336,15 +336,15 @@ identical: 244.0000 is 244. Type `exit()`.
   is 0, there's nothing to divide by: `None`.
 - **Lines 187–194** · Return the comparison.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
-| `TypeError: IdeaInputs.__init__() missing 1 required positional argument` | You gave fewer than the 9 required numbers in the ✅ Check. |
+| `TypeError: IdeaInputs.__init__() missing 1 required positional argument` | You gave fewer than the 9 required numbers in the Check step. |
 | Month 3 shows 244 but cash is wrong | Line 91 must add `operating` to the **previous** cash. |
 | `ImportError: attempted relative import with no known parent package` | Run `python` from `my-warroom` and import `simulation_engine.idea`, not `idea`. |
 
-## ❓ Quiz
+## Quiz
 
 1. Why does `customer_acquisition_cost` return `None` when conversion is 0?
 2. What does `months[-1]` mean?

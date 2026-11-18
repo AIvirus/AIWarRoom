@@ -2,7 +2,7 @@
 
 **Time:** 20 minutes · **Before this:** [7.1](01-what-an-llm-is.md).
 
-## 📖 Read
+## Read
 
 To use Gemini from a program you need an **API key**: a long secret text that says "this
 request is from my account". Google gives free keys with daily limits, which is plenty
@@ -15,7 +15,7 @@ A key is like a password. Rules:
 - Never paste it into code, a screenshot, a chat or a lesson question.
 - If it leaks, delete it in AI Studio and make a new one.
 
-## ⌨️ Do
+## Do
 
 ### 1. Get a key
 
@@ -74,7 +74,7 @@ Run it:
 python hello_gemini.py
 ```
 
-## ✅ Check
+## Check
 
 After a second or two you get one sentence, something like:
 
@@ -87,7 +87,7 @@ answer isn't fixed, which is one more reason the **numbers** come from the engin
 
 When it works, delete `hello_gemini.py` (it was just a test; the real code comes next).
 
-## 🔍 Line by line
+## Line by line
 
 - **Line 1** · Docstring.
 - **Line 3** · `os`, to read environment variables.
@@ -103,7 +103,7 @@ When it works, delete `hello_gemini.py` (it was just a test; the real code comes
   `GEMINI_MODEL` is empty, use `gemini-3.5-flash-lite`.
 - **Line 14** · Print the answer's text.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -113,7 +113,7 @@ When it works, delete `hello_gemini.py` (it was just a test; the real code comes
 | `429 ... RESOURCE_EXHAUSTED` | You hit the free tier's limit. Wait a minute (or until tomorrow for a daily limit). |
 | `UnicodeEncodeError: 'charmap' codec can't encode character '₹'` | Windows' terminal couldn't print a symbol like ₹. Run `set PYTHONIOENCODING=utf-8` (Command Prompt) or `$env:PYTHONIOENCODING="utf-8"` (PowerShell), then try again. |
 
-## ❓ Quiz
+## Quiz
 
 1. Where does the key live, and why not in the code?
 2. What does `git check-ignore .env` prove?

@@ -2,7 +2,7 @@
 
 **Time:** 30 minutes · **Before this:** [0.1](01-how-this-guide-works.md).
 
-## 📖 Read
+## Read
 
 You need three free tools. Every professional programmer uses all three.
 
@@ -12,7 +12,7 @@ You need three free tools. Every professional programmer uses all three.
 | **VS Code** | An editor: a notebook made for writing code | A notebook that highlights mistakes and numbers every line |
 | **Git** | Saves snapshots of your work so you can go back in time | "Save game" in a video game |
 
-## ⌨️ Do
+## Do
 
 ### Step 1 · Install Python (version 3.12 or newer)
 
@@ -21,7 +21,7 @@ You need three free tools. Every professional programmer uses all three.
 1. Open https://www.python.org/downloads/ and click the big yellow **Download Python**
    button.
 2. Open the downloaded file.
-3. ⚠️ **Very important:** on the first screen, tick the box **"Add python.exe to PATH"**.
+3. **Very important:** on the first screen, tick the box **"Add python.exe to PATH"**.
    If you forget this, typing `python` in the terminal won't work.
 4. Click **Install Now**. Wait until it says "Setup was successful".
 
@@ -67,7 +67,7 @@ git config --global user.name "Your Name"
 git config --global user.email "you@example.com"
 ```
 
-## ✅ Check
+## Check
 
 In the VS Code terminal, type each line and press Enter:
 
@@ -83,7 +83,7 @@ git --version
 
 You should see something like `git version 2.43.0`.
 
-## 🔍 Line by line
+## Line by line
 
 | Line | What it means |
 |---|---|
@@ -92,7 +92,7 @@ You should see something like `git version 2.43.0`.
 | `git config --global user.name "Your Name"` | `git config` changes Git's settings. `--global` means "for every project on this computer". `user.name` is the setting's name. The quotes keep your first and last name together as one value. |
 | `git config --global user.email "you@example.com"` | The same, for your email. |
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | It means | Fix |
 |---|---|---|
@@ -101,7 +101,7 @@ You should see something like `git version 2.43.0`.
 | `Python 3.9.x` or older | An old Python is being used | Install 3.12 from python.org, then close and reopen VS Code. |
 | VS Code terminal still says "not recognized" after installing | The terminal opened before the install finished | Close VS Code completely and open it again. |
 
-## ❓ Quiz
+## Quiz
 
 1. Which tool runs our code: Python, VS Code or Git?
 2. Which box must you tick when installing Python on Windows?

@@ -3,7 +3,7 @@
 **Time:** 50 minutes · **Before this:** [10.8](08-the-run-pages.md). **Reading lesson:**
 the files are already in `static/js/lib/`.
 
-## 📖 Read
+## Read
 
 ### JavaScript you'll meet in the next lessons
 
@@ -32,7 +32,7 @@ things. Here they are once, side by side with Python:
 - **`lib/format.js`**: the browser's twin of lesson 9.5's template filters, so a number
   looks the same whether the server or the browser drew it: `₹1,23,45,678`.
 
-## ⌨️ Do (read)
+## Do (read)
 
 ### `static/js/lib/api.js`
 
@@ -146,7 +146,7 @@ export function alignedStep(value, preferred) {
 export const clockLabel = (hour) => `${String(((hour % 24) + 24) % 24).padStart(2, "0")}:00`;
 ```
 
-## ✅ Check
+## Check
 
 Open any page of the app (logged in), press F12 → **Console**, and load the modules
 directly. `await import(...)` loads a module and gives you everything it exports:
@@ -184,7 +184,7 @@ try { await a.api("/api/v1/runs/00000000-0000-0000-0000-000000000000/") } catch 
 `Not found. 404 not_found`: our error shape, turned into a JavaScript error with the
 message, the status and the code.
 
-## 🔍 Line by line
+## Line by line
 
 ### `api.js`
 
@@ -241,14 +241,14 @@ message, the status and the code.
 - **Line 52** · `clockLabel(hour)`: hour 26 → `"02:00"`. `((h % 24) + 24) % 24` keeps the
   answer between 0 and 23, even for negative hours.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
 | `Failed to fetch dynamically imported module` | The address must start with `/static/`. Is the server running? |
 | `await is only valid in async functions` | Use the browser console (it allows top-level `await`), not a file. |
 
-## ❓ Quiz
+## Quiz
 
 1. Why does `api()` send `X-CSRFToken` for POST but not GET?
 2. What would happen without `debounce` while dragging a slider?

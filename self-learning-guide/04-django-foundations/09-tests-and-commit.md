@@ -2,7 +2,7 @@
 
 **Time:** 45 minutes · **Before this:** [4.8](08-pages.md).
 
-## 📖 Read
+## Read
 
 You clicked through the site by hand in 4.8. Tests do the same clicking **automatically**,
 in under a second, every time anything changes, including the most important check of
@@ -20,7 +20,7 @@ A **fixture** is a function marked `@pytest.fixture`. A test asks for one simply
 having a parameter with the same name: `def test_x(alice):` gets a fresh Alice, created
 just for that test.
 
-## ⌨️ Do
+## Do
 
 ### `pytest.ini`
 
@@ -140,15 +140,15 @@ Make a folder `accounts/tests/` with an empty `__init__.py`, then copy
 | 103–107 | `test_login_with_email` | Logging in with an email works. |
 | 110–113 | `test_home_requires_login` | A logged-out visitor is sent to the login page. |
 | 116–119 | `test_logout_is_post_only` | GET on logout is refused (405); POST works. |
-| 125–127 | `test_for_user_returns_only_own_organizations` | ⭐ `for_user(alice)` returns only Alice's organization, never Bob's. |
+| 125–127 | `test_for_user_returns_only_own_organizations` | **Key test.** `for_user(alice)` returns only Alice's organization, never Bob's. |
 | 130–133 | `test_for_user_returns_nothing_for_anonymous` | A logged-out visitor gets nothing. |
-| 136–140 | `test_api_lists_only_own_organization` | ⭐ The API list shows only Alice's organization. |
-| 143–148 | `test_api_returns_404_for_another_orgs_record` | ⭐ Alice asking for Bob's organization by its id gets **404** (lesson 4.6). |
+| 136–140 | `test_api_lists_only_own_organization` | **Key test.** The API list shows only Alice's organization. |
+| 143–148 | `test_api_returns_404_for_another_orgs_record` | **Key test.** Alice asking for Bob's organization by its id gets **404** (lesson 4.6). |
 | 151–152 | `test_api_requires_authentication` | The API refuses visitors who aren't logged in (403). |
 | 155–159 | `test_me_endpoint_reports_current_organization` | `/api/v1/me/` returns the right email and organization. |
 | 162–164 | `test_healthz_reports_database` | The health check answers `ok` (tests use SQLite). |
 
-The ⭐ tests are the most important in the whole project: they're the security wall.
+The tests marked **Key test** are the most important in the whole project: they're the security wall.
 
 ### Run everything
 
@@ -174,7 +174,7 @@ git add -A
 git commit -m "Part 4: Django foundations"
 ```
 
-## ✅ Check
+## Check
 
 - `pytest` prints `16 passed`.
 - `ruff format .` tidies a few files (for example the `apps.py` files `startapp` made with
@@ -182,10 +182,10 @@ git commit -m "Part 4: Django foundations"
 - `git log --oneline` shows your commit.
 
 **Try breaking it on purpose:** in `accounts/api.py`, remove `OrgScopedMixin, ` from the
-`OrganizationViewSet` line, then run `pytest`. The ⭐ tests fail, because now Alice can
+`OrganizationViewSet` line, then run `pytest`. The key tests fail, because now Alice can
 see Bob's organization. Put it back. That's exactly why these tests exist.
 
-## 🔍 The commands
+## The commands
 
 | Command | Meaning |
 |---|---|
@@ -195,7 +195,7 @@ see Bob's organization. Put it back. That's exactly why these tests exist.
 | `git add -A` | Put **all** changes (new, changed and deleted files) into the next snapshot. |
 | `git commit -m "..."` | Save the snapshot with a message describing it. |
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -205,5 +205,5 @@ see Bob's organization. Put it back. That's exactly why these tests exist.
 
 ---
 
-**Part 4 done! 🎉** You have a working, tested, secure login with organizations. Next:
+**Part 4 done! ** You have a working, tested, secure login with organizations. Next:
 [Part 5 · Business model and API](../05-business-and-api/README.md)

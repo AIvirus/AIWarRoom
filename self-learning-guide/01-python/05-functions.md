@@ -2,7 +2,7 @@
 
 **Time:** 30 minutes · **Before this:** [1.4](04-decisions-and-loops.md).
 
-## 📖 Read
+## Read
 
 A **function** is a recipe with a name. You write the steps once, and then you can
 "cook" it as many times as you like, with different ingredients.
@@ -24,7 +24,7 @@ Why bother? Almost all of AI WarRoom is functions: one works out the money lost 
 outage, another checks a number the AI wrote, and so on. Small named functions are easy
 to read, easy to test and easy to reuse.
 
-## ⌨️ Do
+## Do
 
 Make `functions.py`:
 
@@ -59,7 +59,7 @@ print(best_day({"Mon": 110, "Sat": 210, "Sun": 190}))
 python functions.py
 ```
 
-## ✅ Check
+## Check
 
 ```text
 1020.0
@@ -68,7 +68,7 @@ python functions.py
 Sat
 ```
 
-## 🔍 Line by line
+## Line by line
 
 **Line 2** · `def profit_for_day(cups, price=15, cost=6.5):`
 - `def` starts a new function called `profit_for_day`.
@@ -117,7 +117,7 @@ Using names makes calls easy to read: you can see which number is which.
 
 **Line 23** · Call it with a small dictionary. Saturday (210) wins.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | It means |
 |---|---|
@@ -125,7 +125,7 @@ Using names makes calls easy to read: you can see which number is which.
 | `TypeError: profit_for_day() missing 1 required positional argument: 'cups'` | You called it without the value that has no default. |
 | `None` is printed | The function has no `return` line, so it gives back `None`. |
 
-## ❓ Quiz
+## Quiz
 
 1. What's the difference between a parameter and a value you pass in?
 2. What does `profit_for_day(10, cost=10)` return?

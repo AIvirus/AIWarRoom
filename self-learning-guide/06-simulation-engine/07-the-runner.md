@@ -2,7 +2,7 @@
 
 **Time:** 45 minutes · **Before this:** [6.6](06-outages-the-queue.md).
 
-## 📖 Read
+## Read
 
 You now have the idea model, the cases, sensitivity and both outage modes. The **runner**
 is the one front door to all of them:
@@ -26,7 +26,7 @@ For outages, the runner lays the three responses side by side and **names the
 extremes** ("lowest total impact: queue_retry"), but it never declares a winner. Maybe
 the cheapest option is too risky for this shop; that's a human decision (Part 9).
 
-## ⌨️ Do
+## Do
 
 Create `simulation_engine/runner.py` in three pieces.
 
@@ -291,7 +291,7 @@ def _disruption_warnings(template, inputs: DisruptionInputs) -> list[str]:
     return warnings
 ```
 
-## ✅ Check
+## Check
 
 Run lesson 6.1's Example 2 through the front door:
 
@@ -335,7 +335,7 @@ queue_retry 10050.00
 defaults: switch-over after 1 hour, 60 orders an hour, ₹12 extra each, ₹5,000 to switch
 on.) The warning is honest: we passed no components. Type `exit()`.
 
-## 🔍 Line by line
+## Line by line
 
 ### Piece 1
 
@@ -409,7 +409,7 @@ on.) The warning is honest: we passed no components. Type `exit()`.
   part no orders go through, a backup slower than the outage, and capacity below peak
   demand.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -417,7 +417,7 @@ on.) The warning is honest: we passed no components. Type `exit()`.
 | `CatalogError: daily_orders: must be a number` | A value in the dictionary isn't a number (e.g. `"2,4OO"` with letter O). |
 | `KeyError: 'primary_gateway_share'` | Check line 138 uses `template.share_input`. |
 
-## ❓ Quiz
+## Quiz
 
 1. Why does every run record `ENGINE_VERSION`?
 2. What does `simulate = simulate_checkout if ... else simulate_fulfilment` store in

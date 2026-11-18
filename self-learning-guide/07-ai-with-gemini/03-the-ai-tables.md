@@ -2,7 +2,7 @@
 
 **Time:** 30 minutes · **Before this:** [7.2](02-key-and-first-call.md).
 
-## 📖 Read
+## Read
 
 The `intelligence` app (made empty in lesson 4.2) holds everything that comes from
 **outside** the exact engine: the AI's answers, and (in Part 8) what we read from
@@ -17,7 +17,7 @@ company websites. It gets three tables now, so you only need one migration:
 An `AIAnalysis` is saved even when it **fails**, with the reason. Like failed runs in
 Part 6, the history shows every attempt.
 
-## ⌨️ Do
+## Do
 
 ### 1. `intelligence/models.py`
 
@@ -201,7 +201,7 @@ python manage.py makemigrations intelligence
 python manage.py migrate
 ```
 
-## ✅ Check
+## Check
 
 ```text
 Migrations for 'intelligence':
@@ -214,7 +214,7 @@ Migrations for 'intelligence':
 (`CompanyScan` comes first because `AIAnalysis` and `Alert` point to it; Django orders
 the steps for you.) The admin now has an **Intelligence** section.
 
-## 🔍 Line by line
+## Line by line
 
 ### `AIAnalysis` (lines 18–72)
 
@@ -286,14 +286,14 @@ the steps for you.) The admin now has an **Intelligence** section.
 - **Lines 12–14** · Scans: columns.
 - **Lines 17–20** · Alerts: columns and filters.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
 | `No changes detected` | Is `"intelligence"` in `INSTALLED_APPS` (lesson 4.3)? |
 | `fields.E300 ... related model 'intelligence.CompanyScan' cannot be resolved` | Check the spelling on line 39 and that the `CompanyScan` class exists. |
 
-## ❓ Quiz
+## Quiz
 
 1. Why is `from_cache` not a database field?
 2. Why record the prompt version with each answer?

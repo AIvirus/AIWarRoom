@@ -2,7 +2,7 @@
 
 **Time:** 40 minutes · **Before this:** [5.3](03-business-models.md).
 
-## 📖 Read
+## Read
 
 The API speaks **JSON** (Part 2). The database speaks **Python objects**. Between them
 sits a **serializer**, from Django REST Framework (DRF). It works in both directions:
@@ -39,7 +39,7 @@ A serializer sometimes needs to know more than the JSON it was given. For exampl
 business are these assumptions for?" The view passes that in a dictionary called
 `context`, and the serializer reads `self.context["business"]`.
 
-## ⌨️ Do
+## Do
 
 Create `businesses/serializers.py`:
 
@@ -183,11 +183,11 @@ Just check Django can still load everything:
 python manage.py check
 ```
 
-## ✅ Check
+## Check
 
 `System check identified no issues (0 silenced).`
 
-## 🔍 Line by line
+## Line by line
 
 ### Imports (lines 1–7)
 
@@ -228,7 +228,7 @@ python manage.py check
 - **Line 45** · The key, like `"daily_orders"`.
 - **Lines 46–49** · Ask the catalogue. On success, replace the value with the clean
   Decimal. On failure, raise its `{key: message}` dictionary as a `ValidationError`.
-- **Line 50** · The business, from the **context** (see 📖 Read).
+- **Line 50** · The business, from the **context** (see Read).
 - **Lines 51–54** · Does this number belong to this business's mode? `conversion_rate` is
   for ideas only, so an operating shop is refused.
 - **Line 55** · All good: return the cleaned values.
@@ -285,7 +285,7 @@ whole list at once: `{"assumptions": [{...}, {...}]}`.
   - **125–128** · It can't close a loop (the walk from lesson 5.3).
   - **129** · Return the list.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -293,7 +293,7 @@ whole list at once: `{"assumptions": [{...}, {...}]}`.
 | `AttributeError: 'BusinessProfile' object has no attribute 'components'` | `related_name="components"` is missing in `models.py` (lesson 5.3). |
 | `IndentationError` | `class Meta:` and the `def`s must be indented 4 spaces inside their class. |
 
-## ❓ Quiz
+## Quiz
 
 1. Why is `organization` not in `BusinessProfileSerializer`'s fields?
 2. What does `@transaction.atomic` protect against?

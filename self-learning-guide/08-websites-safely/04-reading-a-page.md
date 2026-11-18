@@ -2,7 +2,7 @@
 
 **Time:** 50 minutes · **Before this:** [8.3](03-safe-fetcher-part-2.md).
 
-## 📖 Read
+## Read
 
 A web page's HTML is mostly **wrapping**: menus, scripts, styles, tracking code. We want
 a few things from it:
@@ -40,7 +40,7 @@ If a page says "Pay with Razorpay", we record that the site **names** Razorpay. 
 all. It doesn't prove they use it today. The code's comment says so, and so will the AI
 profile ("basis: site").
 
-## ⌨️ Do
+## Do
 
 Create `intelligence/services/site_extractor.py`.
 
@@ -213,7 +213,7 @@ def pick_followup_links(homepage: PageExtract, limit: int) -> list[str]:
     return sorted(interesting, key=score)[:limit]
 ```
 
-## ✅ Check
+## Check
 
 First, a tiny page you write yourself. In `python manage.py shell` (the `extract(`
 call spans four lines; Python waits with `...` until the closing `)`):
@@ -293,7 +293,7 @@ pick_followup_links(books, 2)
 Two category pages of the shop (their addresses contain `catalogue`, a word on our
 "interesting" list).
 
-## 🔍 Line by line
+## Line by line
 
 ### Piece 1
 
@@ -357,7 +357,7 @@ Two category pages of the shop (their addresses contain `catalogue`, a word on o
 - **Line 158** · Keep only links with an interesting word.
 - **Line 159** · Best first, at most `limit`.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -365,7 +365,7 @@ Two category pages of the shop (their addresses contain `catalogue`, a word on o
 | `mini.prices` is `['₹1,299', '₹649']` | Line 100: `re.sub(r"[^\d.]", "", raw)` removes everything except digits and dots. |
 | `NameError: name 'urldefrag' is not defined` | Line 14 imports three things: `urldefrag, urljoin, urlsplit`. |
 
-## ❓ Quiz
+## Quiz
 
 1. Why are `<script>` tags removed before reading the text?
 2. A page says "Pay with Razorpay". Does that prove the shop uses Razorpay?

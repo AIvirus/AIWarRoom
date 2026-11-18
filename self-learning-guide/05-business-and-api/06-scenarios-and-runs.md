@@ -2,7 +2,7 @@
 
 **Time:** 45 minutes · **Before this:** [5.5](05-business-api.md).
 
-## 📖 Read
+## Read
 
 A **scenario** is a question: *"What if the warehouse shuts for 6 hours, starting at
 6 pm?"* It's made of a **template** from the catalogue (`warehouse_shutdown`) plus its
@@ -29,7 +29,7 @@ saving.
 languages, and floats round (`0.1 + 0.2` is `0.30000000000000004`). Text keeps the exact
 Decimal value. The catalogue's `validate_parameters` already returns text (lesson 5.2).
 
-## ⌨️ Do
+## Do
 
 ### 1. `simulations/models.py`
 
@@ -367,7 +367,7 @@ python manage.py makemigrations simulations
 python manage.py migrate
 ```
 
-## ✅ Check
+## Check
 
 ```text
 Migrations for 'simulations':
@@ -380,7 +380,7 @@ Migrations for 'simulations':
 then `Applying simulations.0001_initial... OK`. In the admin you now see a
 **Simulations** section with Scenarios and Simulation runs.
 
-## 🔍 Line by line
+## Line by line
 
 ### `simulations/models.py`
 
@@ -512,7 +512,7 @@ then `Applying simulations.0001_initial... OK`. In the admin you now see a
   `{"idea": [...], "operating": [...]}`. A dict comprehension (outside) with a list
   comprehension (inside).
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -520,7 +520,7 @@ then `Applying simulations.0001_initial... OK`. In the admin you now see a
 | `fields.E010` warning about `default={}` | Use `default=dict` (the function), not `{}`. |
 | `makemigrations` says `No changes detected` | Is `"simulations"` in `INSTALLED_APPS` (lesson 4.3)? Did you save `models.py`? |
 
-## ❓ Quiz
+## Quiz
 
 1. Why does a run keep a copy of its inputs?
 2. What's the difference between `default=dict` and `default={}`?

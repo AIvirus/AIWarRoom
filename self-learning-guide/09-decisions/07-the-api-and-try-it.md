@@ -2,7 +2,7 @@
 
 **Time:** 60 minutes · **Before this:** [9.6](06-the-printable-page.md).
 
-## 📖 Read
+## Read
 
 The decisions API is a normal `ModelViewSet` (lesson 5.5) with a few careful rules in
 its serializer:
@@ -18,7 +18,7 @@ its serializer:
 
 Plus one extra address: `GET /api/v1/decisions/<id>/report/` returns the brief as JSON.
 
-## ⌨️ Do
+## Do
 
 ### 1. `decisions/api.py`
 
@@ -198,7 +198,7 @@ urlpatterns = [
 ]
 ```
 
-## ✅ Check: try it
+## Check: try it
 
 ```bash
 python manage.py check
@@ -282,7 +282,7 @@ Read it from top to bottom. The chosen column is highlighted. Section 05 carries
 > unverified."* That's Part 7's guardrail doing its job on a real slip, all the way into
 > the printed page. Your AI text will be different; look for the box anyway.
 
-## 🔍 Line by line
+## Line by line
 
 ### Piece 1: the serializer
 
@@ -335,7 +335,7 @@ Read it from top to bottom. The chosen column is highlighted. Section 05 carries
 - **Line 25** · `/api/v1/decisions/`.
 - **Line 53** · `/decisions/...`: the brief and status pages from lesson 9.6.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -343,7 +343,7 @@ Read it from top to bottom. The chosen column is highlighted. Section 05 carries
 | `400` `owner: Invalid pk` | `me.id` must be **your** user id; owners must share your organization. |
 | `404` on the brief page | The id is wrong, or the decision belongs to another organization. |
 
-## ❓ Quiz
+## Quiz
 
 1. Why do the serializer's three links start with `.none()`?
 2. You `PATCH` only the rationale. Does the history change?

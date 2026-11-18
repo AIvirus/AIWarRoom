@@ -2,7 +2,7 @@
 
 **Time:** 45 minutes · **Before this:** [11.4](04-docker-the-image.md).
 
-## 📖 Read
+## Read
 
 The image needs a PostgreSQL database. You could point it at Neon, but then a test on your
 laptop would write into a real database. Instead, **Docker Compose** starts **two**
@@ -32,7 +32,7 @@ off just those two. Everything else stays production: `DEBUG` off, gunicorn, Whi
 collected static files, a real PostgreSQL. Its docstring says it plainly: never use it on
 a server the internet can reach.
 
-## ⌨️ Do
+## Do
 
 ### 1. `config/settings/docker_local.py`
 
@@ -131,7 +131,7 @@ web-1  | [2026-11-15 17:28:55 +0000] [1] [INFO] Listening at: http://0.0.0.0:800
 
 Leave this terminal running.
 
-## ✅ Check
+## Check
 
 1. **http://localhost:8000/healthz/** → `{"status": "ok", "database": "postgresql"}`.
    The app is running in Docker and talking to the `db` container.
@@ -160,7 +160,7 @@ Leave this terminal running.
    The containers are removed; the database's data stays in its volume for next time.
    (`docker compose down -v` also deletes the data.)
 
-## 🔍 Line by line
+## Line by line
 
 ### `docker_local.py`
 
@@ -194,7 +194,7 @@ Leave this terminal running.
   finds the database still starting.
 - **Lines 40–41** · Declare the `dbdata` volume.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -204,7 +204,7 @@ Leave this terminal running.
 | `CSRF verification failed` on a form | Use `http://localhost:8000` exactly (line 35 lists it). |
 | `env file .env not found` | An older Docker Compose. Update Docker Desktop, or create an empty `.env`. |
 
-## ❓ Quiz
+## Quiz
 
 1. How does the app find the database inside Compose?
 2. Which two production settings does `docker_local.py` relax, and why only those?

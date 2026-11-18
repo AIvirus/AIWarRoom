@@ -2,7 +2,7 @@
 
 **Time:** 45 minutes · **Before this:** [5.2](02-the-catalogue.md).
 
-## 📖 Read
+## Read
 
 You made the `businesses` app in lesson 4.2 (with `startapp`) but left it empty. Now it
 gets three tables. Remember from lesson 4.5: a **model** is a Python class, and Django
@@ -33,7 +33,7 @@ If you delete a business, every past run and decision about it would vanish too.
 AI WarRoom **archives** instead: it writes the time into `archived_at`, and lists simply
 hide archived businesses. Nothing is lost.
 
-## ⌨️ Do
+## Do
 
 ### 1. `businesses/models.py`
 
@@ -268,7 +268,7 @@ python manage.py makemigrations businesses
 python manage.py migrate
 ```
 
-## ✅ Check
+## Check
 
 `makemigrations` prints:
 
@@ -295,7 +295,7 @@ Now add another assumption with key `daily_ordrs` (spelt wrong) and save: the ad
 and try value `-5`: "must be at least 0 INR/order" appears next to **Value**. Delete that
 row (tick **Delete?**) and save. Stop the server with **Ctrl + C**.
 
-## 🔍 Line by line
+## Line by line
 
 ### `businesses/models.py`
 
@@ -427,7 +427,7 @@ a failure spreads through the parts.
 - **Lines 19–22** · The component admin page. `filter_horizontal` shows `depends_on` as
   two boxes with arrows, which is much easier than a long multi-select list.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -436,7 +436,7 @@ a failure spreads through the parts.
 | `fields.E304` / "clashes with reverse accessor" | A `related_name` is mistyped; compare with lines 30, 63, 116, 129. |
 | The unit stays empty in the admin | The key isn't in the catalogue, or line 93 is mistyped. |
 
-## ❓ Quiz
+## Quiz
 
 1. What does `archived_at = None` mean?
 2. Why is `unit` set in `save()` instead of being typed by the user?

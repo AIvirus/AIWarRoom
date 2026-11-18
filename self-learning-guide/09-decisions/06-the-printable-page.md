@@ -2,7 +2,7 @@
 
 **Time:** 60 minutes · **Before this:** [9.5](05-numbers-the-indian-way.md).
 
-## 📖 Read
+## Read
 
 The brief page is built to be **printed** (or saved as a PDF from the print window).
 That's why it doesn't use `base.html` from lesson 4.8: no menu, no sidebar. It has its own
@@ -24,7 +24,7 @@ pages come in Part 10, so for now it goes to the home page. The only difference 
 13 of the template. Part 10 also adds a third view here: recording a decision straight from
 a run's page.
 
-## ⌨️ Do
+## Do
 
 ### 1. `decisions/views.py` (for now)
 
@@ -295,7 +295,7 @@ there's data, show it; otherwise say plainly that there isn't".
 </html>
 ```
 
-## ✅ Check
+## Check
 
 ```bash
 python manage.py check
@@ -304,7 +304,7 @@ python manage.py check
 `System check identified no issues (0 silenced).` The page isn't connected to an address
 yet: that's one line in `config/urls.py`, in the next lesson, together with the API.
 
-## 🔍 Line by line
+## Line by line
 
 ### `decisions/views.py`
 
@@ -378,14 +378,14 @@ yet: that's one line in `config/urls.py`, in the next lesson, together with the 
 - **Lines 177–180** · The footer: the decision id, and "nothing on this page was
   recalculated".
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
 | `TemplateSyntaxError: Invalid filter: 'figure'` (in 9.7) | Line 1 must `{% load static warroom %}`, and lesson 9.5's file must exist. Restart `runserver`. |
 | `NoReverseMatch: 'run-detail'` (in 9.7) | You copied the finished template. Use the for-now one: line 13 links to `home`. |
 
-## ❓ Quiz
+## Quiz
 
 1. Why does the page not extend `base.html`?
 2. Why does `decision_status` end with a redirect instead of showing the page directly?

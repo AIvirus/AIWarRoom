@@ -2,7 +2,7 @@
 
 **Time:** 40 minutes · **Before this:** [5.7](07-urls-and-try-it.md).
 
-## 📖 Read
+## Read
 
 In lesson 5.7 you tried the API by hand. Now 36 tests try it automatically, including the
 rules you didn't try: Alice can't put her business in Bob's organization, a member can't
@@ -64,7 +64,7 @@ def api(alice):
 - **Lines 63–70** · `api`: an API client already logged in as Alice. `force_login` logs
   in without a password check, so tests are quick.
 
-## ⌨️ Do
+## Do
 
 ### 1. Copy the three test files
 
@@ -120,7 +120,7 @@ git add -A
 git commit -m "Part 5: business model and API"
 ```
 
-## ✅ Check
+## Check
 
 - `pytest` prints `52 passed` (16 from Part 4 + 36 new).
 - `ruff check .` prints `All checks passed!`.
@@ -136,9 +136,9 @@ fails, and the terminal shows the database refusing a business with no organizat
 
 > **The big wall test comes later.** "Alice gets 404 for every one of Bob's records" is
 > tested for **all** tables at once in `decisions/tests/test_isolation.py`, in Part 9,
-> when every table exists. Until then, the Part 4 ⭐ tests and the ⭐ tests below guard it.
+> when every table exists. Until then, the Part 4 key tests and the key tests below guard it.
 
-## 🔍 What each test proves
+## What each test proves
 
 ### `simulation_engine/tests/test_catalog.py` (12 tests, no database)
 
@@ -160,7 +160,7 @@ typo in it, these tests catch it.
 
 | Lines | Test | Proves |
 |---|---|---|
-| 13–23 | `test_create_business_uses_the_requesters_organization` | ⭐ Sending Bob's organization id is ignored: the business goes into **Alice's** organization. |
+| 13–23 | `test_create_business_uses_the_requesters_organization` | **Key test.** Sending Bob's organization id is ignored: the business goes into **Alice's** organization. |
 | 26–29 | `test_mode_cannot_change_after_creation` | PATCH `mode` → 400, with the error on the `mode` field. |
 | 32–39 | `test_delete_archives_instead_of_deleting` | DELETE → 204; the row still exists with `archived_at`; hidden from the list, shown with `?archived=true`. |
 | 42–49 | `test_only_owners_can_archive` | A plain member gets 403 `permission_denied`. |
@@ -169,7 +169,7 @@ typo in it, these tests catch it.
 | 92–95 | `test_put_assumptions_rejects_duplicate_keys` | The same key twice in one PUT → 400. |
 | 101–102 | `make_component` | (A helper, not a test.) |
 | 105–120 | `test_create_component_with_dependencies_by_key` | `depends_on: ["payment-gateway"]` works with keys. |
-| 123–136 | `test_component_cannot_depend_on_another_business` | ⭐ Even Alice's **other** business's parts can't be used. |
+| 123–136 | `test_component_cannot_depend_on_another_business` | **Key test.** Even Alice's **other** business's parts can't be used. |
 | 139–148 | `test_dependency_cycles_are_rejected` | b needs a, c needs b; "a needs c" would be a loop → 400 mentioning "loop". |
 | 151–154 | `test_component_cannot_depend_on_itself` | a needs a → 400. |
 | 157–161 | `test_duplicate_component_key_is_rejected` | Two `warehouse` keys → 400. |
@@ -188,7 +188,7 @@ typo in it, these tests catch it.
 | 63–74 | `test_template_cannot_change_after_creation` | PATCH `template_key` → 400. |
 | 77–87 | `test_catalogue_endpoints` | The two catalogue addresses answer, and `conversion_rate` is only under `idea`. |
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -197,7 +197,7 @@ typo in it, these tests catch it.
 | `I001 Import block is un-sorted` from ruff | Run `ruff check --fix .`, and check `pyproject.toml` has the `known-first-party` list from lesson 5.2. |
 | A test fails | Read its name: it tells you which rule is broken. Compare that file with the reference project. |
 
-## ❓ Quiz
+## Quiz
 
 1. How many tests does one `parametrize` with 3 rows make?
 2. Why do the catalogue tests run without Django?
@@ -205,7 +205,7 @@ typo in it, these tests catch it.
 
 ---
 
-**Part 5 done! 🎉** Your app can store businesses, their numbers, their parts and their
+**Part 5 done! ** Your app can store businesses, their numbers, their parts and their
 "what if?" questions, safely, per organization. Next: the maths that answers those
 questions, in [Part 6 · The simulation engine](../06-simulation-engine/README.md).
 

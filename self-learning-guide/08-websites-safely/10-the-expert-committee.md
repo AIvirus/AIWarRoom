@@ -2,7 +2,7 @@
 
 **Time:** 50 minutes · **Before this:** [8.9](09-live-progress.md).
 
-## 📖 Read
+## Read
 
 A single analyst can miss things. Real companies ask several people, each looking from
 their own angle. The **expert committee** does that with four "desks":
@@ -41,7 +41,7 @@ Three design choices:
 - up to 5 unread **alerts**,
 - the page addresses it's allowed to cite.
 
-## ⌨️ Do
+## Do
 
 ### 1. `intelligence/prompts/committee.md`
 
@@ -223,7 +223,7 @@ Add it **inside** `BusinessViewSet`, right after the `scans` action from lesson 
 Your `businesses/api.py` is now the same as the reference project's. Compare them if
 anything is unclear.
 
-## ✅ Check
+## Check
 
 ```bash
 python manage.py check
@@ -271,7 +271,7 @@ const again = await api("POST", `/api/v1/businesses/${books.id}/committee/`)
 → `200` straight away, with `again.from_cache` `true`: nothing changed, so no new call.
 `GET` now gives `200` with the latest review.
 
-## 🔍 Line by line
+## Line by line
 
 ### `committee.md`
 
@@ -345,7 +345,7 @@ const again = await api("POST", `/api/v1/businesses/${books.id}/committee/`)
   (`ai_error`, lesson 7.8). `from None` hides the long inner error from the log.
 - **Lines 112–113** · From the cache: 200. New: 201.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -353,7 +353,7 @@ const again = await api("POST", `/api/v1/businesses/${books.id}/committee/`)
 | `502` `ai_invalid_output` | Gemini failed the checks twice (often a missing desk). Try again; the admin's failed row shows why. |
 | `ImportError: cannot import name 'plain'` | It lives in `businesses/services/snapshot.py` (Part 6). |
 
-## ❓ Quiz
+## Quiz
 
 1. Why one Gemini call for four desks?
 2. Why is there no "final verdict" field?

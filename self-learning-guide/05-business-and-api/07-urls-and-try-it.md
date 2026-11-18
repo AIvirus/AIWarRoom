@@ -2,7 +2,7 @@
 
 **Time:** 40 minutes · **Before this:** [5.6](06-scenarios-and-runs.md).
 
-## 📖 Read
+## Read
 
 Your ViewSets exist, but no address leads to them yet. In lesson 4.8 you wrote
 `config/urls.py`, the project's address book. Now it gets the new addresses.
@@ -16,7 +16,7 @@ Components are different: their address has **two** ids
 we write those two addresses by hand, with `as_view`, which says "for this HTTP method,
 call this action".
 
-## ⌨️ Do
+## Do
 
 ### 1. `config/urls.py` (for now)
 
@@ -196,13 +196,13 @@ there, just archived.
 
 Stop the server with **Ctrl + C** when you're done.
 
-## ✅ Check
+## Check
 
 - `python manage.py check` shows no issues.
 - Every request above gives the status code shown.
 - Errors always have the same shape: `{"error": {"code": ..., "message": ..., "fields": ...}}`.
 
-## 🔍 Line by line
+## Line by line
 
 ### `config/urls.py` (for now)
 
@@ -254,7 +254,7 @@ function that uses `await` must be marked **`async`**.
 - **Line 14** · Also return the data, so you can keep it: `const shop = await api(...)`.
 - **Line 17** · A message so you know the helper is ready.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -264,7 +264,7 @@ function that uses `await` must be marked **`async`**.
 | `500` and a long error in the terminal | Read the **last** line of the error in the terminal running `runserver`; it names the file and line. |
 | `SyntaxError: await is only valid in async functions` | Some browsers only allow `await` at the top of the console. Use Chrome, Edge or Firefox. |
 
-## ❓ Quiz
+## Quiz
 
 1. Why are the component addresses written by hand?
 2. What does `<uuid:business_pk>` do with `/businesses/hello/components/`?

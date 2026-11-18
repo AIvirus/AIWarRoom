@@ -3,7 +3,7 @@
 **Time:** 75 minutes · **Before this:** [10.11](10-the-situation-board.md). **Reading
 lesson:** the files are in `static/js/board/`.
 
-## 📖 Read
+## Read
 
 The system view draws the business as connected parts, customers → storefront → payment
 → revenue, and storefront → warehouse → courier → customers, and shows, hour by hour,
@@ -44,7 +44,7 @@ second, with `requestAnimationFrame`.
 - Health comes **only** from the engine's hourly row (`row.components`). A part the
   engine says nothing about is drawn as normal: the picture never invents a failure.
 
-## ⌨️ Do (read)
+## Do (read)
 
 ### `static/js/board/topology.js`
 
@@ -453,7 +453,7 @@ export function webglAvailable() {
 }
 ```
 
-## ✅ Check
+## Check
 
 On your Kirana Express board:
 
@@ -470,7 +470,7 @@ On your Kirana Express board:
    The subtitle says "3D (WebGL) · reduced motion", and nothing moves on its own: the
    picture only changes when you change the hour.
 
-## 🔍 Line by line
+## Line by line
 
 ### `topology.js`
 
@@ -563,7 +563,7 @@ On your Kirana Express board:
 - **Lines 206–213** · `webglAvailable()`: try to get a WebGL drawing context from a
   throwaway canvas; any failure means no.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -571,7 +571,7 @@ On your Kirana Express board:
 | Labels are in the top-left corner | `placeLabels` ran before `resize`. Reload; check lines 173–174. |
 | Everything is DOWN at every hour | That's the engine's data for this run: check the timeline in `/api/v1/runs/<id>/`. The view only draws it. |
 
-## ❓ Quiz
+## Quiz
 
 1. Why can `board/main.js` swap the 3D view for the 2D one without other changes?
 2. Where does a part's health come from?

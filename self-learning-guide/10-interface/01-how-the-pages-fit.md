@@ -3,7 +3,7 @@
 **Time:** 25 minutes · **Before this:** [Part 9](../09-decisions/README.md).
 **Reading only.**
 
-## 📖 Read
+## Read
 
 ### Two kinds of page
 
@@ -82,7 +82,7 @@ with `textContent`, which always shows text as text. You'll see comments saying 
 - With no WebGL (old computers), or with `?view=2d` in the address, the system view is a
   flat drawing instead.
 
-## ❓ Quiz
+## Quiz
 
 1. Why do most pages need no JavaScript?
 2. What does `json_script` protect against?

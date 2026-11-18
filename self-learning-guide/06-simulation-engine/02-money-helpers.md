@@ -2,7 +2,7 @@
 
 **Time:** 20 minutes · **Before this:** [6.1](01-the-maths-on-paper.md).
 
-## 📖 Read
+## Read
 
 Every part of the engine needs the same few small tools: turn `22.5` (%) into `0.225`,
 round money to paise, keep a number between two limits, and package one result as
@@ -16,7 +16,7 @@ Two words you'll meet:
   become 2.34. Surprising on an invoice.)
 - **Clamp**: keep a value inside limits. Clamp 120 to 0–100 → 100. Clamp −5 → 0.
 
-## ⌨️ Do
+## Do
 
 Create `simulation_engine/money.py`:
 
@@ -72,7 +72,7 @@ def display(value: Decimal) -> float:
     return float(round2(value))
 ```
 
-## ✅ Check
+## Check
 
 ```bash
 python
@@ -91,7 +91,7 @@ metric("Lost revenue", Decimal("84000"), "INR")
 You should see `Decimal('0.225')`, `Decimal('2.35')`, `Decimal('100')` and
 `{'label': 'Lost revenue', 'value': '84000.00', 'unit': 'INR'}`. Type `exit()`.
 
-## 🔍 Line by line
+## Line by line
 
 - **Lines 1–6** · Docstring: why Decimal (lesson 1.9 showed the float problem).
 - **Line 8** · `ROUND_HALF_UP` names the rounding rule; `Decimal` the number type.
@@ -115,14 +115,14 @@ You should see `Decimal('0.225')`, `Decimal('2.35')`, `Decimal('100')` and
 - **Lines 46–48** · `display`: for **charts** only. A chart doesn't need exact paise,
   and a list of 72 small floats is much smaller than 72 long texts. Never used for totals.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
 | `TypeError: unsupported operand type(s) for /: 'float' and 'decimal.Decimal'` | You passed a float like `22.5`. Use `Decimal("22.5")`. Decimals and floats don't mix. |
 | `round2` gives `2.34` | Check line 23 says `ROUND_HALF_UP`. |
 
-## ❓ Quiz
+## Quiz
 
 1. What does `metric("Month", 7, "month")` put in `value`?
 2. Why are chart numbers floats but totals Decimals?

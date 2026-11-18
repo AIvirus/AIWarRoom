@@ -2,7 +2,7 @@
 
 **Time:** 10 minutes · **Before this:** nothing.
 
-## 📖 Read
+## Read
 
 ### What is a program?
 
@@ -32,14 +32,14 @@ answer in plain words.
 
 ### The parts of every lesson
 
-| Sign | Part | What it means |
-|---|---|---|
-| 📖 | **Read** | The idea, in simple words. Read it fully before typing. |
-| ⌨️ | **Do** | Exactly what to type. Lines starting with `$` or shown in a grey box are commands. |
-| ✅ | **Check** | What you should see if it worked. |
-| 🔍 | **Line by line** | Every line of code, explained. |
-| 🛠️ | **If it didn't work** | Common mistakes and fixes. |
-| ❓ | **Quiz** | Test yourself. Answers are at the end of the lesson. |
+| Part | What it means |
+|---|---|
+| **Read** | The idea, in simple words. Read it fully before typing. |
+| **Do** | Exactly what to type. Lines starting with `$` or shown in a grey box are commands. |
+| **Check** | What you should see if it worked. |
+| **Line by line** | Every line of code, explained. |
+| **If it didn't work** | Common mistakes and fixes. |
+| **Quiz** | Test yourself. Answers are at the end of the lesson. |
 
 ### How code is shown
 
@@ -61,7 +61,7 @@ python --version
 
 Type them **exactly**, including spaces and dots, then press **Enter**.
 
-## ⌨️ Do
+## Do
 
 Nothing to type yet. Just do these two things:
 
@@ -70,7 +70,7 @@ Nothing to type yet. Just do these two things:
 2. Get a notebook (paper or digital) for your quiz answers and for questions you want to
    ask later.
 
-## 🌟 The golden rules
+## The golden rules
 
 1. **Go in order.** Don't skip lessons.
 2. **Read the whole lesson once before you start typing.**
@@ -81,11 +81,11 @@ Nothing to type yet. Just do these two things:
 6. **Ask "why?"** Every line has a reason. If a lesson doesn't explain one, write the
    question in your notebook.
 
-## ❓ Quiz
+## Quiz
 
 1. A computer follows instructions... (a) in any order it likes, (b) exactly in the order
    written?
-2. What does ✅ mean in a lesson?
+2. What does the **Check** part of a lesson tell you?
 3. You see a red error message. What is the first thing to do?
 
 ---

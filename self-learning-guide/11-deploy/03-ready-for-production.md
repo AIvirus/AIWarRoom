@@ -2,7 +2,7 @@
 
 **Time:** 30 minutes · **Before this:** [11.2](02-your-code-on-github.md).
 
-## 📖 Read
+## Read
 
 Four pieces make the app ready for real visitors. Three are already in your project; one
 is new.
@@ -28,7 +28,7 @@ gunicorn uses features only Linux and macOS have. That's fine: it runs **inside*
 Docker container, which is Linux, on any computer. On Windows you keep using `runserver`
 for development.
 
-## ⌨️ Do
+## Do
 
 Add this line at the **end** of `requirements.txt` (it becomes line 12):
 
@@ -44,7 +44,7 @@ environment agree:
 pip install -r requirements.txt
 ```
 
-## ✅ Check
+## Check
 
 ```bash
 pip show gunicorn
@@ -77,7 +77,7 @@ STORAGES = {
 }
 ```
 
-## 🔍 Line by line
+## Line by line
 
 ### `requirements.txt`, line 12
 
@@ -101,14 +101,14 @@ STORAGES = {
 - **Lines 22–25** · Static files are served by WhiteNoise, compressed, with fingerprinted
   names.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
 | `ERROR: No matching distribution found for gunicorn==27.0.1` | A typo in the line, or no internet. Copy the line again. |
 | `pip show gunicorn` prints `WARNING: Package(s) not found` | The virtual environment wasn't active when you ran `pip install`. Activate it and run it again. |
 
-## ❓ Quiz
+## Quiz
 
 1. Why can't you use `runserver` on the internet?
 2. What does `SECURE_PROXY_SSL_HEADER` let Django know?

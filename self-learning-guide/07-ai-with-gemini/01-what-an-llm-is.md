@@ -3,7 +3,7 @@
 **Time:** 30 minutes · **Before this:** [Part 6](../06-simulation-engine/README.md).
 **Reading only.**
 
-## 📖 Read
+## Read
 
 ### A very good next-word guesser
 
@@ -89,7 +89,7 @@ Whatever you send to Gemini leaves your computer and goes to Google. So we send 
 **allowlist**: the business name and mode, the numbers, the results. Never user emails,
 ids, or the free-text business description. In lesson 7.8 you'll see that list in code.
 
-## ❓ Quiz
+## Quiz
 
 1. Why doesn't AI WarRoom let Gemini do the maths?
 2. What is prompt injection?

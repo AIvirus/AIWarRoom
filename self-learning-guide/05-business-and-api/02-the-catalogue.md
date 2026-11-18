@@ -2,7 +2,7 @@
 
 **Time:** 45 minutes · **Before this:** [5.1](01-what-we-build.md).
 
-## 📖 Read
+## Read
 
 The catalogue is a **list of every number the app understands**, with its unit and its
 allowed range. It answers questions like:
@@ -24,7 +24,7 @@ Two Python tools you haven't used yet:
   `Field("x", "X", **PERCENT)` is the same as
   `Field("x", "X", unit="%", minimum=D("0"), maximum=D("100"))`.
 
-## ⌨️ Do
+## Do
 
 In `my-warroom`, make the folder and its empty package files:
 
@@ -491,7 +491,7 @@ known-first-party = [
 "simulation_engine/catalog.py" = ["E501"]
 ```
 
-## ✅ Check
+## Check
 
 In the terminal (venv active, inside `my-warroom`), start Python and try the rules:
 
@@ -518,14 +518,14 @@ You get a dictionary with **all** the settings, your `'6'` plus the defaults
 (`'start_hour': '18'`, `'horizon_hours': '72'`...), every value as text. Type `exit()` to
 leave Python.
 
-## 🔍 Line by line
+## Line by line
 
 ### Piece 1
 
 - **Lines 1–13** · The docstring. It names the two big tables (`INPUTS`, `TEMPLATES`)
   and gives the most important rule of the file: percentages are written the way people
   say them, so `2.5` means 2.5 %, not 0.025.
-- **Line 15** · `dataclass`, the class-writing helper from 📖 Read.
+- **Line 15** · `dataclass`, the class-writing helper from Read.
 - **Line 16** · `Decimal` for exact money (you met it in lesson 1.9).
   `InvalidOperation` is the error `Decimal` raises for text like `"lots"`.
 - **Lines 18–19** · The two modes as named constants. Writing `IDEA` instead of `"idea"`
@@ -687,7 +687,7 @@ leave Python.
 - **Lines 19–20** · In `catalog.py`, allow lines longer than 100 characters (rule
   **E501**): the long scenario descriptions read better on one line.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -696,7 +696,7 @@ leave Python.
 | `SyntaxError` near `**PERCENT` | Check the commas: `"Contribution margin",` then `**PERCENT,` on its own line. |
 | `FrozenInstanceError` | You tried to change a field of a `Field` or `Template`. They are frozen on purpose. |
 
-## ❓ Quiz
+## Quiz
 
 1. What does `conversion_rate = 2.5` mean: 2.5 % or 250 %?
 2. Why does `parse` call `str(raw)` before `Decimal(...)`?

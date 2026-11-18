@@ -2,7 +2,7 @@
 
 **Time:** 40 minutes · **Before this:** [9.4](04-the-brief.md).
 
-## 📖 Read
+## Read
 
 The brief stores money as plain text like `"12345678.40"`. A reader in India expects
 **₹1,23,45,678**: the last three digits, then groups of **two** (thousand, lakh, crore).
@@ -31,7 +31,7 @@ Take `12345678`:
 2. Cut the rest into twos from the right: `1`, `23`, `45`.
 3. Join with commas: `1,23,45,678`.
 
-## ⌨️ Do
+## Do
 
 Make the folder `common/templatetags/` with an **empty** `__init__.py`, then create
 `common/templatetags/warroom.py`.
@@ -155,7 +155,7 @@ def get_item(mapping, key):
     return (mapping or {}).get(key)
 ```
 
-## ✅ Check
+## Check
 
 In `python manage.py shell`:
 
@@ -177,7 +177,7 @@ lakh.
 
 (On Windows, if ₹ gives a `UnicodeEncodeError`, see the fix in lesson 7.2.)
 
-## 🔍 Line by line
+## Line by line
 
 ### Piece 1
 
@@ -231,14 +231,14 @@ lakh.
 - **Lines 107–109** · `get_item`: read a dictionary by a key held in a variable. Django
   templates can't write `mapping[key]` themselves. (Part 10 uses it.)
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
 | `'warroom' is not a registered tag library` (in 9.6) | The folder must be `common/templatetags/` with `__init__.py`, and `"common"` must be in `INSTALLED_APPS`. Restart `runserver` after adding a new `templatetags` folder. |
 | `figure("21000.00", "INR")` gives `'₹21,000.00'` | Line 71: `places = 0 if whole or abs(number) >= 1000 else 2`. |
 
-## ❓ Quiz
+## Quiz
 
 1. Write 2,50,000 the international way.
 2. Why does `-2428.80` show as `-₹2,429` and not `₹-2,429`?

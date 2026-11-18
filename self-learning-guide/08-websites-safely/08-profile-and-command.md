@@ -2,7 +2,7 @@
 
 **Time:** 50 minutes · **Before this:** [8.7](07-the-scan-step-by-step.md).
 
-## 📖 Read
+## Read
 
 ### The site profile
 
@@ -42,7 +42,7 @@ run it every Monday morning with your computer's scheduler (Task Scheduler on Wi
 `cron` on Mac/Linux). That's the only "monitoring" AI WarRoom does: nothing watches a
 site all the time.
 
-## ⌨️ Do
+## Do
 
 ### 1. The profile: the end of `scan_service.py` (lines 165–219)
 
@@ -154,7 +154,7 @@ class Command(BaseCommand):
                 self.stdout.write(f"  [{step['step']}] {step['message']}")
 ```
 
-## ✅ Check
+## Check
 
 First, with nothing to scan:
 
@@ -216,7 +216,7 @@ server again) → **AI analyses** → the "Company site profile" row → **Outpu
 it noticed, correctly, that this is a demo shop for practising scraping, and it marked its
 one competitor guess as `"basis": "inference"`, with no link.
 
-## 🔍 Line by line
+## Line by line
 
 ### The profile
 
@@ -262,7 +262,7 @@ one competitor guess as `"basis": "inference"`, with no link.
 - **Line 35** · A new scan row.
 - **Lines 36–37** · Run the generator, printing each step as it arrives.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -271,7 +271,7 @@ one competitor guess as `"basis": "inference"`, with no link.
 | `[done] ... DNS lookup failed` | No internet connection. |
 | The lines all appear at once at the end | That's fine on some terminals; the steps still ran in order. |
 
-## ❓ Quiz
+## Quiz
 
 1. Which Part 7 safety layers does the site profile get for free?
 2. When does Gemini get the `url_context` tool?

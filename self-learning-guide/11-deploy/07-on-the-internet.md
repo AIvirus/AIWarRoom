@@ -2,7 +2,7 @@
 
 **Time:** 60 minutes · **Before this:** [11.6](06-checks-on-every-push.md).
 
-## 📖 Read
+## Read
 
 Render will read your repository from GitHub, build the `Dockerfile`, and run the image
 with **environment variables** you type into its dashboard. Every later `git push` to
@@ -23,7 +23,7 @@ project):
 `DJANGO_SETTINGS_MODULE` is already set to production inside the image, and `PORT` is set
 by Render (to 10000).
 
-## ⌨️ Do
+## Do
 
 ### 1. A production database on Neon
 
@@ -77,9 +77,9 @@ Running migrations:
 [INFO] Listening at: http://0.0.0.0:10000
 ```
 
-Then "Your service is live 🎉".
+Then "Your service is live ".
 
-## ✅ Check
+## Check
 
 1. Open `https://your-app-name.onrender.com/healthz/` →
    `{"status": "ok", "database": "postgresql"}`. Your app on the internet, talking to
@@ -112,7 +112,7 @@ Then "Your service is live 🎉".
 The free plan **sleeps** after 15 minutes without visitors. The next visit shows a loading
 page for about a minute while it wakes up. That's normal.
 
-## 🔍 Line by line
+## Line by line
 
 | Step | What happens behind it |
 |---|---|
@@ -124,7 +124,7 @@ page for about a minute while it wakes up. That's normal.
 | `Listening at ...:10000` | Render set `PORT=10000`; the `CMD` binds gunicorn to it. |
 | HTTPS | Render's front door holds the certificate and passes requests on with `X-Forwarded-Proto: https` (lesson 11.3, line 15). |
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -137,7 +137,7 @@ page for about a minute while it wakes up. That's normal.
 | "Ask the analyst" says the AI is unavailable | `GEMINI_API_KEY` is missing on Render, or today's budget is used up. |
 | The build fails at `pip install` | Open the log: a typo in `requirements.txt`? It must build on your computer first (11.4). |
 
-## ❓ Quiz
+## Quiz
 
 1. Why a separate production database and a new secret key?
 2. Who sets `PORT`, and how does gunicorn know it?

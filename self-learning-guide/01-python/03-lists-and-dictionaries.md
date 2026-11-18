@@ -2,7 +2,7 @@
 
 **Time:** 30 minutes · **Before this:** [1.2](02-values-and-variables.md).
 
-## 📖 Read
+## Read
 
 Sometimes one value isn't enough. Raju wants to remember how many cups he sold on
 **each day** of the week. Python has two "containers" for many values.
@@ -13,7 +13,7 @@ Sometimes one value isn't enough. Raju wants to remember how many cups he sold o
 sales = [110, 125, 98]
 ```
 
-Each item has a position number called an **index**. ⚠️ Counting starts at **0**, not 1:
+Each item has a position number called an **index**. Counting starts at **0**, not 1:
 
 | Index | 0 | 1 | 2 |
 |---|---|---|---|
@@ -34,7 +34,7 @@ stall = {"name": "Raju Chai", "price_per_cup": 15}
 You'll see dictionaries **everywhere** in AI WarRoom: the results of a simulation, the
 data sent to the AI and the data the website receives are all dictionaries.
 
-## ⌨️ Do
+## Do
 
 Make `lists_and_dicts.py`:
 
@@ -67,7 +67,7 @@ print("Has a phone number?", "phone" in stall)
 python lists_and_dicts.py
 ```
 
-## ✅ Check
+## Check
 
 ```text
 Monday: 110
@@ -80,7 +80,7 @@ Keys: ['name', 'price_per_cup', 'cost_per_cup', 'city']
 Has a phone number? False
 ```
 
-## 🔍 Line by line
+## Line by line
 
 **Line 2** · `sales_this_week = [110, 125, ...]`: a list of 7 whole numbers, Monday to
 Sunday. Items are separated by commas.
@@ -116,14 +116,14 @@ so they print nicely.
 **Line 21** · `"phone" in stall`: `in` asks "is this key in the dictionary?" The answer is
 `True` or `False`.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | It means |
 |---|---|
 | `IndexError: list index out of range` | You asked for a position that doesn't exist (e.g. `[7]` in a 7-item list: the last is `[6]`). |
 | `KeyError: 'Name'` | That key isn't in the dictionary. Check the spelling and capitals: `"name"` ≠ `"Name"`. |
 
-## ❓ Quiz
+## Quiz
 
 1. In `[5, 10, 15]`, what is `[1]`?
 2. How do you add `"phone": "98xxxxxxx"` to `stall`?

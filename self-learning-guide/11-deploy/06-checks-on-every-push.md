@@ -2,7 +2,7 @@
 
 **Time:** 25 minutes · **Before this:** [11.5](05-docker-compose.md).
 
-## 📖 Read
+## Read
 
 Before every commit you've run `ruff check`, `ruff format` and `pytest`. It's easy to
 forget once. **GitHub Actions** can run them **for** you, on GitHub's own computers, every
@@ -16,14 +16,14 @@ On GitHub, each commit then gets a mark:
 
 | Mark | Means |
 |---|---|
-| 🟡 dot | The checks are running |
-| ✅ tick | Everything passed |
-| ❌ cross | Something failed: click it to see which step and why |
+| Yellow dot | The checks are running |
+| Green tick | Everything passed |
+| Red cross | Something failed: click it to see which step and why |
 
 Free accounts get plenty of Actions minutes for a project like this (public repositories
 have no limit).
 
-## ⌨️ Do
+## Do
 
 Make the folders `.github/workflows/` (note the dot at the start of `.github`), then create
 `.github/workflows/ci.yml`:
@@ -68,18 +68,18 @@ git commit -m "Add Docker files and CI"
 git push
 ```
 
-## ✅ Check
+## Check
 
 1. On your repository's GitHub page, click the **Actions** tab. A run called "Add Docker
-   files and CI" appears with a 🟡 dot.
+   files and CI" appears with a yellow dot.
 2. Click it, then the **test** job: each step is listed, with its output when you click
-   it. After a few minutes every step has a ✅, and so does your commit on the repository's
+   it. After a few minutes every step has a green tick, and so does your commit on the repository's
    front page.
 3. **See it fail on purpose** (optional): change a test so it fails, commit, push, and
-   watch the ❌ appear, with the failing test's name in the `pytest` step. Then put it back,
+   watch the red cross appear, with the failing test's name in the `pytest` step. Then put it back,
    commit and push again.
 
-## 🔍 Line by line
+## Line by line
 
 - **Lines 1–2** · Comments: where it runs and what a red cross means.
 - **Line 3** · The workflow's name, shown in the Actions tab.
@@ -88,7 +88,7 @@ git push
 - **Lines 9–10** · `jobs:` the work. One job here, called `test`.
 - **Line 11** · Run it on a fresh Ubuntu Linux machine, created just for this run and
   thrown away afterwards.
-- **Line 12** · `steps:` in order. If one fails, the rest are skipped and the run is ❌.
+- **Line 12** · `steps:` in order. If one fails, the rest are skipped and the run fails (red cross).
 - **Line 13** · `uses:` a ready-made step: download your repository's code.
 - **Lines 14–17** · Another ready-made step: install Python 3.12, and remember downloaded
   packages between runs (`cache: pip`) so later runs are quicker.
@@ -98,7 +98,7 @@ git push
   the fake Gemini and fake websites (Parts 7–8).
 - **Line 22** · Build the Docker image, to prove the `Dockerfile` still works.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -107,11 +107,11 @@ git push
 | `ruff format --check` fails on GitHub but you didn't notice | You forgot `ruff format .` before committing. Run it, commit, push. |
 | A test passes on your computer but fails on GitHub | It may depend on something only your computer has (a file, your `.env`). Tests must not. |
 
-## ❓ Quiz
+## Quiz
 
 1. When does this workflow run?
 2. Why don't the tests need your Neon database or Gemini key on GitHub?
-3. What does a ❌ next to a commit tell you?
+3. What does a red cross next to a commit tell you?
 
 ---
 

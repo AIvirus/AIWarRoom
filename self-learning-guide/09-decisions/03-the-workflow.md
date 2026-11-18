@@ -2,7 +2,7 @@
 
 **Time:** 35 minutes · **Before this:** [9.2](02-the-decision-table.md).
 
-## 📖 Read
+## Read
 
 The status map from lesson 9.1 becomes a **dictionary**: each status → the set of
 statuses allowed next.
@@ -19,7 +19,7 @@ Keeping the rules in **one** small file means the API (lesson 9.7) and the page 
 9.6) both ask the same question, "may this move happen?", and get the same answer. If the
 rules ever change, they change in one place.
 
-## ⌨️ Do
+## Do
 
 Make `decisions/services/` with an **empty** `__init__.py`. Then create
 `decisions/services/workflow.py`:
@@ -93,7 +93,7 @@ def _entry(user, old, new, note) -> dict:
     }
 ```
 
-## ✅ Check
+## Check
 
 In `python manage.py shell`:
 
@@ -129,7 +129,7 @@ decisions.services.workflow.InvalidTransition: A proposed decision can move to: 
 The message says what **is** allowed, not just "no". Try
 `workflow.check_transition("done", "rejected")` too.
 
-## 🔍 Line by line
+## Line by line
 
 - **Lines 1–10** · Docstring: the map, and the promise that no AI code calls this module.
 - **Line 12** · `timezone`, for "now".
@@ -164,14 +164,14 @@ The message says what **is** allowed, not just "no". Try
 - **Lines 58–65** · `_entry`: one history entry. The time as text, the person's name (or
   `None`), from, to, and the note cut to 280 characters.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
 | `ModuleNotFoundError: No module named 'decisions.services'` | The folder needs its empty `__init__.py`. |
 | `KeyError: 'finished'` | You asked about a status that doesn't exist. The five are on lines 16–20 of `models.py`. |
 
-## ❓ Quiz
+## Quiz
 
 1. Where would you change the rules if "approved" should also be allowed to go straight
    to "done"?

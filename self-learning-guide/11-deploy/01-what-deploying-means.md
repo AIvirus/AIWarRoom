@@ -3,7 +3,7 @@
 **Time:** 25 minutes · **Before this:** [Part 10](../10-interface/README.md).
 **Reading only.**
 
-## 📖 Read
+## Read
 
 ### From "works on my computer" to "works for everyone"
 
@@ -61,7 +61,7 @@ GitHub remember history.
 - **Neon** is your database, as before, but a **separate** one for production, so testing
   on your laptop never touches real data.
 
-## ❓ Quiz
+## Quiz
 
 1. What is the difference between an image and a container?
 2. Why is `DEBUG=False` important on the internet?

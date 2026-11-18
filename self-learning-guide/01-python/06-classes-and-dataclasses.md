@@ -2,7 +2,7 @@
 
 **Time:** 40 minutes · **Before this:** [1.5](05-functions.md).
 
-## 📖 Read
+## Read
 
 A **class** is a blueprint. From one blueprint you can make many **objects**, each with
 its own data.
@@ -23,7 +23,7 @@ Many classes just *hold data*. Python's `@dataclass` writes the boring parts (li
 which is great for things like "the inputs of a simulation": nobody can change them by
 accident halfway through.
 
-## ⌨️ Do
+## Do
 
 Make `classes.py`:
 
@@ -67,7 +67,7 @@ print(bigger.daily_sales(), "versus", plan.daily_sales())
 python classes.py
 ```
 
-## ✅ Check
+## Check
 
 ```text
 Raju Chai 1500
@@ -76,7 +76,7 @@ Plan(price=15, cups_per_day=120)
 3000 versus 1800
 ```
 
-## 🔍 Line by line
+## Line by line
 
 **Line 2** · `from dataclasses import dataclass, replace`: bring in two tools from Python's
 built-in `dataclasses` module (lesson 1.7 explains `import`).
@@ -125,7 +125,7 @@ few numbers.
 
 **Line 32** · The copy sells 3000 a day; the original is untouched at 1800.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | It means |
 |---|---|
@@ -133,7 +133,7 @@ few numbers.
 | `FrozenInstanceError: cannot assign to field 'price'` | You tried `plan.price = 20` on a frozen dataclass. Use `replace(...)` instead. |
 | `AttributeError: 'Stall' object has no attribute 'Name'` | Spelling or capitals: it's `name`. |
 
-## ❓ Quiz
+## Quiz
 
 1. What is `self`?
 2. Why might we want a dataclass to be `frozen`?

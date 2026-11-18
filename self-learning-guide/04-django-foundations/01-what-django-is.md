@@ -2,7 +2,7 @@
 
 **Time:** 20 minutes · **Before this:** Parts 1–3. Reading only, no typing.
 
-## 📖 Read
+## Read
 
 **Django** is a Python package for building websites. It's called a **framework**: a
 ready-made skeleton, with the hard, boring, risky parts already solved, such as
@@ -62,7 +62,7 @@ Django builds web **pages**. **DRF** is an extra package that builds **APIs** (l
 URLs that answer with JSON. AI WarRoom uses both: pages for people, and an API for the
 sliders, the 3D view and tools like Postman.
 
-## ❓ Quiz
+## Quiz
 
 1. In the request journey, which piece decides which view runs?
 2. What does a model represent?

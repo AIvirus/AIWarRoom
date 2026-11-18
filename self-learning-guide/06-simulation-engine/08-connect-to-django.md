@@ -2,7 +2,7 @@
 
 **Time:** 45 minutes · **Before this:** [6.7](07-the-runner.md).
 
-## 📖 Read
+## Read
 
 The engine knows nothing about databases. Django knows nothing about outages. This
 lesson builds the small **bridge** between them:
@@ -46,7 +46,7 @@ runs the engine on "what-if" values and saves **nothing**. Because it uses the s
 snapshot and the same `runner.run`, a preview and a saved run with the same inputs always
 agree.
 
-## ⌨️ Do
+## Do
 
 ### 1. `businesses/services/snapshot.py`
 
@@ -384,13 +384,13 @@ compare.
 python manage.py check
 ```
 
-## ✅ Check
+## Check
 
 `System check identified no issues (0 silenced).` No migration is needed: the tables
 for runs and results already exist since lesson 5.6. You'll make a real run in lesson
 6.9.
 
-## 🔍 Line by line
+## Line by line
 
 ### `businesses/services/snapshot.py`
 
@@ -485,7 +485,7 @@ Lines 15–28 and 41–83 are the same as in lesson 5.6.
 
 - **Line 31** · The preview's address.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -493,7 +493,7 @@ Lines 15–28 and 41–83 are the same as in lesson 5.6.
 | `ImportError: cannot import name 'run_scenario'` | Check the function name on line 43 of `run_service.py`. |
 | `ImportError` mentioning `intelligence` | You copied the **finished** `simulations/api.py`. Use the for-now version above. |
 
-## ❓ Quiz
+## Quiz
 
 1. What goes into a snapshot, and why is it sorted?
 2. A run fails because a number is missing. Is anything saved?

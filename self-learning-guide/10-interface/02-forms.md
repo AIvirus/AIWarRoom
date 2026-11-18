@@ -2,7 +2,7 @@
 
 **Time:** 50 minutes · **Before this:** [10.1](01-how-the-pages-fit.md).
 
-## 📖 Read
+## Read
 
 A Django **form** does three jobs for a page:
 
@@ -23,7 +23,7 @@ The same rule checks a value everywhere: `catalog.parse_input`. The API (Part 5)
 engine (Part 6) and now this form all ask it, so "contribution margin 150 %" is refused
 the same way wherever it's typed.
 
-## ⌨️ Do
+## Do
 
 ### 1. `businesses/services/assumptions.py`
 
@@ -205,7 +205,7 @@ class ScenarioForm(forms.Form):
         ]
 ```
 
-## ✅ Check
+## Check
 
 In `python manage.py shell`, build the assumptions form for one of your operating
 businesses:
@@ -247,7 +247,7 @@ good.values()
 `True`, then `{'contribution_margin': (Decimal('22'), 'user')}`: only the field that was
 sent, with its source. (Nothing is saved: we never called `save_assumptions`.)
 
-## 🔍 Line by line
+## Line by line
 
 ### `assumptions.py`
 
@@ -319,7 +319,7 @@ sent, with its source. (Nothing is saved: we never called `save_assumptions`.)
 - **Lines 131–135** · The choices are filled in per business: only templates for its
   mode. An idea can't pick "Payment gateway outage".
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -327,7 +327,7 @@ sent, with its source. (Nothing is saved: we never called `save_assumptions`.)
 | `len(form.rows)` is `0` | The business's `mode` didn't match: check line 40 compares `business.mode` with `spec.modes`. |
 | `AttributeError: 'NoneType' object has no attribute 'mode'` | You have no operating business. Make one (lesson 6.9's `api()` steps). |
 
-## ❓ Quiz
+## Quiz
 
 1. Why does `AssumptionsForm` have no fields written out in the class?
 2. A page sends only `contribution_margin`. Does saving remove daily orders?

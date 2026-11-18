@@ -2,7 +2,7 @@
 
 **Time:** 30 minutes · **Before this:** [Part 1](../01-python/README.md).
 
-## 📖 Read
+## Read
 
 When you open a website, two computers talk to each other:
 
@@ -50,7 +50,7 @@ It works like ordering at a restaurant counter:
 In AI WarRoom, **Django** is the server. Your browser sends requests; Django runs Python
 code and sends back pages.
 
-## ⌨️ Do
+## Do
 
 Python can run a very simple web server that just sends files from a folder.
 
@@ -68,7 +68,7 @@ python -m http.server 8765
 6. Now open **http://localhost:8765/nothing-here.html**.
 7. Stop the server with **Ctrl + C**.
 
-## ✅ Check
+## Check
 
 The terminal shows lines like these (your date and time will differ):
 
@@ -82,7 +82,7 @@ Notice: opening **one** page made the browser send **several** requests, one for
 and one for each file the page needs (like `style.css`). The missing ones got `404`. Once
 you create `style.css` and `app.js` in lesson 2.2, they'll get `200` too.
 
-## 🔍 Line by line
+## Line by line
 
 | Part | Meaning |
 |---|---|
@@ -91,7 +91,7 @@ you create `style.css` and `app.js` in lesson 2.2, they'll get `200` too.
 | `"GET /index.html HTTP/1.1"` | The request: method `GET`, path `/index.html`, protocol version `HTTP/1.1`. |
 | `200` / `404` | The status code the server answered with. |
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -99,7 +99,7 @@ you create `style.css` and `app.js` in lesson 2.2, they'll get `200` too.
 | The browser says "This site can't be reached" | The server isn't running, or you typed a different port. |
 | You get a list of files instead of your page | You opened `http://localhost:8765/` without `index.html`; click `index.html`. |
 
-## ❓ Quiz
+## Quiz
 
 1. Which one is the client: the browser or the server?
 2. What does status code `404` mean? And `500`?

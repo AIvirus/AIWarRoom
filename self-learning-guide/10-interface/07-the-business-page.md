@@ -2,7 +2,7 @@
 
 **Time:** 60 minutes · **Before this:** [10.6](06-board-form-demo-data.md).
 
-## 📖 Read
+## Read
 
 The business page is the biggest server page. Left column: the **assumption ledger**,
 **scenarios**, **components** (operating businesses only) and the **expert committee**.
@@ -22,7 +22,7 @@ The same `ai-actions.js` also drives "Ask the analyst" on the run pages (next le
 each button says **which** API address to call in a `data-ai-action` attribute, so one
 script serves them all.
 
-## ⌨️ Do
+## Do
 
 ### 1. `templates/businesses/detail.html`
 
@@ -344,7 +344,7 @@ button?.addEventListener("click", async () => {
 });
 ```
 
-## ✅ Check
+## Check
 
 Open the board and click **Chai Cart** (the idea you added in 10.6).
 
@@ -373,7 +373,7 @@ Now open **Books Corner** (from Part 8):
 
 Don't click **Run** or **Create and run** yet: the run pages are the next lesson.
 
-## 🔍 Line by line
+## Line by line
 
 ### `detail.html`
 
@@ -455,7 +455,7 @@ Don't click **Run** or **Create and run** yet: the run pages are the next lesson
 - **Lines 48–53** · The connection broke: say so, honestly.
 - **Lines 54–58** · Starting failed (for example, no website): show the API's message.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -463,7 +463,7 @@ Don't click **Run** or **Create and run** yet: the run pages are the next lesson
 | Clicking "Re-scan now" does nothing | Open the console (F12): an error there names the file. Is `{% block scripts %}` at the end (lines 182–185)? |
 | `NoReverseMatch: 'business-committee'` | The committee action must be in `businesses/api.py` (lesson 8.10). |
 
-## ❓ Quiz
+## Quiz
 
 1. How does one `ai-actions.js` serve several different buttons?
 2. Why does `scan.js` use `button?.addEventListener`?

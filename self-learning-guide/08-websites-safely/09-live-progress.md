@@ -2,7 +2,7 @@
 
 **Time:** 60 minutes · **Before this:** [8.8](08-profile-and-command.md).
 
-## 📖 Read
+## Read
 
 The terminal command printed each step as it happened. Now the browser should too.
 
@@ -38,7 +38,7 @@ scan. The view "claims" it with one database command that says "set status to ru
 one tab can win. Every other tab (or a reload later) gets a **replay** of the saved log
 instead of a second scan.
 
-## ⌨️ Do
+## Do
 
 ### 1. `intelligence/views.py`
 
@@ -224,7 +224,7 @@ action (so it's indented by 4 spaces, like the other actions):
 ```
 <!-- fmt:on -->
 
-## ✅ Check
+## Check
 
 ```bash
 python manage.py check
@@ -295,13 +295,13 @@ watch(bad.events_url)
 [done] localhost points to a private or reserved network address.
 ```
 
-The server refused to visit itself. 🎉
+The server refused to visit itself.
 
 **See the stream itself:** open DevTools' **Network** tab, run another
 `watch(started.events_url)`, click the `events/` request, then its **EventStream** tab:
 each event, as it arrived.
 
-## 🔍 Line by line
+## Line by line
 
 ### `intelligence/views.py`
 
@@ -318,7 +318,7 @@ each event, as it arrived.
 - **Line 33** · `scan_events(request, pk)`: `pk` is the scan id from the address.
 - **Line 34** · The scan, **only if** it belongs to the user's organization; otherwise
   404 (lesson 4.6). `for_user` comes from the `CompanyScan` table's manager (lesson 7.3).
-- **Lines 36–40** · ⭐ The claim. `.filter(pk=..., status=PENDING).update(status=RUNNING)`
+- **Lines 36–40** · **Key line.** The claim. `.filter(pk=..., status=PENDING).update(status=RUNNING)`
   is one database command that changes the row **only if** it's still pending, and
   returns how many rows it changed: 1 (we won) or 0 (someone else did, or it's done).
 - **Line 41** · Won: run it live. Lost: replay.
@@ -363,7 +363,7 @@ each event, as it arrived.
   gluing text together.
 - **Lines 85–88** · Answer 202 with the scan id, its status and the events address.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -372,7 +372,7 @@ each event, as it arrived.
 | `watch()` prints nothing at all | Did you paste `watch_scan.js`? Is `started.events_url` set? Look in the Network tab for the `events/` request. |
 | `[busy] This scan is already running in another tab.` | Another tab is running that scan. Wait, then `watch` again to see the replay. |
 
-## ❓ Quiz
+## Quiz
 
 1. Why does starting a scan answer 202, not 201?
 2. Two tabs open the same events address at the same moment. How many scans run?

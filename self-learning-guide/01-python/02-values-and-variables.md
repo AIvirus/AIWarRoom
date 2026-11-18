@@ -2,7 +2,7 @@
 
 **Time:** 30 minutes · **Before this:** [1.1](01-your-first-program.md).
 
-## 📖 Read
+## Read
 
 A **value** is one piece of information: `120`, `6.5`, `"Raju Chai"`, `True`.
 
@@ -38,7 +38,7 @@ to". It means **"store the value on the right in the name on the left"**.
 | `%` | remainder | `5 % 2` | `1` |
 | `**` | power | `5 ** 2` | `25` |
 
-## ⌨️ Do
+## Do
 
 Make `values.py` in your `python` folder and type:
 
@@ -69,7 +69,7 @@ Run it:
 python values.py
 ```
 
-## ✅ Check
+## Check
 
 ```text
 Raju Chai
@@ -79,7 +79,7 @@ Raju Chai made 1020.0 rupees profit from 120 cups.
 <class 'int'> <class 'float'> <class 'str'> <class 'bool'>
 ```
 
-## 🔍 Line by line
+## Line by line
 
 **Line 1** · A comment saying what the file is about.
 
@@ -125,7 +125,7 @@ is the easiest way to mix text and values.
 **Line 17** · `type(...)` tells you what kind of value something is. You see
 `<class 'int'>` and so on. "Class" is Python's word for a type (more in lesson 1.6).
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -133,7 +133,7 @@ is the easiest way to mix text and values.
 | You see `{stall_name}` printed literally | You forgot the `f` before the quote on line 16. |
 | `TypeError: can only concatenate str (not "int") to str` | You wrote something like `"Profit: " + profit`. Use a comma in `print`, or an f-string. |
 
-## ❓ Quiz
+## Quiz
 
 1. What type is `"120"` (with quotes)? And `120`?
 2. After `cups = 10` and then `cups = cups + 5`, what is in `cups`?

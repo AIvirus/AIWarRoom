@@ -2,7 +2,7 @@
 
 **Time:** 45 minutes · **Before this:** [7.4](04-schemas-and-the-prompt.md).
 
-## 📖 Read
+## Read
 
 The prompt says "do not invent numbers". A prompt is a request, not a guarantee. So after
 every answer, a small piece of plain Python checks **every number** the AI wrote.
@@ -21,11 +21,11 @@ The engine says the backup costs **14,700**. The AI writes:
 
 | AI wrote | Meaningful digits | 14,700 rounded to that many digits | Verdict |
 |---|---|---|---|
-| `₹15k` | 2 (`1`, `5`) | 15,000 | ✅ fair rounding |
-| `₹14k` | 2 | 14,000 (rounded down) | ✅ fair shortening |
-| `₹14,700` | 3 (`1`, `4`, `7`; trailing zeros are padding) | 14,700 | ✅ exact |
-| `₹14,550` | 4 | 14,700 → no match with any sent number | 🚩 flagged |
-| `₹13,000` | 2 | 15,000 or 14,000 → no match | 🚩 flagged |
+| `₹15k` | 2 (`1`, `5`) | 15,000 | fair rounding |
+| `₹14k` | 2 | 14,000 (rounded down) | fair shortening |
+| `₹14,700` | 3 (`1`, `4`, `7`; trailing zeros are padding) | 14,700 | exact |
+| `₹14,550` | 4 | 14,700 → no match with any sent number | flagged |
+| `₹13,000` | 2 | 15,000 or 14,000 → no match | flagged |
 
 So a writer may round, but can't drift. And a number the AI **calculated itself** (a
 difference, a percentage) is flagged too, because we never sent it. That's on purpose:
@@ -57,7 +57,7 @@ pieces this one uses:
 | `(?<![\w.])` | "not straight after a letter, digit or dot" (so `B2B` isn't a number) |
 | `\b` | the edge of a word (so the `m` in `months` isn't "million") |
 
-## ⌨️ Do
+## Do
 
 Create `intelligence/services/__init__.py` (empty), then
 `intelligence/services/guardrails.py` in three pieces.
@@ -226,7 +226,7 @@ def flag_unsupported_numbers(answer: dict, sent_data: dict) -> list[dict]:
     return flags
 ```
 
-## ✅ Check
+## Check
 
 ```bash
 python
@@ -250,7 +250,7 @@ You get exactly one flag:
 `₹21,000` is exact and `₹15k` is fair rounding; `₹14,550` isn't a number we sent. Type
 `exit()`.
 
-## 🔍 Line by line
+## Line by line
 
 ### Piece 1
 
@@ -320,7 +320,7 @@ You get exactly one flag:
   written, and its value.
 - **Lines 149–150** · Walk the answer and return the flags.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -328,7 +328,7 @@ You get exactly one flag:
 | `₹15k` is flagged | Check lines 59–61 (trailing zeros) and that line 119 tries both roundings. |
 | `RecursionError` | `walk` must call itself on the **items**, not on `node` again. |
 
-## ❓ Quiz
+## Quiz
 
 1. The engine's number is 8,514.74. Which are accepted: "₹8.5k", "₹8,515", "₹8,600"?
 2. Why is `True` checked before numbers?

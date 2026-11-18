@@ -2,7 +2,7 @@
 
 **Time:** 30 minutes · **Before this:** [1.3](03-lists-and-dictionaries.md).
 
-## 📖 Read
+## Read
 
 ### Decisions: `if`, `elif`, `else`
 
@@ -24,14 +24,14 @@ else:
 Comparison signs: `==` equal, `!=` not equal, `<`, `>`, `<=` (less or equal),
 `>=` (more or equal).
 
-⚠️ `=` stores a value; `==` **asks** whether two values are equal.
+Careful: `=` stores a value; `==` **asks** whether two values are equal.
 
 ### Loops: doing something many times
 
 - **`for`** goes through every item of a list, one at a time.
 - **`while`** keeps going **as long as** a condition is True.
 
-## ⌨️ Do
+## Do
 
 Make `decisions_and_loops.py`:
 
@@ -62,7 +62,7 @@ print("Months to save 50,000:", months)
 python decisions_and_loops.py
 ```
 
-## ✅ Check
+## Check
 
 ```text
 Mon 110 slow
@@ -75,7 +75,7 @@ Sun 190 busy
 Months to save 50,000: 5
 ```
 
-## 🔍 Line by line
+## Line by line
 
 **Lines 2–3** · Two lists of the same length: cups sold, and the day names.
 
@@ -118,7 +118,7 @@ back in the same variable.
 **Line 19** · Not indented, so it runs once, **after** the loop finishes. After 5 months
 savings are 60,000, which is no longer under 50,000, so the loop stops.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -126,7 +126,7 @@ savings are 60,000, which is no longer under 50,000, so the loop stops.
 | `IndentationError: unindent does not match` | You mixed 3 and 4 spaces, or tabs and spaces. Select the lines and let VS Code fix the spacing, or retype the spaces. |
 | The program never stops | A `while` whose condition never becomes False. Press **Ctrl + C**, then check that the loop changes the variable it tests. |
 
-## ❓ Quiz
+## Quiz
 
 1. What's the difference between `=` and `==`?
 2. If `cups` is 120, which note is chosen, and why not `"busy"`?

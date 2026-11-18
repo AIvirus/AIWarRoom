@@ -2,7 +2,7 @@
 
 **Time:** 40 minutes · **Before this:** [7.3](03-the-ai-tables.md).
 
-## 📖 Read
+## Read
 
 ### A schema: the exact shape we accept
 
@@ -41,7 +41,7 @@ not inside Python code. Its first line is a version: `version: run-explanation/2
 time someone edits the prompt, they raise the number. Every saved answer records the
 version that produced it (lesson 7.3).
 
-## ⌨️ Do
+## Do
 
 ### 1. `intelligence/schemas.py`
 
@@ -204,7 +204,7 @@ not "₹204,718.08" or "45037.98 INR". Keep figures recognisable as the ones sup
 Return JSON matching the provided schema exactly.
 ```
 
-## ✅ Check
+## Check
 
 ```bash
 python
@@ -229,7 +229,7 @@ Pydantic names the field and says exactly what was wrong. Lesson 7.7 sends a sho
 version of that message back to Gemini when it asks for a corrected answer. Type
 `exit()`.
 
-## 🔍 Line by line
+## Line by line
 
 ### `intelligence/schemas.py`
 
@@ -290,14 +290,14 @@ Notice that the rules and the code agree: rule 2 is checked by the guardrail (7.
 by `cited_metric_keys` (7.8), and the schema by Pydantic (7.7). **A prompt is a request;
 code is a check.** We use both.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
 | `ModuleNotFoundError: No module named 'pydantic'` | Activate the venv; `pip install -r requirements.txt` (Part 4) installs it. |
 | `NameError: name 'Basis' is not defined` | Line 51 must come before the classes that use it. |
 
-## ❓ Quiz
+## Quiz
 
 1. What two jobs does one Pydantic class do?
 2. Why must every explanation include at least one limitation?

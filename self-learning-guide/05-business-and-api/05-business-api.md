@@ -2,7 +2,7 @@
 
 **Time:** 40 minutes · **Before this:** [5.4](04-serializers.md).
 
-## 📖 Read
+## Read
 
 In lesson 4.7 you wrote a small API with a **function** (`me`) and one **ViewSet**
 (`OrganizationViewSet`, read only). Now you'll use a full `ModelViewSet`. One class gives
@@ -33,7 +33,7 @@ The finished `businesses/api.py` also has two actions that need Parts 7 and 8 (r
 the company's website and the AI committee). For now, use the version in
 [`for-now/businesses/api.py`](for-now/businesses/api.py), which leaves them out.
 
-## ⌨️ Do
+## Do
 
 Create `businesses/api.py`:
 
@@ -130,7 +130,7 @@ class ComponentViewSet(viewsets.ModelViewSet):
         serializer.save(business=self.get_business())
 ```
 
-## ✅ Check
+## Check
 
 ```bash
 python manage.py check
@@ -139,7 +139,7 @@ python manage.py check
 prints `System check identified no issues (0 silenced).` You can't visit the addresses
 yet: lesson 5.7 adds them to `config/urls.py`.
 
-## 🔍 Line by line
+## Line by line
 
 ### Imports (lines 1–22)
 
@@ -234,7 +234,7 @@ ViewSet first finds the business, safely, and then works only inside it.
   everything in `a` plus one more entry.
 - **Lines 88–89** · A new component always belongs to the business in the address.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -242,7 +242,7 @@ ViewSet first finds the business, safely, and then works only inside it.
 | `AttributeError: 'OrgScopedQuerySet' object has no attribute 'active'` | `BusinessProfile.objects` must use `BusinessQuerySet` (models.py line 46). |
 | `ImproperlyConfigured: ... 'queryset' attribute` | `BusinessViewSet` needs line 32. |
 
-## ❓ Quiz
+## Quiz
 
 1. Alice sends `DELETE` for Bob's business. What answer does she get, and why?
 2. A member (not an owner) sends `DELETE` for their own organization's business. What

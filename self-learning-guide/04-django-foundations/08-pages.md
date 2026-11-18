@@ -2,7 +2,7 @@
 
 **Time:** 50 minutes · **Before this:** [4.7](07-signup-login-api.md).
 
-## 📖 Read
+## Read
 
 A **template** is an HTML file with gaps that Django fills in. The template language
 has two kinds of markers:
@@ -25,7 +25,7 @@ Django also **escapes** every `{{ value }}` automatically: if someone names thei
 organization `<script>...`, it's shown as text, never run as code. That blocks an attack
 called **XSS** (cross-site scripting).
 
-## ⌨️ Do
+## Do
 
 Create a `templates` folder in `my-warroom`, and `templates/accounts` inside it.
 
@@ -362,7 +362,7 @@ urlpatterns = [
 - **Line 25** · The admin site.
 - **Line 26** · The health check.
 
-## ✅ Check
+## Check
 
 ```bash
 python manage.py runserver
@@ -382,7 +382,7 @@ Then in the browser:
    browsable API.
 6. Click **Log out** in the status bar.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -391,7 +391,7 @@ Then in the browser:
 | The page has no colours | The `static` folder wasn't copied into `my-warroom` (lesson 4.2, Step 6). |
 | `CSRF verification failed` | A form is missing `{% csrf_token %}`. |
 
-## ❓ Quiz
+## Quiz
 
 1. What's the difference between `{{ }}` and `{% %}`?
 2. Why is logout a form with a button, not a plain link?

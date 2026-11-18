@@ -2,7 +2,7 @@
 
 **Time:** 50 minutes · **Before this:** [7.8](08-explain-a-run.md).
 
-## 📖 Read
+## Read
 
 How do you test code that calls an AI whose answers change every time, costs quota, and
 needs the internet? You **don't call it**. You plug in a **fake transport** (lesson 7.6)
@@ -24,7 +24,7 @@ can't reach the real Gemini.
 
 Then, after the tests, you'll try the **real** Gemini once in the browser.
 
-## ⌨️ Do
+## Do
 
 ### 1. The fake, and the tests
 
@@ -149,7 +149,7 @@ git commit -m "Part 7: AI with Gemini"
 
 Before you commit, check `git status` doesn't list `.env`. (It shouldn't: `.gitignore`.)
 
-## ✅ Check
+## Check
 
 - `pytest` prints `140 passed` (104 before + 36 new), **without** using your key.
 - The real explanation came back with `201`, then `200` from the cache.
@@ -161,7 +161,7 @@ change `flag_unsupported_numbers(answer, payload)` to `[]`. Run `pytest`.
 `test_invented_number_is_flagged_not_hidden` fails: an AI headline saying "saves
 ₹14,550 a day" would now go out unflagged. Put it back.
 
-## 🔍 What each test proves
+## What each test proves
 
 ### `intelligence/tests/test_guardrails.py` (21 tests, no AI at all)
 
@@ -174,7 +174,7 @@ change `flag_unsupported_numbers(answer, payload)` to `[]`. Run `pytest`.
 | 52–54 | `test_numbers_in_nested_data_include_numeric_strings` | Numbers hidden in text and lists are found. |
 | 57–58 | `test_booleans_are_not_numbers` | `True` isn't counted as 1. |
 | 71–76 | `test_rounded_versions_of_sent_numbers_are_accepted` | "about ₹8,500" for 8,514.74 is fine. |
-| 79–90 | `test_invented_or_derived_numbers_are_flagged_with_their_location` | ⭐ A made-up difference (₹2,124) and a made-up "industry average" (40 %) are flagged, with their exact location. |
+| 79–90 | `test_invented_or_derived_numbers_are_flagged_with_their_location` | **Key test.** A made-up difference (₹2,124) and a made-up "industry average" (40 %) are flagged, with their exact location. |
 | 93–94 | `test_small_counts_are_not_flagged` | "3 strategies over 2 days" is fine. |
 
 ### `intelligence/tests/test_ai_client.py` (15 tests, fake Gemini)
@@ -182,9 +182,9 @@ change `flag_unsupported_numbers(answer, payload)` to `[]`. Run `pytest`.
 | Lines | Test | Proves |
 |---|---|---|
 | 69–77 | `test_valid_answer_is_saved_with_model_prompt_version_and_no_flags` | A good answer is saved with its model, prompt version and 1 attempt. |
-| 80–90 | `test_payload_is_allowlisted_and_wrapped_as_data` | ⭐ The data is inside `<simulation_data>`; an "IGNORE ALL RULES" description is **never sent**; timelines stay out. |
+| 80–90 | `test_payload_is_allowlisted_and_wrapped_as_data` | **Key test.** The data is inside `<simulation_data>`; an "IGNORE ALL RULES" description is **never sent**; timelines stay out. |
 | 93–98 | `test_same_run_twice_is_served_from_cache_without_a_call` | The second ask makes **no** call. |
-| 101–105 | `test_invented_number_is_flagged_not_hidden` | ⭐ "₹14,550 a day" is saved **and** flagged. |
+| 101–105 | `test_invented_number_is_flagged_not_hidden` | **Key test.** "₹14,550 a day" is saved **and** flagged. |
 | 108–113 | `test_invalid_json_gets_one_repair_attempt_with_the_reason` | A half answer gets one retry, which includes the reason. |
 | 116–122 | `test_unknown_metric_key_counts_as_invalid` | Citing `industry.average` triggers the repair. |
 | 125–130 | `test_two_invalid_answers_fail_gracefully_and_are_recorded` | Two bad answers → a calm error and a failed row with 2 attempts. |
@@ -195,9 +195,9 @@ change `flag_unsupported_numbers(answer, payload)` to `[]`. Run `pytest`.
 | 163–166 | `test_missing_api_key_is_a_clear_error` | No key → a message that names `GEMINI_API_KEY`. |
 | 172–183 | `test_analysis_endpoint_creates_then_serves_cache` | The API: 404 before, 201 new, 200 from cache, the label is there. |
 | 186–190 | `test_analysis_endpoint_reports_missing_key_as_503` | No key → 503 `ai_unavailable`. |
-| 193–203 | `test_cannot_analyse_another_orgs_run` | ⭐ Bob's run is 404 for Alice. |
+| 193–203 | `test_cannot_analyse_another_orgs_run` | **Key test.** Bob's run is 404 for Alice. |
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -207,7 +207,7 @@ change `flag_unsupported_numbers(answer, payload)` to `[]`. Run `pytest`.
 | `502` `ai_invalid_output` | Gemini failed validation twice. Try again; check the failed row's `error` in the admin to see why. |
 | The browser waits a long time | A retry is waiting (at most about 20 s). Watch the `runserver` terminal for "Gemini retry in ...". |
 
-## ❓ Quiz
+## Quiz
 
 1. How do the tests check what we sent to Gemini?
 2. Why does `test_payload_is_allowlisted_and_wrapped_as_data` put "IGNORE ALL RULES" in
@@ -216,7 +216,7 @@ change `flag_unsupported_numbers(answer, payload)` to `[]`. Run `pytest`.
 
 ---
 
-**Part 7 done! 🎉** AI WarRoom can now explain its numbers in plain words, and it checks
+**Part 7 done! ** AI WarRoom can now explain its numbers in plain words, and it checks
 the AI instead of trusting it. Next, the AI gets something much less trustworthy to
 read: other people's websites. [Part 8 · Websites, safely](../08-websites-safely/README.md).
 

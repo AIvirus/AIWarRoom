@@ -2,7 +2,7 @@
 
 **Time:** 45 minutes · **Before this:** [10.3](03-business-views.md).
 
-## 📖 Read
+## Read
 
 One address, `/runs/<id>/`, shows two different pages:
 
@@ -19,7 +19,7 @@ names, so the JavaScript never has a hard-coded `/api/v1/...` that could go out 
 The run page also has a "Record a decision" form, so this lesson adds `DecisionForm` and
 the view that saves it (the one Part 9 left for later).
 
-## ⌨️ Do
+## Do
 
 ### 1. `simulations/views.py`
 
@@ -218,7 +218,7 @@ def decision_create(request, run_pk):
 
 Your `decisions/views.py` is now the same as the reference project's.
 
-## ✅ Check
+## Check
 
 ```bash
 python manage.py check
@@ -226,7 +226,7 @@ python manage.py check
 
 `System check identified no issues (0 silenced).`
 
-## 🔍 Line by line
+## Line by line
 
 ### `simulations/views.py`, piece 1
 
@@ -294,14 +294,14 @@ python manage.py check
 - **Lines 47–48** · "Recorded as proposed. Sign it off from the brief." and open the
   brief.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
 | `ImportError: cannot import name 'DecisionForm'` | Create `decisions/forms.py` (step 2) before checking. |
 | `ImportError: cannot import name 'SimulationRunSerializer'` | It's in `simulations/serializers.py` (Part 6). |
 
-## ❓ Quiz
+## Quiz
 
 1. Why does `page_data` contain addresses instead of the JavaScript writing them?
 2. What does `RUN_ID` in `run_page` let the JavaScript do?

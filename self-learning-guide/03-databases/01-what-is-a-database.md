@@ -2,7 +2,7 @@
 
 **Time:** 20 minutes · **Before this:** [Part 2](../02-web/README.md).
 
-## 📖 Read
+## Read
 
 A **database** is an organised, permanent store of information. The most common kind,
 the kind AI WarRoom uses, is a **relational database**: information is kept in
@@ -65,7 +65,7 @@ assumptions; and so on. You'll create every one of these tables yourself in Part
 | Nothing stops bad data (a price of "hello") | Checks rules: types, "not empty", "must exist" |
 | If the program crashes mid-save, the file can break | Changes are all-or-nothing (a **transaction**) |
 
-## ❓ Quiz
+## Quiz
 
 1. What's the difference between a row and a column?
 2. Why does `sales` store `stall_id` instead of the stall's name?

@@ -2,7 +2,7 @@
 
 **Time:** 30 minutes · **Before this:** [1.8](08-money-with-decimal.md).
 
-## 📖 Read
+## Read
 
 When Python can't do something (divide by zero, read "fifteen" as a number, find a
 missing file) it **raises an exception**: it stops and prints an error. That printout is
@@ -41,7 +41,7 @@ When **your** function gets bad input, you can raise an error with a clear messa
 AI WarRoom does this everywhere. For example, if someone says the profit margin is 140%,
 it raises an error saying "must be at most 100 %".
 
-## ⌨️ Do
+## Do
 
 Make `errors.py`:
 
@@ -75,7 +75,7 @@ except ValueError as error:
 python errors.py
 ```
 
-## ✅ Check
+## Check
 
 ```text
 15.0
@@ -84,7 +84,7 @@ Problem: cups can't be negative
 Couldn't read the number: invalid literal for int() with base 10: 'fifteen'
 ```
 
-## 🔍 Line by line
+## Line by line
 
 **Line 2** · A function that divides money by cups.
 
@@ -115,7 +115,7 @@ called `error` so we can read its message.
 **Lines 19–22** · `int("fifteen")` can't turn words into a number, so Python raises a
 `ValueError` with its own message, which we catch and print.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -125,7 +125,7 @@ called `error` so we can read its message.
 > **Good habit:** catch **specific** errors (`except ValueError`), never everything
 > (`except:` alone). Catching everything hides bugs you'd want to know about.
 
-## ❓ Quiz
+## Quiz
 
 1. In a traceback, which line do you read first?
 2. What happens to the rest of a `try` block after an error?

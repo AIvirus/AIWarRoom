@@ -3,7 +3,7 @@
 **Time:** 20 minutes · **Before this:** [Part 4](../04-django-foundations/README.md).
 **Reading only:** no typing in this lesson.
 
-## 📖 Read
+## Read
 
 ### Two kinds of business
 
@@ -85,7 +85,7 @@ Remember the HTTP methods from Part 2: **GET** reads, **POST** creates, **PUT** 
 | **Router** | Makes the URL addresses for a ViewSet automatically. |
 | **Many-to-many** | A link where each side can have many of the other: a part can depend on many parts, and be needed by many. |
 
-## ❓ Quiz
+## Quiz
 
 1. Why can't a business change its mode?
 2. Which table holds "warehouse shutdown for 6 hours"?

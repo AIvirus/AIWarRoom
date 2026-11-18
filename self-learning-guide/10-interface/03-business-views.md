@@ -2,7 +2,7 @@
 
 **Time:** 50 minutes · **Before this:** [10.2](02-forms.md).
 
-## 📖 Read
+## Read
 
 Every view in this file follows the same three steps:
 
@@ -23,7 +23,7 @@ is in another city), each question takes a few hundredths of a second, and it ad
 newest first, and keeps the first one it sees for each. One query, whatever the number of
 businesses.
 
-## ⌨️ Do
+## Do
 
 Create `businesses/views.py`.
 
@@ -230,7 +230,7 @@ def _run_and_open(request, scenario):
     return redirect("run-detail", pk=run.pk)
 ```
 
-## ✅ Check
+## Check
 
 ```bash
 python manage.py check
@@ -239,7 +239,7 @@ python manage.py check
 `System check identified no issues (0 silenced).` These views get addresses in lesson
 10.5 and templates in 10.6–10.7.
 
-## 🔍 Line by line
+## Line by line
 
 ### Piece 1
 
@@ -300,14 +300,14 @@ python manage.py check
 - **Lines 183–189** · `_run_and_open`: run it and open the run's page. If inputs are
   missing, say which, and go back to `#assumptions` so they can be added.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
 | `ImportError: cannot import name 'SimulationInputError'` | It's in `simulations/services/run_service.py` (Part 6). |
 | `ImportError: cannot import name 'save_assumptions'` | Lesson 10.2's `businesses/services/assumptions.py`. |
 
-## ❓ Quiz
+## Quiz
 
 1. What is the "N+1" problem, and how does `_latest_completed_runs` avoid it?
 2. Why does every POST view end with a redirect?

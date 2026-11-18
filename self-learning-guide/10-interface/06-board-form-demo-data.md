@@ -2,7 +2,7 @@
 
 **Time:** 50 minutes · **Before this:** [10.5](05-connect-the-addresses.md).
 
-## 📖 Read
+## Read
 
 Two templates and a command.
 
@@ -20,7 +20,7 @@ loads demo data for class: an operating company, **Kirana Express**, with compon
 three outages already run; and an idea, **Tiffin Box Co.**, with its stress test run.
 Every invented number is tagged **illustrative**, and it makes no AI calls.
 
-## ⌨️ Do
+## Do
 
 ### 1. `templates/businesses/dashboard.html`
 
@@ -301,7 +301,7 @@ class Command(BaseCommand):
             self.stdout.write(f'  ran "{name}": /runs/{run.pk}/')
 ```
 
-## ✅ Check
+## Check
 
 ### The board
 
@@ -342,7 +342,7 @@ it), and its page comes in the next lesson.
 Try sending the form with no name: the page comes back with "This field is required."
 under the name box.
 
-## 🔍 Line by line
+## Line by line
 
 ### `dashboard.html`
 
@@ -413,7 +413,7 @@ under the name box.
 - **Lines 143–153** · Print the business, then create and run each scenario, printing
   the run's address.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -422,7 +422,7 @@ under the name box.
 | `CommandError: ... isn't part of an organization` | That email belongs to a `createsuperuser` account. Use the account you signed up with. |
 | `Created you@example.com with password: ...` | You typed an email with no account, so the command made a new one. Use your real login email, or log in with the printed password. |
 
-## ❓ Quiz
+## Quiz
 
 1. Why does `create.html` include `_field.html` instead of writing each input?
 2. What would `--reset` do to your own Kirana Express?

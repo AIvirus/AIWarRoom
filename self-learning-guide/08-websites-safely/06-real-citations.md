@@ -2,7 +2,7 @@
 
 **Time:** 35 minutes · **Before this:** [8.5](05-what-changed.md).
 
-## 📖 Read
+## Read
 
 In lesson 7.4 you typed the `SiteProfile` schema. Each **dependency** (a payment company,
 a courier) and each **competitor** in it has a `basis`, which says where the claim comes
@@ -31,7 +31,7 @@ client treats that like a bad shape and asks **once** more, including the reason
 This rule is shared by the site profile (this part) and the committee (lesson 8.10), so it
 gets its own small file.
 
-## ⌨️ Do
+## Do
 
 ### 1. `intelligence/services/sources.py`
 
@@ -94,7 +94,7 @@ Rules you must follow:
 Return JSON matching the provided schema exactly.
 ```
 
-## ✅ Check
+## Check
 
 In `python manage.py shell`:
 
@@ -131,7 +131,7 @@ load_prompt("site_profile").version
 'site-profile/1'
 ```
 
-## 🔍 Line by line
+## Line by line
 
 ### `sources.py`
 
@@ -170,7 +170,7 @@ load_prompt("site_profile").version
 - **Line 20** · Rule 6: be honest about how little a few pages show.
 - **Line 22** · Answer in the schema's JSON.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -178,7 +178,7 @@ load_prompt("site_profile").version
 | `FileNotFoundError: ... site_profile.md` | The file must be `intelligence/prompts/site_profile.md`, with an underscore. |
 | The version prints as a long piece of text | Line 1 must be `version: site-profile/1` and line 2 exactly `---`. |
 
-## ❓ Quiz
+## Quiz
 
 1. The AI writes a competitor with `basis: "inference"` and a link. What happens?
 2. Why is the citation check plain code, when the prompt already explains the rules?

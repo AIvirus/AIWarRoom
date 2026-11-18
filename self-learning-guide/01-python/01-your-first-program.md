@@ -2,7 +2,7 @@
 
 **Time:** 15 minutes · **Before this:** [Part 0](../00-start-here/README.md).
 
-## 📖 Read
+## Read
 
 A Python program is a **text file** whose name ends in `.py`. Inside are instructions,
 one per line. When you **run** the file, Python reads it from the top line to the bottom
@@ -10,7 +10,7 @@ line and does each instruction in turn.
 
 The most useful first instruction is `print`. It shows something on the screen.
 
-## ⌨️ Do
+## Do
 
 1. Open VS Code. Choose **File → Open Folder** and open your `learning` folder.
 2. Make a new folder inside it called `python` (we'll keep all Part 1 files there).
@@ -35,7 +35,7 @@ cd python
 python hello.py
 ```
 
-## ✅ Check
+## Check
 
 You should see exactly:
 
@@ -44,7 +44,7 @@ Hello, AI WarRoom!
 2 + 3 = 5
 ```
 
-## 🔍 Line by line
+## Line by line
 
 **Line 1** · `# My first Python program.`
 A line that starts with `#` is a **comment**. Python ignores it completely. Comments are
@@ -63,7 +63,7 @@ notes for humans: they explain *why* the code is there.
 - The second, `2 + 3`, has no quotes, so Python **calculates** it and gets `5`.
 - `print` puts a space between the things it shows. That's why you see `2 + 3 = 5`.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | It means | Fix |
 |---|---|---|
@@ -72,7 +72,7 @@ notes for humans: they explain *why* the code is there.
 | `NameError: name 'Print' is not defined` | You typed a capital P | Python cares about capital letters. Use `print`. |
 | Nothing happens | The file wasn't saved | Press Ctrl + S, then run again. A white dot on the file's tab means "not saved". |
 
-## ❓ Quiz
+## Quiz
 
 1. What does Python do with a line starting with `#`?
 2. What will `print("5 + 5")` show? And `print(5 + 5)`?

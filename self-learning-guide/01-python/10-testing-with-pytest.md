@@ -3,7 +3,7 @@
 **Time:** 30 minutes · **Before this:** [1.9](09-errors-and-exceptions.md) (and pytest
 installed in lesson [1.7](07-modules-and-packages.md)).
 
-## 📖 Read
+## Read
 
 How do you know your code gives the right answer? You could run it and check by eye,
 every time you change anything. Or you can write **tests**: small functions that check
@@ -13,7 +13,7 @@ The method used all through AI WarRoom:
 
 1. **Work out the answer by hand first**, on paper (100 cups × ₹9 = ₹900).
 2. Write a test saying "the code must give 900".
-3. Run the tests. ✅ green means correct; ❌ red means something is wrong.
+3. Run the tests. Green means correct; red means something is wrong.
 
 AI WarRoom has about 260 tests. Every time anyone changes the code, all of them run in
 about 5 seconds. That's how we know a change didn't break something else.
@@ -23,7 +23,7 @@ about 5 seconds. That's how we know a change didn't break something else.
 - Test functions are named `test_something`.
 - Inside, `assert` checks that something is True.
 
-## ⌨️ Do
+## Do
 
 Make `chai.py` (the code to test):
 
@@ -67,7 +67,7 @@ With your venv **active** (`(.venv)` in the prompt), run:
 pytest
 ```
 
-## ✅ Check
+## Check
 
 ```text
 test_chai.py .....                                                       [100%]
@@ -81,7 +81,7 @@ line 15).
 `pytest` again. You'll see `1 failed` and pytest shows exactly which case (150) failed.
 Change it back.
 
-## 🔍 Line by line
+## Line by line
 
 ### `chai.py`
 
@@ -115,7 +115,7 @@ the border, which is the most important place to test.
 
 **Line 17** · Check that the answer matches what we expected.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -123,7 +123,7 @@ the border, which is the most important place to test.
 | `no tests ran` | The file must start with `test_`, and functions with `test_`. |
 | `ModuleNotFoundError: No module named 'chai'` | Run `pytest` from the folder that contains both files. |
 
-## ❓ Quiz
+## Quiz
 
 1. Why do we work out the answer by hand **before** writing the test?
 2. Why test 149 and 150, not just 100 and 300?

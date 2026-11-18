@@ -2,7 +2,7 @@
 
 **Time:** 50 minutes · **Before this:** [9.3](03-the-workflow.md).
 
-## 📖 Read
+## Read
 
 The brief is a single Python **dictionary** with everything a reviewer needs:
 
@@ -35,7 +35,7 @@ never works out a total. Numbers come from the run's saved snapshot and results;
 comes from saved analyses. If something isn't saved, the brief says so ("No AI reading of
 this run") instead of making it up.
 
-## ⌨️ Do
+## Do
 
 Create `decisions/services/brief.py`.
 
@@ -277,7 +277,7 @@ def _committee(business) -> dict | None:
     }
 ```
 
-## ✅ Check
+## Check
 
 ```bash
 python manage.py shell -c "from decisions.services.brief import build_brief; print('ok')"
@@ -285,7 +285,7 @@ python manage.py shell -c "from decisions.services.brief import build_brief; pri
 
 `ok`. You'll see a real brief in lesson 9.7, once you can create a decision.
 
-## 🔍 Line by line
+## Line by line
 
 ### Piece 1
 
@@ -346,14 +346,14 @@ python manage.py shell -c "from decisions.services.brief import build_brief; pri
 - **Lines 208–224** · The label block, each desk with only the first three concerns,
   actions and pieces of evidence (a brief is short), and the disagreements.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
 | `ImportError: cannot import name 'plain'` | It's in `businesses/services/snapshot.py` (lesson 6.8). |
 | `KeyError: 'disruption'` later, in 9.7 | Check the `KEY_METRICS` keys on lines 21 and 25: `"disruption"` and `"idea_case"`. |
 
-## ❓ Quiz
+## Quiz
 
 1. Why do the API and the page both call `build_brief`?
 2. A decision has no run. Where do its assumptions come from, and how does the brief show

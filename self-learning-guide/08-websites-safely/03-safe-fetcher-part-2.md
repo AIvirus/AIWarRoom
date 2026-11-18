@@ -2,7 +2,7 @@
 
 **Time:** 45 minutes · **Before this:** [8.2](02-safe-fetcher-part-1.md).
 
-## 📖 Read
+## Read
 
 Now the actual download. Three new ideas.
 
@@ -31,7 +31,7 @@ The rules for robots.txt (a standard called RFC 9309) say:
 
 We read each site's robots.txt **once** and remember it.
 
-## ⌨️ Do
+## Do
 
 Add the second half to the **end** of `intelligence/services/url_fetcher.py`:
 
@@ -119,7 +119,7 @@ class SafeFetcher:
         return page
 ```
 
-## ✅ Check
+## Check
 
 ```bash
 python manage.py shell
@@ -158,7 +158,7 @@ intelligence.services.url_fetcher.FetchFailed: https://books.toscrape.com/no-suc
 
 Keep this shell open: the next lesson uses `page`.
 
-## 🔍 Line by line
+## Line by line
 
 ### `_get`: one careful request
 
@@ -180,7 +180,7 @@ Keep this shell open: the next lesson uses `page`.
   even if something goes wrong.
 - **Line 108** · Is this a redirect?
 - **Lines 109–111** · Where to? A redirect with no `Location` is broken.
-- **Line 112** · ⭐ The key line. `urljoin` turns a relative `Location` like `/home` into a
+- **Line 112** · The key line. `urljoin` turns a relative `Location` like `/home` into a
   full address. Then **`check_url` again**: a redirect to a private address stops here,
   before it's ever requested.
 - **Line 113** · `continue`: go round the loop again, with the new address.
@@ -221,7 +221,7 @@ Keep this shell open: the next lesson uses `page`.
 - **Lines 167–168** · A 404 or a 500 is a failure for a scan.
 - **Line 169** · Return the page.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -229,7 +229,7 @@ Keep this shell open: the next lesson uses `page`.
 | `FetchBlocked: ... isn't an HTML page` | You asked for a PDF or image. That's the rule working. |
 | `AttributeError: 'NoneType' object has no attribute 'can_fetch'` | `robots_for` must `return self._robots[origin]` (line 157), outside the `if`. |
 
-## ❓ Quiz
+## Quiz
 
 1. Why `allow_redirects=False`?
 2. A site's robots.txt answers 503. May we read the site?

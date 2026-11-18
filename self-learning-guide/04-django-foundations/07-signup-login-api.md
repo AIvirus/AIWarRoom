@@ -2,7 +2,7 @@
 
 **Time:** 50 minutes · **Before this:** [4.6](06-who-sees-what.md).
 
-## 📖 Read
+## Read
 
 To let people in, we need:
 
@@ -27,7 +27,7 @@ Signing up writes **three** rows (user, organization, membership). If the third 
 we must not be left with a user who has no organization. A **transaction** groups writes
 so either **all** happen or **none** do.
 
-## ⌨️ Do
+## Do
 
 Create or replace these six files.
 
@@ -90,7 +90,7 @@ def register_owner(*, email: str, password: str, full_name: str, org_name: str) 
 
 ### `accounts/forms.py`
 
-<!-- source: accounts/forms.py:1-55 -->
+<!-- source: accounts/forms.py:1-60 -->
 ```python
 from django import forms
 from django.contrib.auth import password_validation
@@ -147,6 +147,11 @@ class EmailLoginForm(AuthenticationForm):
         super().__init__(*args, **kwargs)
         self.fields["username"].label = "Email"
         self.fields["username"].widget.attrs.update({"autocomplete": "email", "autofocus": True})
+
+    def clean_username(self):
+        # Sign-up stores emails in lowercase (clean_email above), so log-in must match:
+        # "Alice@Kirana.test" and "alice@kirana.test" are the same account.
+        return self.cleaned_data["username"].lower()
 ```
 
 A Django **form** describes input boxes **and** checks what people type. If anything is
@@ -183,6 +188,11 @@ wrong, the form collects friendly error messages to show next to each box.
   relabel it.
 - **Line 55** · Help the browser autofill the email, and put the cursor there when the
   page opens.
+- **Line 57** · Another `clean_<field>` method, this time for the login box.
+- **Lines 58–59** · Comment: sign-up saved the email in lowercase (line 23). Without this
+  method, someone who signed up as `Alice@Kirana.test` and types it the same way at log-in
+  would be told "That email and password don't match an account".
+- **Line 60** · Lowercase what was typed, so it matches the saved email.
 
 ### `accounts/views.py`
 
@@ -466,12 +476,12 @@ Postman, and students) only learn one pattern.
     missing **or** belongs to someone else (lesson 4.6).
 - **Lines 91–92** · Swap in our shape and return.
 
-## ✅ Check
+## Check
 
 Nothing to see in the browser yet: the pages need templates and the project's URL map,
 which come in the next lesson.
 
-## ❓ Quiz
+## Quiz
 
 1. Why does `signup` call `register_owner` instead of creating the rows itself?
 2. What would go wrong without `@transaction.atomic`?

@@ -3,7 +3,7 @@
 **Time:** 20 minutes · **Before this:** [Part 8](../08-websites-safely/README.md).
 **Reading only.**
 
-## 📖 Read
+## Read
 
 ### Why record a decision at all?
 
@@ -60,7 +60,7 @@ when it was made (Part 6's input snapshot), not today's value. If someone later 
 daily orders to 3,000, the brief still shows what the decision was **actually** based on.
 That's the whole point of a record.
 
-## ❓ Quiz
+## Quiz
 
 1. Can a decision go from "proposed" straight to "done"?
 2. Which two statuses record a sign-off, and why those two?

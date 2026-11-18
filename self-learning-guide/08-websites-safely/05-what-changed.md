@@ -2,19 +2,19 @@
 
 **Time:** 35 minutes · **Before this:** [8.4](04-reading-a-page.md).
 
-## 📖 Read
+## Read
 
 Every scan saves its pages' extracts. When a site is scanned again, we compare the new
 extracts with the last scan's, using plain rules:
 
 | Rule | Alert kind | Severity |
 |---|---|---|
-| A page we read last time is gone | `page_removed` | ⚠️ warn |
+| A page we read last time is gone | `page_removed` | warn |
 | A page we didn't have before | `new_page` | info |
-| Prices on a page changed, typical price moved **10 % or more** | `pricing_change` | ⚠️ warn |
+| Prices on a page changed, typical price moved **10 % or more** | `pricing_change` | warn |
 | Prices changed, but by less | `pricing_change` | info |
 | New product names on a page | `new_product` | info |
-| The AI profile names a competitor it didn't name before | `new_competitor` | ⚠️ warn |
+| The AI profile names a competitor it didn't name before | `new_competitor` | warn |
 
 The last one comes from the AI, so its alert says "From AI analysis; check the source
 before acting."
@@ -26,7 +26,7 @@ A page with prices ₹500, ₹600, ₹900 has a **median** (the middle one, once
 (700 − 600) ÷ 600 = **+16.7 %**, so a warning. The median ignores one strange very
 cheap or very expensive item, which an average wouldn't.
 
-## ⌨️ Do
+## Do
 
 Create `intelligence/services/scan_diff.py`:
 
@@ -132,7 +132,7 @@ def compare(
     return changes
 ```
 
-## ✅ Check
+## Check
 
 In `python manage.py shell`:
 
@@ -154,7 +154,7 @@ info 1 new product(s) on https://k.test/
 
 Now try `compare(before, before)`. It's `[]`: nothing changed, no alerts.
 
-## 🔍 Line by line
+## Line by line
 
 - **Lines 1–7** · Docstring: two scans in, a list of changes out, no AI.
 - **Line 9** · `re`, to strip a price down to its digits.
@@ -194,14 +194,14 @@ Now try `compare(before, before)`. It's `[]`: nothing changed, no alerts.
 - **Lines 88–97** · New competitor names, with the "check the source" note.
 - **Line 98** · Return every change.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
 | `TypeError: unsupported operand type(s) for -: 'dict_keys' and 'list'` | Lines 63–64 must build dictionaries, `{page["url"]: page for page in ...}`. |
 | The price change is `info`, not `warn` | Line 43: `abs(move) >= BIG_PRICE_MOVE`. |
 
-## ❓ Quiz
+## Quiz
 
 1. Prices go from ₹600 to ₹620. Alert? Which severity?
 2. Why use the median price, not the average?

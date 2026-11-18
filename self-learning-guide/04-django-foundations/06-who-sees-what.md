@@ -2,7 +2,7 @@
 
 **Time:** 25 minutes · **Before this:** [4.5](05-users-and-organizations.md).
 
-## 📖 Read
+## Read
 
 AI WarRoom holds private business numbers. The most important security rule is:
 
@@ -16,11 +16,11 @@ that one place.
 
 What should happen when Alice asks for Bob's business, `/businesses/41/`?
 
-- ❌ **403 "Forbidden"** would tell Alice "that business exists, you just can't see it".
-- ✅ **404 "Not found"**: Alice's search simply doesn't contain Bob's rows, so for her
+- Wrong: **403 "Forbidden"** would tell Alice "that business exists, you just can't see it".
+- Right: **404 "Not found"**: Alice's search simply doesn't contain Bob's rows, so for her
   the business doesn't exist. She learns nothing at all.
 
-## ⌨️ Do
+## Do
 
 Create `accounts/access.py`:
 
@@ -93,7 +93,7 @@ def current_organization(request):
     return {"current_org": organization_for(request.user)}
 ```
 
-## 🔍 Line by line
+## Line by line
 
 ### `accounts/access.py`
 
@@ -138,7 +138,7 @@ def current_organization(request):
 - **Line 8** · Return a dictionary. Every template can now use `{{ current_org }}`; the
   status bar at the top of every page shows its name.
 
-## ✅ Check
+## Check
 
 Now run the commands in [lesson 4.5](05-users-and-organizations.md#-do) if you haven't
 yet. `python manage.py check` should print:
@@ -147,7 +147,7 @@ yet. `python manage.py check` should print:
 System check identified no issues (0 silenced).
 ```
 
-## ❓ Quiz
+## Quiz
 
 1. Why answer 404 instead of 403 for another organization's record?
 2. What does `select_related` save?

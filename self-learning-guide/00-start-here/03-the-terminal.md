@@ -2,7 +2,7 @@
 
 **Time:** 20 minutes · **Before this:** [0.2](02-install-your-tools.md).
 
-## 📖 Read
+## Read
 
 The **terminal** is a window where you type commands instead of clicking. It looks
 old-fashioned, but it is fast and exact, and every tool in this guide is started from it.
@@ -18,7 +18,7 @@ bottom of the window.
 > guide work in PowerShell, and also in **Git Bash** (installed with Git). Where they
 > differ, the guide shows both.
 
-## ⌨️ Do
+## Do
 
 Type each command, press **Enter**, and look at what happens.
 
@@ -69,13 +69,13 @@ python -c "print(2 + 3)"
 clear
 ```
 
-## ✅ Check
+## Check
 
 - After `pwd` you saw a path such as `C:\Users\asha\Desktop\learning`.
 - After `mkdir practice` and `ls`, `practice` appeared in the list.
 - `python -c "print(2 + 3)"` printed `5`.
 
-## 🔍 Line by line
+## Line by line
 
 | Command | What it means |
 |---|---|
@@ -95,7 +95,7 @@ clear
 - Press **Ctrl + C** to stop a program that is running. You'll use this to stop the
   web server later.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -103,7 +103,7 @@ clear
 | A folder name has a space, like `My Files` | Put it in quotes: `cd "My Files"`. |
 | `clear` does nothing in old Windows terminals | Use `cls` instead. |
 
-## ❓ Quiz
+## Quiz
 
 1. Which command shows the folder you're in?
 2. What does `cd ..` do?
@@ -111,7 +111,7 @@ clear
 
 ---
 
-**Part 0 done! 🎉** Next: [Part 1 · Python from zero](../01-python/README.md)
+**Part 0 done! ** Next: [Part 1 · Python from zero](../01-python/README.md)
 
 <details><summary>Quiz answers</summary>
 

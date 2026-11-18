@@ -2,7 +2,7 @@
 
 **Time:** 50 minutes · **Before this:** [8.10](10-the-expert-committee.md).
 
-## 📖 Read
+## Read
 
 How do you test a fetcher that must refuse `127.0.0.1`, without a hostile server? Or a
 redirect to the cloud's secret address, without a cloud? You **fake** the outside world,
@@ -22,7 +22,7 @@ website.
 back afterwards. The `dns` fixture uses it to replace `url_fetcher.resolve` with the
 dictionary lookup, so a test can make any name point anywhere, with no internet at all.
 
-## ⌨️ Do
+## Do
 
 ### 1. The finished `fakes.py`
 
@@ -116,7 +116,7 @@ git add -A
 git commit -m "Part 8: websites, safely"
 ```
 
-## ✅ Check
+## Check
 
 - `pytest` prints `194 passed` (140 before + 54 new), with no internet needed.
 - `git log --oneline` shows five commits.
@@ -132,7 +132,7 @@ to `current = urljoin(current, location)`, so redirects are no longer checked. R
 public page could now send our server to `169.254.169.254`. Every other test still passes,
 which is exactly why that test exists. Put the line back.
 
-## 🔍 Line by line: the new parts of `fakes.py`
+## Line by line: the new parts of `fakes.py`
 
 - **Line 6** · The fetcher's errors and its `Page`, so the fake behaves like the real one.
 - **Line 28** · `FakeFetcher`: a pretend website.
@@ -146,7 +146,7 @@ which is exactly why that test exists. Put the line back.
 - **Lines 45–51** · `fetch`: disallowed → `FetchBlocked`; unknown address → `FetchFailed`
   like a 404; otherwise remember it and return a `Page` with status 200.
 
-## 🔍 What each test proves
+## What each test proves
 
 ### `intelligence/tests/test_url_fetcher.py` (27 tests, fake DNS and fake internet)
 
@@ -154,10 +154,10 @@ which is exactly why that test exists. Put the line back.
 |---|---|---|
 | 14–25 | the `dns` fixture | Names point wherever a test says. |
 | 63–74 | `test_unsafe_url_shapes_are_refused` | 4 tests: `ftp://`, `file://`, a password in the address, port 8443. |
-| 77–96 | `test_private_and_reserved_addresses_are_refused` | ⭐ 11 tests: this computer, private networks, the cloud metadata address, IPv6, and `::ffff:127.0.0.1` in disguise. |
+| 77–96 | `test_private_and_reserved_addresses_are_refused` | **Key test.** 11 tests: this computer, private networks, the cloud metadata address, IPv6, and `::ffff:127.0.0.1` in disguise. |
 | 99–102 | `test_one_private_address_among_public_ones_is_enough_to_refuse` | One bad address among good ones: refused. |
 | 105–106 | `test_public_address_is_allowed` | A normal site passes. |
-| 119–129 | `test_redirect_to_a_private_address_is_refused_before_it_is_requested` | ⭐ A redirect to `169.254.169.254` is refused, and **never requested**. |
+| 119–129 | `test_redirect_to_a_private_address_is_refused_before_it_is_requested` | **Key test.** A redirect to `169.254.169.254` is refused, and **never requested**. |
 | 132–139 | `test_same_site_redirect_is_followed` | Normal redirects still work. |
 | 142–148 | `test_redirect_loops_stop` | A → B → A... stops. |
 | 151–155 | `test_large_pages_are_cut_at_the_size_limit` | A 50 KB page with a 1 KB limit is cut. |
@@ -187,25 +187,25 @@ which is exactly why that test exists. Put the line back.
 | Lines | Test | Proves |
 |---|---|---|
 | 67–79 | `test_first_scan_reads_pages_builds_profile_and_sets_baseline` | The whole pipeline: pages, a skipped 404, the profile, a baseline, no alerts. |
-| 82–101 | `test_rescan_raises_alerts_for_what_changed` | ⭐ Price up, page gone, new competitor: three alerts. |
-| 104–111 | `test_unchanged_site_scanned_three_times_raises_no_alerts` | ⭐ The bug from lesson 8.7 stays fixed. |
+| 82–101 | `test_rescan_raises_alerts_for_what_changed` | **Key test.** Price up, page gone, new competitor: three alerts. |
+| 104–111 | `test_unchanged_site_scanned_three_times_raises_no_alerts` | **Key test.** The bug from lesson 8.7 stays fixed. |
 | 114–117 | `test_robots_disallow_stops_the_scan` | robots.txt says no → blocked, nothing read. |
 | 120–123 | `test_private_address_blocks_the_scan` | A private address → blocked. |
 | 126–130 | `test_scan_still_completes_when_ai_is_unavailable` | No key → the scan still completes. |
-| 133–140 | `test_profile_citing_a_page_we_never_fetched_is_repaired` | ⭐ A made-up citation triggers the repair, with the reason. |
+| 133–140 | `test_profile_citing_a_page_we_never_fetched_is_repaired` | **Key test.** A made-up citation triggers the repair, with the reason. |
 | 143–150 | `test_inference_may_not_carry_a_url` | A guess with a link triggers the repair. |
-| 153–160 | `test_website_text_is_sent_as_untrusted_data` | ⭐ "SYSTEM: ignore your rules" arrives **inside** `<website_content>`, and the prompt says to ignore instructions there. |
+| 153–160 | `test_website_text_is_sent_as_untrusted_data` | **Key test.** "SYSTEM: ignore your rules" arrives **inside** `<website_content>`, and the prompt says to ignore instructions there. |
 | 163–166 | `test_thin_js_site_lets_gemini_read_the_urls` | An almost empty page → the `url_context` tool. |
 | 172–190 | `test_start_scan_returns_events_url_and_stream_runs_it` | 202, then the stream runs it; opening it again replays without fetching. |
 | 193–196 | `test_scan_needs_a_website_url` | No address → 422 naming `url`. |
-| 199–202 | `test_another_orgs_scan_stream_is_404` | ⭐ Bob's scan: 404 for Alice, and it's **not** started. |
+| 199–202 | `test_another_orgs_scan_stream_is_404` | **Key test.** Bob's scan: 404 for Alice, and it's **not** started. |
 | 250–259 | `test_committee_is_one_call_with_four_desks_that_may_disagree` | One call; four desks; disagreement kept. |
 | 262–269 | `test_committee_missing_a_desk_is_repaired` | Two `risk` desks → the repair. |
 | 272–274 | `test_committee_needs_something_to_review` | Nothing to review → a clear error, no call. |
 | 277–283 | `test_committee_endpoint` | 404 before, 201 new, 200 cached. |
 | 286–288 | `test_unread_alerts_sort_first_on_every_database` | Unread alerts sort first on PostgreSQL too. |
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -213,7 +213,7 @@ which is exactly why that test exists. Put the line back.
 | `fixture 'alice_shop' not found` | `conftest.py` (Part 5) must be in the `my-warroom` folder itself. |
 | A test fails with a real network error | Something calls the real fetcher. Compare that file with the reference project. |
 
-## ❓ Quiz
+## Quiz
 
 1. How can a test check that `127.0.0.1` is refused without asking a real DNS server?
 2. What does `test_another_orgs_scan_stream_is_404` check besides the 404?
@@ -222,7 +222,7 @@ which is exactly why that test exists. Put the line back.
 
 ---
 
-**Part 8 done! 🎉** AI WarRoom can now read a website without becoming a weapon against
+**Part 8 done! ** AI WarRoom can now read a website without becoming a weapon against
 its own network, notice what changed, and gather four AI opinions without hiding their
 disagreements. Next, a **human** makes the call:
 [Part 9 · Decisions](../09-decisions/README.md).

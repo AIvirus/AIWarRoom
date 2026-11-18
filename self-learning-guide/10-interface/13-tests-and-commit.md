@@ -2,7 +2,7 @@
 
 **Time:** 40 minutes · **Before this:** [10.12](12-the-system-view.md).
 
-## 📖 Read
+## Read
 
 Page tests use Django's **test client**: a pretend browser that logs in, opens pages,
 sends forms and follows redirects, all without a real browser or a server. A test reads
@@ -11,7 +11,7 @@ like what a person does: "add a component, check it's there, remove it, check it
 They can't run the JavaScript, so they check what the server **hands** to it instead:
 the `page-data` JSON. A small helper in the test file reads that block from the page.
 
-## ⌨️ Do
+## Do
 
 ### 1. The tests
 
@@ -44,7 +44,7 @@ git add -A
 git commit -m "Part 10: the interface"
 ```
 
-## ✅ Check
+## Check
 
 - `pytest` prints `266 passed` (246 before + 20 new).
 - `git log --oneline` shows seven commits.
@@ -57,7 +57,7 @@ git commit -m "Part 10: the interface"
 `test_ledger_shows_plain_numbers_not_exponents` fails: the ledger would show daily orders
 as `2.4E+3` instead of `2400`. A real bug this project once had. Put it back.
 
-## 🔍 What each test proves
+## What each test proves
 
 ### `businesses/tests/test_pages.py` (16 tests)
 
@@ -71,11 +71,11 @@ as `2.4E+3` instead of `2400`. A real bug this project once had. Put it back.
 | 92–99 | `test_invalid_assumption_saves_nothing_and_says_why` | 140 % is refused with the catalogue's message, and nothing is saved. |
 | 102–110 | `test_add_and_remove_component` | "Razorpay (primary)" gets the key `razorpay-primary`; Remove removes it. |
 | 113–121 | `test_scenario_with_missing_inputs_explains_instead_of_running` | It says what's missing; the attempt is recorded as a failed run. |
-| 127–145 | `test_disruption_scenario_runs_and_opens_the_situation_board` | ⭐ Create and run → the board, with self-hosted Three.js, three cases, only the **relevant** slider (recapture), and the `RUN_ID` address. |
+| 127–145 | `test_disruption_scenario_runs_and_opens_the_situation_board` | **Key test.** Create and run → the board, with self-hosted Three.js, three cases, only the **relevant** slider (recapture), and the `RUN_ID` address. |
 | 148–160 | `test_idea_scenario_opens_the_idea_bench` | The bench: seven cases, the funnel check at month 6, eight sliders. |
-| 163–190 | `test_record_decision_from_run_then_sign_off_on_the_brief` | ⭐ The full human flow: record, approve on the brief; an illegal jump through the page is refused. |
-| 193–204 | `test_alert_acknowledge_refuses_open_redirects` | ⭐ `next=https://evil.test/phish` sends you home instead. |
-| 207–235 | `test_other_orgs_pages_are_404` | ⭐ Bob's pages are 404 for Alice, and his forms can't be posted to. |
+| 163–190 | `test_record_decision_from_run_then_sign_off_on_the_brief` | **Key test.** The full human flow: record, approve on the brief; an illegal jump through the page is refused. |
+| 193–204 | `test_alert_acknowledge_refuses_open_redirects` | **Key test.** `next=https://evil.test/phish` sends you home instead. |
+| 207–235 | `test_other_orgs_pages_are_404` | **Key test.** Bob's pages are 404 for Alice, and his forms can't be posted to. |
 | 238–240 | `test_pages_require_login` | Logged out → the login page. |
 | 243–248 | `test_ledger_shows_plain_numbers_not_exponents` | `2400`, never `2.4E+3`. |
 | 251–265 | `test_pages_load_no_assets_from_other_hosts` | No page loads anything from Google Fonts or a CDN: the app works offline. |
@@ -92,7 +92,7 @@ as `2.4E+3` instead of `2400`. A real bug this project once had. Put it back.
 
 ("Idempotent" means "doing it twice has the same effect as doing it once".)
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -100,14 +100,14 @@ as `2.4E+3` instead of `2400`. A real bug this project once had. Put it back.
 | `test_pages_load_no_assets_from_other_hosts` fails | A template links to an outside address (fonts from Google, say). Everything must come from `static/`. |
 | `NoReverseMatch` in a page test | Compare your `urls.py` files with lesson 10.5. |
 
-## ❓ Quiz
+## Quiz
 
 1. How do page tests check JavaScript pages without running JavaScript?
 2. What does `test_pages_load_no_assets_from_other_hosts` protect?
 
 ---
 
-**Part 10 done! 🎉** AI WarRoom is a complete app: pages, forms, live sliders, charts and
+**Part 10 done! ** AI WarRoom is a complete app: pages, forms, live sliders, charts and
 a 3D system view, all drawing numbers only the engine calculated. The last part puts it on
 the internet: [Part 11 · Deploy](../11-deploy/README.md).
 

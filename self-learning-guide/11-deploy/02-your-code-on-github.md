@@ -2,7 +2,7 @@
 
 **Time:** 30 minutes · **Before this:** [11.1](01-what-deploying-means.md).
 
-## 📖 Read
+## Read
 
 Since Part 4 your project has a Git **history** on your computer: seven commits, one per
 part. **GitHub** keeps a copy of that history online. Git calls an online copy a
@@ -16,7 +16,7 @@ A repository on GitHub can be **private** (only you, and people you invite) or *
 (anyone can read it). For a class project, private is a safe default; you can make it
 public later to show it off.
 
-## ⌨️ Do
+## Do
 
 ### 1. Check no secret is in your history
 
@@ -68,7 +68,7 @@ The first time, Git asks you to sign in:
 Never type your GitHub **password** into the terminal: GitHub doesn't accept it for Git
 any more.
 
-## ✅ Check
+## Check
 
 The push ends with a line like:
 
@@ -90,7 +90,7 @@ git push
 (`-u` the first time remembered that `main` goes to `origin`, so plain `git push` is
 enough.)
 
-## 🔍 Line by line
+## Line by line
 
 | Command | What it does |
 |---|---|
@@ -99,7 +99,7 @@ enough.)
 | `git remote add origin <address>` | Remember this GitHub address under the name `origin`. Nothing is sent yet. |
 | `git push -u origin main` | Send the `main` branch's commits to `origin`. `-u` ("upstream") links your `main` to GitHub's, so later `git push` and `git pull` know where to go. |
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -109,7 +109,7 @@ enough.)
 | `Updates were rejected because the remote contains work...` | The GitHub repository wasn't empty (a README was added). Make a new empty one, or ask your teacher about `git pull --rebase`. |
 | `Authentication failed` | Sign in again with the browser (Windows) or `gh auth login` (Mac/Linux). |
 
-## ❓ Quiz
+## Quiz
 
 1. What is `origin`?
 2. Why check `git ls-files` before the first push?

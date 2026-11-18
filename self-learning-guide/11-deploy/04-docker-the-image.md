@@ -2,7 +2,7 @@
 
 **Time:** 50 minutes (plus download time) · **Before this:** [11.3](03-ready-for-production.md).
 
-## 📖 Read
+## Read
 
 A `Dockerfile` is a recipe, read top to bottom. Each instruction makes a **layer** (a
 saved step). When you build again, Docker **reuses** every layer whose inputs haven't
@@ -24,7 +24,7 @@ change a Python file, and the slow "install everything" step is reused; only the
 `.dockerignore` is like `.gitignore`, for `COPY . .`: what **never** goes into the
 image. Your `.env` above all.
 
-## ⌨️ Do
+## Do
 
 ### 1. Install Docker Desktop
 
@@ -133,7 +133,7 @@ numbered `#1`, `#2`... Near the end you'll see a line with:
 naming to docker.io/library/warroom:latest
 ```
 
-## ✅ Check
+## Check
 
 ### The image exists
 
@@ -180,7 +180,7 @@ Run `docker build -t warroom .` once more. It takes a second or two: every step 
 `CACHED`. Change any `.py` file and build again: only the steps from `COPY . .` onwards
 run.
 
-## 🔍 Line by line
+## Line by line
 
 - **Lines 1–3** · Comments: what this is and how to use it.
 - **Line 5** · Start from the official Python 3.12 image, "slim" variant (Debian Linux
@@ -216,7 +216,7 @@ run.
   (the image installs its own), caches, your local database and collected files, editor
   folders, and teaching material.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -225,7 +225,7 @@ run.
 | `ImproperlyConfigured: DJANGO_SECRET_KEY must be set` during the build | Lines 27–30 must be **one** `RUN` instruction (each line but the last ends with `\`). |
 | `.env` appears in `ls -a` | `.dockerignore` must sit next to the `Dockerfile` and its first lines must be `.env` and `.env.*`. Build again. |
 
-## ❓ Quiz
+## Quiz
 
 1. Why is `requirements.txt` copied before the rest of the code?
 2. What would happen without `.dockerignore`?

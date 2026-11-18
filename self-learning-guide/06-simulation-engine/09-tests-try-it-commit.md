@@ -2,13 +2,13 @@
 
 **Time:** 50 minutes · **Before this:** [6.8](08-connect-to-django.md).
 
-## 📖 Read
+## Read
 
 The engine's tests are special: almost every expected number was **worked out by hand**
 first and written in the test's docstring, like your paper in lesson 6.1. If the code
 ever disagrees with the pencil, the test fails.
 
-## ⌨️ Do
+## Do
 
 ### 1. Copy the four test files
 
@@ -129,7 +129,7 @@ git add -A
 git commit -m "Part 6: simulation engine"
 ```
 
-## ✅ Check
+## Check
 
 - `pytest` prints `104 passed` (52 before + 52 new).
 - `pytest -p no:django simulation_engine` prints `56 passed, 1 warning`: the whole
@@ -143,7 +143,7 @@ git commit -m "Part 6: simulation engine"
 expected 137 recovered orders and got 110, because the 27 customers who come back on
 their own were forgotten. Put it back.
 
-## 🔍 What each test proves
+## What each test proves
 
 ### `simulation_engine/tests/test_idea.py` (14 tests)
 
@@ -203,15 +203,15 @@ their own were forgotten. Put it back.
 | Lines | Test | Proves |
 |---|---|---|
 | 51–62 | `test_run_saves_snapshot_and_one_result_per_strategy` | 201, three results, ₹21,000, the snapshot, the failed component, checkout's health. |
-| 65–73 | `test_editing_the_business_never_changes_a_past_run` | ⭐ Doubling daily orders changes the **next** run, never the old one. |
+| 65–73 | `test_editing_the_business_never_changes_a_past_run` | **Key test.** Doubling daily orders changes the **next** run, never the old one. |
 | 76–80 | `test_identical_inputs_give_identical_hash` | Same inputs, same fingerprint; still two separate runs. |
 | 83–93 | `test_missing_inputs_return_422_and_record_a_failed_run` | 422 naming the number, and a failed run is saved. |
 | 96–111 | `test_preview_answers_without_saving` | A what-if price gives ₹1,68,000 lost revenue and saves nothing. |
 | 114–122 | `test_preview_rejects_out_of_range_slider_values` | A 180 % margin from a slider → 422 naming the field. |
-| 125–131 | `test_preview_and_run_are_scoped_to_the_users_org` | ⭐ Bob's business and scenario are 404 for Alice. |
+| 125–131 | `test_preview_and_run_are_scoped_to_the_users_org` | **Key test.** Bob's business and scenario are 404 for Alice. |
 | 134–151 | `test_idea_run_includes_sensitivity_and_funnel_check` | A full idea run through the API: 7 results, profitable in month 7, funnel gap 26.21 %. |
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -220,7 +220,7 @@ their own were forgotten. Put it back.
 | `403` with *"CSRF Failed"* in the console | Reload the page (F5) and paste the helper again. |
 | `422` on the gateway run | `missing_inputs` wasn't empty: check the assumptions PUT returned `200`. |
 
-## ❓ Quiz
+## Quiz
 
 1. Why are the expected numbers in the engine tests written in docstrings?
 2. Which test proves that history can't be rewritten?
@@ -229,7 +229,7 @@ their own were forgotten. Put it back.
 
 ---
 
-**Part 6 done! 🎉** AI WarRoom can now answer its "what if?" questions with numbers you
+**Part 6 done! ** AI WarRoom can now answer its "what if?" questions with numbers you
 can check by hand, and keep every answer as a permanent record. Next, an AI explains
 those numbers in plain words, without being allowed to invent any:
 [Part 7 · AI with Gemini](../07-ai-with-gemini/README.md).

@@ -2,7 +2,7 @@
 
 **Time:** 50 minutes · **Before this:** [10.7](07-the-business-page.md).
 
-## 📖 Read
+## Read
 
 The two run pages are **skeletons**. The templates draw the frame: panel headings, empty
 boxes with ids like `controls`, `gauges`, `stage`, `cash-chart`. Then a JavaScript module
@@ -25,7 +25,7 @@ pages: `_analysis.html`, `_committee.html` (lesson 10.7) and `_decision.html`.
 Notice the AI panel's note: *"explains the saved run, not unsaved slider changes"*. A
 what-if is never sent to the AI; only a saved run is.
 
-## ⌨️ Do
+## Do
 
 Create these four files in `templates/simulations/`.
 
@@ -269,7 +269,7 @@ Create these four files in `templates/simulations/`.
 </section>
 ```
 
-## ✅ Check
+## Check
 
 1. **The Idea Bench.** Open Chai Cart and click **Run** (or **Create and run** with a name
    like "First try"). You land on `/runs/<id>/`: the cash chart, seven cases, the
@@ -286,7 +286,7 @@ Create these four files in `templates/simulations/`.
 
 The sliders and the 3D view are the JavaScript's job: the next four lessons read it.
 
-## 🔍 Line by line
+## Line by line
 
 ### `board.html`
 
@@ -347,7 +347,7 @@ The sliders and the 3D view are the JavaScript's job: the next four lessons read
 - **Lines 5–14** · A normal form to `decisions:create` for this run: title, chosen
   response and owner in a grid, then "Why", then the button.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -355,7 +355,7 @@ The sliders and the 3D view are the JavaScript's job: the next four lessons read
 | `Failed to resolve module specifier "three"` in the console | The import map (lines 4–8 of `board.html`) is missing or mistyped. |
 | `TemplateDoesNotExist: simulations/_decision.html` | All four files go in `templates/simulations/`. |
 
-## ❓ Quiz
+## Quiz
 
 1. What draws the strategies and gauges: the template or the JavaScript?
 2. Why does the AI panel say it explains the saved run only?

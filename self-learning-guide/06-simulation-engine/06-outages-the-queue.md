@@ -2,7 +2,7 @@
 
 **Time:** 60 minutes · **Before this:** [6.5](05-outages-checkout.md).
 
-## 📖 Read
+## Read
 
 When a **warehouse** or **courier** stops, orders aren't refused. Customers still order
 and pay; the orders just **wait**. So the question is different: how long is the queue,
@@ -49,7 +49,7 @@ peak)? Then some orders wait every evening anyway. Blaming those on the outage w
 unfair. So the engine runs the queue **twice**: once with the outage, once without, and
 counts only the **difference**.
 
-## ⌨️ Do
+## Do
 
 Add these two pieces to the **end** of `simulation_engine/disruption.py`.
 
@@ -244,7 +244,7 @@ def peak_hourly_load(inputs: DisruptionInputs) -> Decimal:
     return max(hourly_demand(inputs, t) for t in range(24)) * pct(inputs.affected_share)
 ```
 
-## ✅ Check
+## Check
 
 Now both modes work. Try the hand-worked example:
 
@@ -280,7 +280,7 @@ finished.)
 You should see `delayed_orders 294.00`, `lost_orders 7.88`,
 `lost_contribution 1182.00` and `time_to_recovery 4`: your table. Type `exit()`.
 
-## 🔍 Line by line
+## Line by line
 
 ### Piece 4
 
@@ -294,7 +294,7 @@ You should see `delayed_orders 294.00`, `lost_orders 7.88`,
 - **Line 177** · Return the rate.
 - **Line 180** · `_run_queue`: the queue itself. `with_outage=False` runs a normal day
   for comparison.
-- **Lines 181–187** · Docstring: the three rules from 📖 Read.
+- **Lines 181–187** · Docstring: the three rules from Read.
 - **Line 188** · Share of orders through this part.
 - **Line 189** · The queue. Each item is a small list `[arrival_hour, orders]`.
   `deque[list]` is a type hint: "a deque of lists".
@@ -363,7 +363,7 @@ You should see `delayed_orders 294.00`, `lost_orders 7.88`,
 - **Lines 348–349** · The busiest hour's load on this part, for a warning in lesson 6.7
   ("normal capacity is below peak demand").
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -371,7 +371,7 @@ You should see `delayed_orders 294.00`, `lost_orders 7.88`,
 | `lost_orders` isn't `7.88` | Check line 209 multiplies by `(ONE - cancel)` and line 215 divides by it. |
 | The program never finishes | Line 217 must set `capacity = ZERO`, or the `while` loop never ends. |
 
-## ❓ Quiz
+## Quiz
 
 1. Why are cancelled orders not counted against capacity?
 2. Why does the engine run the queue twice?

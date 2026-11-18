@@ -2,13 +2,13 @@
 
 **Time:** 40 minutes · **Before this:** [4.1](01-what-django-is.md).
 
-## 📖 Read
+## Read
 
 In this lesson you set up the empty project: a folder, a virtual environment, the
 packages, Git, and Django's starting skeleton. It's like preparing a kitchen before
 cooking: lots of small steps, each one simple.
 
-## ⌨️ Do
+## Do
 
 ### Step 1 · Make the folder and virtual environment
 
@@ -180,7 +180,7 @@ git init -b main
 django-admin startproject config .
 ```
 
-⚠️ Don't forget the dot at the end.
+Don't forget the dot at the end.
 
 Now create the five apps:
 
@@ -214,7 +214,7 @@ Finally, copy the **`static`** folder from the reference project into `my-warroo
 holds the fonts, the CSS (the look) and the JavaScript (the interactive parts). You'll
 study the CSS and JavaScript in Part 10, and they don't change how the Python works.
 
-## ✅ Check
+## Check
 
 Your folder should now look like this (VS Code's Explorer on the left):
 
@@ -238,9 +238,9 @@ my-warroom/
 ```
 
 Run `git status`. You should **not** see `.env` or `.venv` listed: Git is ignoring them.
-✅ That proves your secret is safe.
+That proves your secret is safe.
 
-## 🔍 Line by line
+## Line by line
 
 ### `requirements.txt`
 
@@ -317,7 +317,7 @@ Each line is `NAME=value`. Lines starting with `#` are comments.
 | `django-admin startproject config .` | Create Django's starting files. `config` is the folder name for settings; `.` means "put `manage.py` here, not in a new folder". |
 | `django-admin startapp accounts` | Create an app folder with starter files. |
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -326,7 +326,7 @@ Each line is `NAME=value`. Lines starting with `#` are comments.
 | You made `my-warroom/config/config/` (folders inside each other) | You forgot the `.` in `startproject`. Delete `config` and the inner `manage.py`, and run it again with the dot. |
 | `git status` lists `.env` | The `.gitignore` has a typo, or isn't saved, or is named `gitignore` (missing the dot). |
 
-## ❓ Quiz
+## Quiz
 
 1. Why do we pin versions with `==`?
 2. What's the difference between `.env` and `.env.example`?

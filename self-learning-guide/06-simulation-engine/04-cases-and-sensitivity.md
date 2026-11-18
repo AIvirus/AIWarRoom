@@ -2,7 +2,7 @@
 
 **Time:** 35 minutes · **Before this:** [6.3](03-the-idea-model.md).
 
-## 📖 Read
+## Read
 
 Priya's numbers are guesses. Two tools show what happens if the guesses are wrong.
 
@@ -29,7 +29,7 @@ much the cash at the end changes. Do that for each of 8 inputs. The input with t
 biggest **swing** is the one Priya most needs to get right. Sorted from biggest to
 smallest, these bars make a **tornado chart** (it looks like a tornado: wide at the top).
 
-## ⌨️ Do
+## Do
 
 Create `simulation_engine/cases.py`:
 
@@ -186,7 +186,7 @@ def sensitivity(inputs: IdeaInputs, horizon: int, step_pct: Decimal) -> list[dic
     return rows
 ```
 
-## ✅ Check
+## Check
 
 ```bash
 python
@@ -224,7 +224,7 @@ So for Priya, **retention** matters most: 10 % more or fewer customers staying e
 changes her cash after two years by about ₹26 lakh. Her price comes next. Fixed costs,
 the thing founders often worry about first, matter least. Type `exit()`.
 
-## 🔍 Line by line
+## Line by line
 
 ### `cases.py`
 
@@ -275,14 +275,14 @@ the thing founders often worry about first, matter least. Type `exit()`.
   sorts by the swing **as a number**. (Sorting the text would put "9" after "10000".)
 - **Line 62** · Return the rows.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
 | `ImportError: cannot import name 'IdeaInputs'` | Check `idea.py` from lesson 6.3 is saved. |
 | `TypeError: 'Shock' object is not iterable` | A one-shock case is missing its trailing comma: `(_s(...),)`. |
 
-## ❓ Quiz
+## Quiz
 
 1. Retention is 80 %. What is it after a `-10 pts` shock? After a `scale 0.9` shock?
 2. Why does line 61 convert the swing back to a `Decimal` before sorting?

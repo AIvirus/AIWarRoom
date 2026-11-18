@@ -2,7 +2,7 @@
 
 **Time:** 45 minutes · **Before this:** lessons 1.1–1.10.
 
-## 📖 Read
+## Read
 
 Meena wants to open a chai stall. She has **₹20,000** saved. She asks:
 *"If I sell 1,500 cups a month and rent is ₹15,000, how long will my money last?"*
@@ -25,7 +25,7 @@ You'll use dataclasses (1.6), Decimal (1.8), loops (1.4), functions (1.5) and te
 - Minus rent 15,000 = **−₹2,250** a month. Meena loses money every month.
 - ₹20,000 ÷ 2,250 = 8.9 months, so she runs out of cash in **month 9**.
 
-## ⌨️ Do
+## Do
 
 Make `chai_model.py`:
 
@@ -89,7 +89,7 @@ if __name__ == "__main__":
 python chai_model.py
 ```
 
-✅ You should see:
+You should see:
 
 ```text
 Month 1: profit -2250.0, cash 17750.0
@@ -141,9 +141,9 @@ def test_more_cups_means_never_out_of_cash():
 pytest test_chai_model.py
 ```
 
-✅ `3 passed`.
+You should see `3 passed`.
 
-## 🔍 Line by line
+## Line by line
 
 ### `chai_model.py`
 
@@ -211,13 +211,13 @@ working). `[0]` takes the first (only) month from the list.
 +2,000, so cash never goes below zero. Here the fields are passed **by position** (in the
 order they're listed in the class) instead of by name.
 
-## 🎯 Challenge (optional)
+## Challenge (optional)
 
 1. Meena could sell 1,800 cups a month. Does she ever run out of cash?
 2. Add a field `price_rise_after_month_6` and use it inside the loop. (Hint: `if number > 6:`.)
 3. Write a test for your change **before** you change the code.
 
-## ❓ Quiz
+## Quiz
 
 1. Why is `StallPlan` frozen?
 2. What does `range(1, 4)` count?
@@ -225,7 +225,7 @@ order they're listed in the class) instead of by name.
 
 ---
 
-**Part 1 done! 🎉 You can now read most of the Python in AI WarRoom.**
+**Part 1 done! You can now read most of the Python in AI WarRoom.**
 Next: [Part 2 · How the web works](../02-web/README.md)
 
 <details><summary>Quiz answers</summary>

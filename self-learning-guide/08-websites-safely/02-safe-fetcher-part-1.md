@@ -2,7 +2,7 @@
 
 **Time:** 45 minutes · **Before this:** [8.1](01-the-dangers.md).
 
-## 📖 Read
+## Read
 
 Before our server requests **any** address, `check_url` asks four questions:
 
@@ -58,7 +58,7 @@ computer, in the new (IPv6) and old (IPv4) styles. Type `exit()` to leave.
 
 Those three tools are the whole idea. The file below wraps them up carefully.
 
-## ⌨️ Do
+## Do
 
 Create `intelligence/services/url_fetcher.py` and type in the first half:
 
@@ -153,7 +153,7 @@ def check_url(url: str) -> str:
     return parts.geturl()
 ```
 
-## ✅ Check
+## Check
 
 Open the Django shell (you first used it in lesson 7.6):
 
@@ -188,7 +188,7 @@ Try a few more and read each message: `"http://169.254.169.254/"`,
 last one is a `FetchFailed` (the name doesn't exist), not a `FetchBlocked`. Type `exit()`
 when you're done.
 
-## 🔍 Line by line
+## Line by line
 
 - **Lines 1–20** · The docstring explains the danger and the five rules. Lines 16–19 are
   honest about a gap the file doesn't close (see the box below).
@@ -249,7 +249,7 @@ when you're done.
 > a separate "egress proxy" with the same rules. For this course, knowing the gap exists
 > is the lesson.
 
-## 🛠️ If it didn't work
+## If it didn't work
 
 | You see | Fix |
 |---|---|
@@ -257,7 +257,7 @@ when you're done.
 | `check_url("https://example.com/")` says `DNS lookup failed` | No internet connection. The tests in 8.11 don't need it. |
 | `localhost` is **allowed** | Check line 85: `not all(...)` with `is_public_address(a)`, and line 61. |
 
-## ❓ Quiz
+## Quiz
 
 1. Why does `check_url` refuse `http://localhost:8000/` before even looking the name up?
 2. A name points to `93.184.216.34` **and** `127.0.0.1`. Allowed?
