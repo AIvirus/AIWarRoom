@@ -162,3 +162,21 @@ def test_me_endpoint_reports_current_organization(client, alice):
 def test_healthz_reports_database(client):
     body = client.get(reverse("healthz")).json()
     assert body == {"status": "ok", "database": "sqlite"}
+
+
+def test_login_ignores_email_capitals(client):
+    # Sign up as "Alice@Kirana.test", then log in typing it exactly the same way.
+    client.post(
+        reverse("accounts:signup"),
+        {
+            "full_name": "Alice",
+            "email": "Alice@Kirana.test",
+            "org_name": "Kirana Express",
+            "password": STRONG_PASSWORD,
+        },
+    )
+    client.logout()
+    response = client.post(
+        reverse("accounts:login"), {"username": "Alice@Kirana.test", "password": STRONG_PASSWORD}
+    )
+    assert response.status_code == 302

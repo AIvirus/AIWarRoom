@@ -53,3 +53,8 @@ class EmailLoginForm(AuthenticationForm):
         super().__init__(*args, **kwargs)
         self.fields["username"].label = "Email"
         self.fields["username"].widget.attrs.update({"autocomplete": "email", "autofocus": True})
+
+    def clean_username(self):
+        # Sign-up stores emails in lowercase (clean_email above), so log-in must match:
+        # "Alice@Kirana.test" and "alice@kirana.test" are the same account.
+        return self.cleaned_data["username"].lower()
