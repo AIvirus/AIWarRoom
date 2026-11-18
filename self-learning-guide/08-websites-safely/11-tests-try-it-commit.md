@@ -118,7 +118,7 @@ git commit -m "Part 8: websites, safely"
 
 ## ✅ Check
 
-- `pytest` prints `194 passed` (140 before + 54 new), with no internet needed.
+- `pytest` prints `195 passed` (141 before + 54 new), with no internet needed.
 - `git log --oneline` shows five commits.
 
 **Try breaking it on purpose:** in `intelligence/services/url_fetcher.py` line 112, change

@@ -512,13 +512,21 @@ On your Kirana Express board:
 
 1. **3D.** Drag the hour slider from T+0 to T+3. At T+0 and T+1 (the outage), the payment
    gateway and checkout are red stubs labelled DOWN (checkout depends on the gateway), and
-   the blocks on their edges disappear. From T+2, everything stands tall again.
-2. **Your own names.** Kirana's components from lesson 6.9 are called "Payment gateway"
+   the blocks on their edges disappear. Customers, the warehouse and revenue turn **light
+   amber** with dashed labels: the number of failed payments so far, how many orders reached
+   the warehouse this hour, and the revenue lost. No blocks move on to the warehouse,
+   courier or revenue. From T+2, everything stands tall again, except revenue: it stays
+   amber, because that money is gone.
+2. **Knock-on during a courier outage.** Open the "Delhivery pickups stop for a day" run
+   and choose speed 0.25×, then press Play. The courier is red; the warehouse counts the
+   parcels stuck, customers count the orders late. When the courier is back, its label says
+   "clearing" and the numbers fall hour by hour until everything is normal again.
+3. **Your own names.** Kirana's components from lesson 6.9 are called "Payment gateway"
    and "Checkout", so those names appear. The demo businesses show "Razorpay (primary
    gateway)" and so on: the labels come from the business's own components.
-3. **2D.** Add `?view=2d` to the address. The same parts, as diamonds on a flat
+4. **2D.** Add `?view=2d` to the address. The same parts, as diamonds on a flat
    "isometric" grid, with dashed lines that march along the edges.
-4. **Reduced motion.** In DevTools, press Ctrl+Shift+P (Cmd+Shift+P on a Mac), type
+5. **Reduced motion.** In DevTools, press Ctrl+Shift+P (Cmd+Shift+P on a Mac), type
    "reduced motion", choose **Emulate CSS prefers-reduced-motion: reduce**, and reload.
    The subtitle says "3D (WebGL) · reduced motion", and nothing moves on its own: the
    picture only changes when you change the hour.

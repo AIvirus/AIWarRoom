@@ -46,7 +46,7 @@ git commit -m "Part 10: the interface"
 
 ## ✅ Check
 
-- `pytest` prints `266 passed` (246 before + 20 new).
+- `pytest` prints `267 passed` (247 before + 20 new).
 - `git log --oneline` shows seven commits.
 - Your project now has every file of the app. Compare: the reference project has a few
   more, for the teacher (`docs/`, the guide itself and its checking tests).

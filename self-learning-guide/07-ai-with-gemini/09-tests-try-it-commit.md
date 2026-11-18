@@ -151,7 +151,7 @@ Before you commit, check `git status` doesn't list `.env`. (It shouldn't: `.giti
 
 ## ✅ Check
 
-- `pytest` prints `140 passed` (104 before + 36 new), **without** using your key.
+- `pytest` prints `141 passed` (105 before + 36 new), **without** using your key.
 - The real explanation came back with `201`, then `200` from the cache.
 - `git log --oneline` shows four commits, and `git show --stat HEAD` doesn't mention
   `.env`.
