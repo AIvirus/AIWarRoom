@@ -11,7 +11,7 @@ Three things are new:
 1. **Strategies.** You pick which response to show (wait, backup, queue and retry), and
    the gauges, timeline and system view follow it.
 2. **Time.** An outage run has an hour-by-hour timeline (72 rows). A slider, a Play button
-   and a speed button move through the hours. At each hour the gauges show "so far"
+   and a speed menu move through the hours. At each hour the gauges show "so far"
    totals: these are **sums of the engine's hourly rows**, not new calculations.
 3. **Two kinds of slider.** The outage's **parameters** (duration, start hour, backup
    speed...) belong to the scenario. The business **inputs** (recapture rate...) belong
@@ -92,7 +92,7 @@ async function createView() {
 
 ### Piece 3: drawing (lines 61–189)
 
-<!-- source: static/js/board/main.js:61-189 -->
+<!-- source: static/js/board/main.js:61-188 -->
 ```js
 // ---------------------------------------------------------------------------------------
 // Rendering
@@ -147,8 +147,7 @@ function renderHour() {
       ratio: Number(m.mitigation_cost.value) ? costSoFar / Number(m.mitigation_cost.value) : 0 }),
   ].join("");
 
-  const { health, flows } = healthAt(row, topology);
-  const notes = knockOnAt(rows, topology, data.template.loss_mode, health);
+  const { health, flows, notes } = knockOnAt(rows, topology, data.template.loss_mode, healthAt(row, topology));
   view?.update({ health, flows, notes });
   // Component names are user input: build with text nodes, never innerHTML.
   $("sr-health").replaceChildren(...topology.nodes.map((n) => {
@@ -227,7 +226,7 @@ function renderAll() {
 
 ### Piece 4: sliders, preview, save (lines 191–327)
 
-<!-- source: static/js/board/main.js:191-327 -->
+<!-- source: static/js/board/main.js:190-326 -->
 ```js
 // ---------------------------------------------------------------------------------------
 // Sliders -> preview API
@@ -370,7 +369,7 @@ $("save-run").addEventListener("click", async () => {
 
 ### Piece 5: playback and start (lines 329–365)
 
-<!-- source: static/js/board/main.js:329-365 -->
+<!-- source: static/js/board/main.js:328-363 -->
 ```js
 // ---------------------------------------------------------------------------------------
 // Playback
@@ -390,9 +389,8 @@ function setPlaying(on) {
   }, 400 / state.speed);
 }
 $("play").addEventListener("click", () => setPlaying(!state.playing));
-$("speed").addEventListener("click", () => {
-  state.speed = state.speed === 1 ? 4 : 1;
-  $("speed").textContent = `${state.speed}×`;
+$("speed").addEventListener("change", (event) => {
+  state.speed = Number(event.target.value); // 0.25× = 1.6 s per hour, 4× = 0.1 s
   if (state.playing) setPlaying(true);
 });
 $("scrubber").addEventListener("input", (event) => {
@@ -423,7 +421,8 @@ Open your Kirana Express run from lesson 6.9 (2-hour gateway outage).
    The 2-hour outage covers hours 0 and 1, so the impact stops growing after T+1.
 3. **Pick "Queue and retry payments"** in the console. Every panel switches to that
    response.
-4. **Press Play**, then the speed button (1× → 4×). Press Pause.
+4. **Press Play**, then pick another speed (try 0.25× to watch slowly, 4× to rush). Press
+   Pause.
 5. **Drag "Outage duration" to 4 hours.** "What-if · not saved", and the responses become
    about ₹42,000 / ₹30,260 / ₹20,100. Click **Save as a new run**: a new run's page opens,
    showing **exactly** those numbers, now saved. (The preview and the saved run come from
@@ -466,7 +465,7 @@ Open your Kirana Express run from lesson 6.9 (2-hour gateway outage).
 - **Lines 80–86** · `gauge(...)`: the HTML for one gauge: label, value, "of ₹21,000 by the
   end", and a meter bar whose width is the share so far. A `loss` gauge turns red when
   above zero.
-- **Lines 88–130** · `renderHour()`: everything for the selected hour:
+- **Lines 88–129** · `renderHour()`: everything for the selected hour:
   - **Lines 90–91** · The timeline rows from hour 0 up to now, and the current one.
   - **Lines 93–94** · **Sums** of the engine's hourly `lost` and `cost` so far.
   - **Line 95** · Orders getting through now: served ÷ demand, from this hour's row.
@@ -474,55 +473,55 @@ Open your Kirana Express run from lesson 6.9 (2-hour gateway outage).
     and the slider's position.
   - **Lines 101–112** · The four gauges. For outages that delay deliveries
     (`fulfilment`), the third gauge is the backlog instead of "getting through".
-  - **Lines 114–116** · Each component's health at this hour (from the engine's row), and
-    the knock-on notes for parts hurt by the outage (`knockOnAt`, lesson 10.12) → update
-    the 3D or 2D view.
-  - **Lines 118–129** · The hidden health table for screen readers, built with
+  - **Lines 114–115** · Each component's health at this hour (from the engine's row),
+    passed through `knockOnAt` (lesson 10.12), which adds notes for parts hurt by the
+    outage and lowers the flows a payment outage cuts off → update the 3D or 2D view.
+  - **Lines 117–128** · The hidden health table for screen readers, built with
     `textContent` because component names are typed by users. A part with a knock-on note
     reads it out ("affected, 1,153 parcels stuck") instead of its plain health.
-- **Lines 132–142** · `renderTimeline()`: the slider's range, the red outage band's width
+- **Lines 131–141** · `renderTimeline()`: the slider's range, the red outage band's width
   (outage hours as a share of the timeline), and a tick label every 12 hours.
-- **Lines 144–172** · `renderComparison()`: the responses table, each row with a red bar
+- **Lines 143–171** · `renderComparison()`: the responses table, each row with a red bar
   sized against the worst impact, cost, recovery time and orders lost. Clicking a name
   picks it. Then the engine's own comparison sentence ("Lowest total impact: Queue and
   retry payments...") and its warnings.
-- **Lines 174–180** · `renderMode()`: the chip and the save/reset buttons.
-- **Lines 182–189** · `renderAll()`: keep the hour within the (maybe shorter) new
+- **Lines 173–179** · `renderMode()`: the chip and the save/reset buttons.
+- **Lines 181–188** · `renderAll()`: keep the hour within the (maybe shorter) new
   timeline, then redraw everything.
 
 ### Piece 4: sliders, preview, save
 
-- **Lines 194–200** · Which parameters get sliders, with their step (and a maximum for
+- **Lines 193–199** · Which parameters get sliders, with their step (and a maximum for
   the switch time).
-- **Lines 202–208** · `sliderSpec(...)`: min, max and an aligned step for one slider,
+- **Lines 201–207** · `sliderSpec(...)`: min, max and an aligned step for one slider,
   from the catalogue's limits or sensible defaults.
-- **Lines 210–232** · `addSlider(...)`: the same control as the Idea Bench's (label,
+- **Lines 209–231** · `addSlider(...)`: the same control as the Idea Bench's (label,
   output, range, "saved:" note), returning the input and its `show` function.
-- **Lines 234–248** · `buildControls()`: a slider for each listed parameter, then one for
+- **Lines 233–247** · `buildControls()`: a slider for each listed parameter, then one for
   each business input, labelled "(your input)" so it's clear which ones belong to the
   business.
-- **Lines 250–282** · `requestPreview`, debounced: the same as the Idea Bench's, but it
+- **Lines 249–281** · `requestPreview`, debounced: the same as the Idea Bench's, but it
   sends **all** current parameters plus the changed inputs.
-- **Lines 284–285** · What a parameter or input slider does when it moves.
-- **Lines 287–299** · "Back to saved run".
-- **Lines 301–327** · "Save as a new run":
-  - **Lines 302–306** · If business inputs changed, warn that the business's saved
+- **Lines 283–284** · What a parameter or input slider does when it moves.
+- **Lines 286–298** · "Back to saved run".
+- **Lines 300–326** · "Save as a new run":
+  - **Lines 301–305** · If business inputs changed, warn that the business's saved
     assumptions will change too (naming them), and stop if the user says no.
-  - **Line 313** · PATCH the scenario's parameters.
-  - **Lines 314–319** · PUT the changed inputs, if any, as "user" values with a note.
-  - **Lines 320–321** · Run it, and open the new run's page.
+  - **Line 312** · PATCH the scenario's parameters.
+  - **Lines 313–318** · PUT the changed inputs, if any, as "user" values with a note.
+  - **Lines 319–320** · Run it, and open the new run's page.
 
 ### Piece 5: playback and start
 
-- **Lines 332–345** · `setPlaying(on)`: switch the button's text and `aria-pressed`
+- **Lines 331–344** · `setPlaying(on)`: switch the button's text and `aria-pressed`
   (so screen readers know it's on), stop any timer, and if playing, start from the
   beginning when at the end. Every `400 / speed` milliseconds, move one hour; stop at the
   end.
-- **Lines 346–351** · Play/Pause, and the speed button (1× ↔ 4×; restart the timer at
-  the new speed).
-- **Lines 352–355** · The hour slider. (Arrow keys work on it too: that's built into
+- **Lines 345–349** · Play/Pause, and the speed menu (0.25× to 4×: at 0.25× each hour
+  lasts 1.6 seconds, at 4× a tenth of a second). A new speed restarts the timer.
+- **Lines 350–353** · The hour slider. (Arrow keys work on it too: that's built into
   range sliders.)
-- **Lines 358–365** · Start: remember the chip's text, build the sliders, draw, then
+- **Lines 356–363** · Start: remember the chip's text, build the sliders, draw, then
   create the system view. When it's ready, say which kind it is and draw the hour on it.
 
 ## 🛠️ If it didn't work

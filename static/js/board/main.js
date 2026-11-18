@@ -111,8 +111,7 @@ function renderHour() {
       ratio: Number(m.mitigation_cost.value) ? costSoFar / Number(m.mitigation_cost.value) : 0 }),
   ].join("");
 
-  const { health, flows } = healthAt(row, topology);
-  const notes = knockOnAt(rows, topology, data.template.loss_mode, health);
+  const { health, flows, notes } = knockOnAt(rows, topology, data.template.loss_mode, healthAt(row, topology));
   view?.update({ health, flows, notes });
   // Component names are user input: build with text nodes, never innerHTML.
   $("sr-health").replaceChildren(...topology.nodes.map((n) => {
@@ -344,9 +343,8 @@ function setPlaying(on) {
   }, 400 / state.speed);
 }
 $("play").addEventListener("click", () => setPlaying(!state.playing));
-$("speed").addEventListener("click", () => {
-  state.speed = state.speed === 1 ? 4 : 1;
-  $("speed").textContent = `${state.speed}×`;
+$("speed").addEventListener("change", (event) => {
+  state.speed = Number(event.target.value); // 0.25× = 1.6 s per hour, 4× = 0.1 s
   if (state.playing) setPlaying(true);
 });
 $("scrubber").addEventListener("input", (event) => {

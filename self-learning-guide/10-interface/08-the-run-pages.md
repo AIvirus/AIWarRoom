@@ -101,7 +101,7 @@ Create these four files in `templates/simulations/`.
         <input type="range" id="scrubber" min="0" max="71" value="0" step="1">
         <div class="ticks" id="ticks" aria-hidden="true"></div>
       </div>
-      <button class="btn btn-sm" type="button" id="speed" aria-label="Playback speed">1×</button>
+      <select id="speed" aria-label="Playback speed"><option value="0.25">0.25×</option><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="4">4×</option></select>
     </div>
   </section>
 
@@ -307,7 +307,7 @@ The sliders and the 3D view are the JavaScript's job: the next four lessons read
 - **Lines 50–53** · **S-03 Gauges** at the selected hour.
 - **Lines 57–71** · **S-04 Timeline:** Play, a clock, the outage band, the hour slider
   (`scrubber`, hours 0–71) with a label for screen readers, tick marks, and a speed
-  button.
+  menu (0.25×, 0.5×, 1×, 2×, 4×).
 - **Lines 75–81** · **S-05 Responses compared** (an empty table) with the engine's notes,
   and **S-06**, the analyst reading. `{% include ... with panel_id="S-06" %}` passes a
   value into the piece.

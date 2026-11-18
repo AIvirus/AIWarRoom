@@ -49,7 +49,7 @@ second, with `requestAnimationFrame`.
 
 ### `static/js/board/topology.js`
 
-<!-- source: static/js/board/topology.js:1-101 -->
+<!-- source: static/js/board/topology.js:1-112 -->
 ```js
 // The business drawn as a system: where each kind of component sits and how orders flow.
 // Positions are on a floor grid (x across, z deep); both the 3D and 2D views use them.
@@ -117,9 +117,12 @@ export const stateOf = (h) => (h <= 0.02 ? "failed" : h < 0.98 ? "degraded" : "n
 
 // Knock-on effects at one hour: parts that still work but are hurt by the outage.
 // Every figure is read from the engine's rows (backlog, served vs demand, revenue lost so
-// far); nothing is estimated here. Returns { nodeId: { state, text } } for the parts
-// affected right now. A note's state is "affected" unless the part itself is down.
-export function knockOnAt(rows, topology, lossMode, health) {
+// far); nothing is estimated here. Takes healthAt()'s result and returns it with:
+//   notes  { nodeId: { state, text } } for the parts affected right now; a note's state is
+//          "affected" unless the part itself is down or degraded
+//   flows  edge strengths, lowered after a payment outage: unpaid orders never reach
+//          revenue, the warehouse or the courier
+export function knockOnAt(rows, topology, lossMode, { health, flows }) {
   const row = rows[rows.length - 1];
   const failed = topology.failedKind;
   const count = (n) => Math.round(n).toLocaleString("en-IN");
@@ -140,17 +143,25 @@ export function knockOnAt(rows, topology, lossMode, health) {
     }
     note("customers", `${waiting} orders late`);
   }
+
+  let paid = 1; // share of this hour's orders that got through checkout
   if (lossMode === "checkout" && row.demand > 0 && row.served < row.demand * 0.98) {
-    const failing = Math.round((1 - row.served / row.demand) * 100);
-    note("customers", failing === 100 ? "nobody can pay" : `${failing} % can't pay`);
-    note("warehouse", failing === 100 ? "no new orders" : `${failing} % fewer orders`);
+    paid = row.served / row.demand;
+    const failedSoFar = rows.reduce((sum, r) => sum + (r.demand - r.served), 0);
+    note("customers", `${count(failedSoFar)} payments failed`);
+    note("warehouse", `${count(row.served)} of ${count(row.demand)} orders this hour`);
   }
+  const afterPayment = ["payment>revenue", "storefront>warehouse", "warehouse>logistics", "logistics>customers"];
+  const strengths = topology.flows.map(([a, b], i) =>
+    afterPayment.includes(`${a}>${b}`) ? Math.min(flows[i], paid) : flows[i],
+  );
+
   // Runs saved before the engine added lost_revenue_cum simply show no revenue note.
   if (row.lost_revenue_cum >= 1) {
     const verb = lossMode === "fulfilment" ? "refunded" : "lost";
     notes.revenue = { state: "affected", text: `₹${count(row.lost_revenue_cum)} ${verb}` };
   }
-  return notes;
+  return { health, flows: strengths, notes };
 }
 ```
 
@@ -531,27 +542,33 @@ On your Kirana Express board:
   said nothing. Lines 53–55 handle a business with no components set up: the engine then
   reports the failing **kind** itself. Each edge's flow is the weaker of its two ends.
 - **Line 63** · `stateOf(h)`: ≤ 2 % is "failed", under 98 % "degraded", else "normal".
-- **Lines 65–69** · Comment: `knockOnAt` finds the parts that **still work** but are hurt by
+- **Lines 65–71** · Comment: `knockOnAt` finds the parts that **still work** but are hurt by
   the outage. Every number comes from the engine's rows; this file only chooses the words.
-- **Line 70** · It takes the rows **up to now**, the topology, the outage type (`lossMode`:
-  `checkout` for payments, `fulfilment` for warehouse and courier) and this hour's health.
-- **Lines 71–73** · This hour's row, the broken part's kind, and a helper that rounds a
+  It hands back the health, the flows (lowered after a payment outage) and the notes.
+- **Line 72** · It takes the rows **up to now**, the topology, the outage type (`lossMode`:
+  `checkout` for payments, `fulfilment` for warehouse and courier) and what `healthAt`
+  returned (`{ health, flows }` unpacks it).
+- **Lines 73–75** · This hour's row, the broken part's kind, and a helper that rounds a
   number and writes it the Indian way (`1,57,075`).
-- **Lines 74–78** · `notes` collects the result. `note(id, text)` adds one: its state is
+- **Lines 76–80** · `notes` collects the result. `note(id, text)` adds one: its state is
   "affected" if the part itself is fine, otherwise it keeps its own state (down or degraded).
-- **Lines 80–90** · Warehouse or courier outage with orders still waiting (`backlog`):
-  - **Lines 82–84** · Courier broken: the parcels are stuck **at the warehouse**. Once the
+- **Lines 82–92** · Warehouse or courier outage with orders still waiting (`backlog`):
+  - **Lines 84–86** · Courier broken: the parcels are stuck **at the warehouse**. Once the
     courier is back but the backlog isn't cleared yet, the courier shows "clearing 1,153".
-  - **Lines 85–88** · Warehouse broken: it says how many orders wait (or "clearing" once it's
+  - **Lines 87–90** · Warehouse broken: it says how many orders wait (or "clearing" once it's
     back), and the courier has "no parcels to ship" while the warehouse is down.
-  - **Line 89** · Either way, the customers' orders are late.
-- **Lines 91–95** · Payment outage: the share of orders that **fail** this hour is
-  1 − served ÷ demand. Those customers can't pay, and the warehouse gets fewer orders. At
-  100 % the words change to "nobody can pay" and "no new orders".
-- **Lines 96–100** · Revenue lost so far, straight from the engine's `lost_revenue_cum`:
+  - **Line 91** · Either way, the customers' orders are late.
+- **Lines 94–100** · Payment outage. `paid` is the share of this hour's orders that got
+  through checkout (served ÷ demand; 1 means all). While payments fail, the customers' note
+  counts **every** failed payment so far (demand − served, added up hour by hour), and the
+  warehouse shows how many orders reached it this hour ("0 of 159"). Both change every hour.
+- **Lines 101–104** · Orders that were never paid never reach revenue, the warehouse, the
+  courier or the customer's door. So those four edges carry at most `paid` of their usual
+  flow: fewer travelling blocks, or none.
+- **Lines 106–110** · Revenue lost so far, straight from the engine's `lost_revenue_cum`:
   "refunded" for cancelled deliveries, "lost" for failed payments. Runs saved before this
   field existed don't have it, so they simply show no revenue note.
-- **Line 101** · Return the notes.
+- **Line 111** · Return health, the adjusted flows, and the notes.
 
 ### `schematic2d.js`
 
