@@ -315,11 +315,15 @@ def _outcome(inputs, *, affected, recovered, lost, cost, hours_down, recovery_ho
     lost_contribution = lost_revenue * pct(inputs.contribution_margin)
 
     # Running totals for the gauges: lost contribution + cost so far, hour by hour.
+    # Revenue lost so far feeds the System View's knock-on labels ("₹48,000 refunded").
     margin = aov * pct(inputs.contribution_margin)
-    running = ZERO
+    running = revenue_running = ZERO
     for row in rows:
-        running += Decimal(str(row["lost"])) * margin + Decimal(str(row["cost"]))
+        lost_now = Decimal(str(row["lost"]))
+        running += lost_now * margin + Decimal(str(row["cost"]))
+        revenue_running += lost_now * aov
         row["impact_cum"] = display(running)
+        row["lost_revenue_cum"] = display(revenue_running)
 
     metrics = {
         "affected_orders": metric("Orders affected", affected, "orders"),

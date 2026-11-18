@@ -7,7 +7,7 @@
 import { api, ApiError, debounce, prefersReducedMotion } from "../lib/api.js";
 import { alignedStep, clockLabel, figure, money } from "../lib/format.js";
 import { createSchematic2D } from "./schematic2d.js";
-import { buildTopology, healthAt, stateOf } from "./topology.js";
+import { buildTopology, healthAt, knockOnAt, stateOf } from "./topology.js";
 
 const data = JSON.parse(document.getElementById("page-data").textContent);
 const reducedMotion = prefersReducedMotion();
@@ -112,14 +112,18 @@ function renderHour() {
   ].join("");
 
   const { health, flows } = healthAt(row, topology);
-  view?.update({ health, flows });
+  const notes = knockOnAt(rows, topology, data.template.loss_mode, health);
+  view?.update({ health, flows, notes });
   // Component names are user input: build with text nodes, never innerHTML.
   $("sr-health").replaceChildren(...topology.nodes.map((n) => {
     const tr = document.createElement("tr");
     const th = document.createElement("th");
     const td = document.createElement("td");
     th.textContent = n.label;
-    td.textContent = `${stateOf(health[n.id])}, ${Math.round(health[n.id] * 100)} %`;
+    const note = notes[n.id];
+    td.textContent = note
+      ? `${note.state}, ${note.text}`
+      : `${stateOf(health[n.id])}, ${Math.round(health[n.id] * 100)} %`;
     tr.append(th, td);
     return tr;
   }));

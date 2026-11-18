@@ -19,6 +19,8 @@ export function createScene3D(container, topology, { reducedMotion }) {
     normal: colour("--bone"),
     degraded: colour("--signal"),
     failed: colour("--fault"),
+    // Still working, but hurt by the outage: half-way between normal and degraded.
+    affected: colour("--bone").lerp(colour("--signal"), 0.55),
     plinth: colour("--panel-2"),
     rule: colour("--rule"),
     rail: colour("--dim"), // edges: faint, but visible against the graphite floor
@@ -175,10 +177,11 @@ export function createScene3D(container, topology, { reducedMotion }) {
 
   return {
     kind: "3D (WebGL)",
-    update({ health, flows: strengths }) {
+    update({ health, flows: strengths, notes = {} }) {
       for (const [id, { node, column, label }] of nodes) {
         const h = health[id];
-        const state = stateOf(h);
+        const note = notes[id];
+        const state = note?.state ?? stateOf(h);
         column.scale.y = 0.08 + 1.1 * h; // never fully vanishes: a flat stub reads as "down"
         column.position.set(node.x, 0.22 + column.scale.y / 2, node.z);
         column.material.color.copy(palette[state]);
@@ -186,7 +189,7 @@ export function createScene3D(container, topology, { reducedMotion }) {
         label.innerHTML = "";
         label.append(node.label);
         const value = document.createElement("b");
-        value.textContent = state === "failed" ? "DOWN" : `${Math.round(h * 100)} %`;
+        value.textContent = note?.text ?? (state === "failed" ? "DOWN" : `${Math.round(h * 100)} %`);
         label.append(value);
       }
       strengths.forEach((s, i) => {

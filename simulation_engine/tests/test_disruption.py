@@ -248,3 +248,10 @@ def test_timeline_has_one_row_per_hour_and_running_impact_matches_total():
     assert out["timeline"][0]["health"] == 0.0  # down
     assert out["timeline"][3]["health"] == 1.0  # back
     assert D(str(out["timeline"][-1]["impact_cum"])) == v(out, "total_impact")
+
+
+def test_running_revenue_lost_matches_total():
+    for out in (simulate_fulfilment(WAREHOUSE, "wait"), simulate_checkout(PAYMENT, "wait")):
+        cum = [D(str(r["lost_revenue_cum"])) for r in out["timeline"]]
+        assert cum == sorted(cum)  # it only ever grows
+        assert abs(cum[-1] - v(out, "lost_revenue")) < D("0.05")

@@ -13,11 +13,12 @@ Three files share the work:
 
 | File | Job |
 |---|---|
-| `topology.js` | **Where** things are (a floor plan), **which** edges connect them, and each part's **health** at an hour, read from the engine's row. No drawing. |
+| `topology.js` | **Where** things are (a floor plan), **which** edges connect them, each part's **health** at an hour, and the **knock-on** notes for parts hurt by the outage, all read from the engine's rows. No drawing. |
 | `schematic2d.js` | Draws it flat, with SVG. |
 | `scene3d.js` | Draws it in 3D, with Three.js. |
 
-Both drawings offer the **same** two functions, `update({health, flows})` and `dispose()`.
+Both drawings offer the **same** two functions, `update({health, flows, notes})` and `dispose()`
+(the 2D drawing simply ignores `notes`).
 `board/main.js` doesn't care which one it got. Programmers call this "the same
 **interface**"; it's what makes the 2D fallback a one-line swap.
 
@@ -48,7 +49,7 @@ second, with `requestAnimationFrame`.
 
 ### `static/js/board/topology.js`
 
-<!-- source: static/js/board/topology.js:1-63 -->
+<!-- source: static/js/board/topology.js:1-101 -->
 ```js
 // The business drawn as a system: where each kind of component sits and how orders flow.
 // Positions are on a floor grid (x across, z deep); both the 3D and 2D views use them.
@@ -113,6 +114,44 @@ export function healthAt(row, topology) {
 }
 
 export const stateOf = (h) => (h <= 0.02 ? "failed" : h < 0.98 ? "degraded" : "normal");
+
+// Knock-on effects at one hour: parts that still work but are hurt by the outage.
+// Every figure is read from the engine's rows (backlog, served vs demand, revenue lost so
+// far); nothing is estimated here. Returns { nodeId: { state, text } } for the parts
+// affected right now. A note's state is "affected" unless the part itself is down.
+export function knockOnAt(rows, topology, lossMode, health) {
+  const row = rows[rows.length - 1];
+  const failed = topology.failedKind;
+  const count = (n) => Math.round(n).toLocaleString("en-IN");
+  const notes = {};
+  const note = (id, text) => {
+    const own = stateOf(health[id]);
+    notes[id] = { state: own === "normal" ? "affected" : own, text };
+  };
+
+  if (lossMode === "fulfilment" && row.backlog >= 0.5) {
+    const waiting = count(row.backlog);
+    if (failed === "logistics") {
+      note("warehouse", `${waiting} parcels stuck`);
+      if (stateOf(health.logistics) === "normal") note("logistics", `clearing ${waiting}`);
+    } else {
+      note("warehouse", stateOf(health.warehouse) === "normal" ? `clearing ${waiting}` : `down · ${waiting} waiting`);
+      if (stateOf(health.warehouse) !== "normal") note("logistics", "no parcels to ship");
+    }
+    note("customers", `${waiting} orders late`);
+  }
+  if (lossMode === "checkout" && row.demand > 0 && row.served < row.demand * 0.98) {
+    const failing = Math.round((1 - row.served / row.demand) * 100);
+    note("customers", failing === 100 ? "nobody can pay" : `${failing} % can't pay`);
+    note("warehouse", failing === 100 ? "no new orders" : `${failing} % fewer orders`);
+  }
+  // Runs saved before the engine added lost_revenue_cum simply show no revenue note.
+  if (row.lost_revenue_cum >= 1) {
+    const verb = lossMode === "fulfilment" ? "refunded" : "lost";
+    notes.revenue = { state: "affected", text: `₹${count(row.lost_revenue_cum)} ${verb}` };
+  }
+  return notes;
+}
 ```
 
 ### `static/js/board/schematic2d.js`
@@ -219,9 +258,9 @@ export function createSchematic2D(container, topology, { reducedMotion }) {
 
 ### `static/js/board/scene3d.js`
 
-#### Piece 1: scene, lights, camera, floor (lines 1–49)
+#### Piece 1: scene, lights, camera, floor (lines 1–51)
 
-<!-- source: static/js/board/scene3d.js:1-49 -->
+<!-- source: static/js/board/scene3d.js:1-51 -->
 ```js
 // Three.js view of the business as a living system.
 //
@@ -244,6 +283,8 @@ export function createScene3D(container, topology, { reducedMotion }) {
     normal: colour("--bone"),
     degraded: colour("--signal"),
     failed: colour("--fault"),
+    // Still working, but hurt by the outage: half-way between normal and degraded.
+    affected: colour("--bone").lerp(colour("--signal"), 0.55),
     plinth: colour("--panel-2"),
     rule: colour("--rule"),
     rail: colour("--dim"), // edges: faint, but visible against the graphite floor
@@ -274,9 +315,9 @@ export function createScene3D(container, topology, { reducedMotion }) {
   scene.add(grid);
 ```
 
-#### Piece 2: parts and flows (lines 51–100)
+#### Piece 2: parts and flows (lines 53–102)
 
-<!-- source: static/js/board/scene3d.js:51-100 -->
+<!-- source: static/js/board/scene3d.js:53-102 -->
 ```js
   // ---- Nodes -------------------------------------------------------------------------
   const nodes = new Map();
@@ -330,9 +371,9 @@ export function createScene3D(container, topology, { reducedMotion }) {
   });
 ```
 
-#### Piece 3: fitting the view, placing labels (lines 102–137)
+#### Piece 3: fitting the view, placing labels (lines 104–139)
 
-<!-- source: static/js/board/scene3d.js:102-137 -->
+<!-- source: static/js/board/scene3d.js:104-139 -->
 ```js
   // ---- Sizing: fit the whole layout into the container at any aspect ratio ------------
   function resize() {
@@ -372,9 +413,9 @@ export function createScene3D(container, topology, { reducedMotion }) {
   }
 ```
 
-#### Piece 4: animation and updates (lines 139–213)
+#### Piece 4: animation and updates (lines 141–216)
 
-<!-- source: static/js/board/scene3d.js:139-213 -->
+<!-- source: static/js/board/scene3d.js:141-216 -->
 ```js
   // ---- Animation ---------------------------------------------------------------------
   const matrix = new THREE.Matrix4();
@@ -415,10 +456,11 @@ export function createScene3D(container, topology, { reducedMotion }) {
 
   return {
     kind: "3D (WebGL)",
-    update({ health, flows: strengths }) {
+    update({ health, flows: strengths, notes = {} }) {
       for (const [id, { node, column, label }] of nodes) {
         const h = health[id];
-        const state = stateOf(h);
+        const note = notes[id];
+        const state = note?.state ?? stateOf(h);
         column.scale.y = 0.08 + 1.1 * h; // never fully vanishes: a flat stub reads as "down"
         column.position.set(node.x, 0.22 + column.scale.y / 2, node.z);
         column.material.color.copy(palette[state]);
@@ -426,7 +468,7 @@ export function createScene3D(container, topology, { reducedMotion }) {
         label.innerHTML = "";
         label.append(node.label);
         const value = document.createElement("b");
-        value.textContent = state === "failed" ? "DOWN" : `${Math.round(h * 100)} %`;
+        value.textContent = note?.text ?? (state === "failed" ? "DOWN" : `${Math.round(h * 100)} %`);
         label.append(value);
       }
       strengths.forEach((s, i) => {
@@ -476,19 +518,40 @@ On your Kirana Express board:
 
 - **Lines 1–2** · Comment: a floor grid, x across and z deep, used by both views.
 - **Lines 4–12** · `LAYOUT`: where each **kind** of part sits, and its default label.
-- **Lines 14–25** · `FLOWS`: the edges orders move along. The last one has a third value,
+- **Lines 14–27** · `FLOWS`: the edges orders move along. The last one has a third value,
   a **bend**, so deliveries curve back to customers around the front instead of cutting
   through the warehouse.
-- **Lines 28–30** · `controlPoint(from, to, bend)`: the point a curved edge bends towards
+- **Lines 30–32** · `controlPoint(from, to, bend)`: the point a curved edge bends towards
   (for a straight edge, the middle).
-- **Lines 32–45** · `buildTopology(components, failedKind)`: one node per kind, labelled
+- **Lines 34–47** · `buildTopology(components, failedKind)`: one node per kind, labelled
   with the business's **own** component names when it has them ("Razorpay (primary
   gateway)"), joined with `+` if there are several, and remembering their keys.
-- **Lines 49–61** · `healthAt(row, topology)`: for each node, the **lowest** health of its
+- **Lines 51–63** · `healthAt(row, topology)`: for each node, the **lowest** health of its
   components in this hour's row (one broken part is enough), or 1 (normal) if the engine
   said nothing. Lines 53–55 handle a business with no components set up: the engine then
   reports the failing **kind** itself. Each edge's flow is the weaker of its two ends.
 - **Line 63** · `stateOf(h)`: ≤ 2 % is "failed", under 98 % "degraded", else "normal".
+- **Lines 65–69** · Comment: `knockOnAt` finds the parts that **still work** but are hurt by
+  the outage. Every number comes from the engine's rows; this file only chooses the words.
+- **Line 70** · It takes the rows **up to now**, the topology, the outage type (`lossMode`:
+  `checkout` for payments, `fulfilment` for warehouse and courier) and this hour's health.
+- **Lines 71–73** · This hour's row, the broken part's kind, and a helper that rounds a
+  number and writes it the Indian way (`1,57,075`).
+- **Lines 74–78** · `notes` collects the result. `note(id, text)` adds one: its state is
+  "affected" if the part itself is fine, otherwise it keeps its own state (down or degraded).
+- **Lines 80–90** · Warehouse or courier outage with orders still waiting (`backlog`):
+  - **Lines 82–84** · Courier broken: the parcels are stuck **at the warehouse**. Once the
+    courier is back but the backlog isn't cleared yet, the courier shows "clearing 1,153".
+  - **Lines 85–88** · Warehouse broken: it says how many orders wait (or "clearing" once it's
+    back), and the courier has "no parcels to ship" while the warehouse is down.
+  - **Line 89** · Either way, the customers' orders are late.
+- **Lines 91–95** · Payment outage: the share of orders that **fail** this hour is
+  1 − served ÷ demand. Those customers can't pay, and the warehouse gets fewer orders. At
+  100 % the words change to "nobody can pay" and "no new orders".
+- **Lines 96–100** · Revenue lost so far, straight from the engine's `lost_revenue_cum`:
+  "refunded" for cancelled deliveries, "lost" for failed payments. Runs saved before this
+  field existed don't have it, so they simply show no revenue note.
+- **Line 101** · Return the notes.
 
 ### `schematic2d.js`
 
@@ -496,18 +559,18 @@ On your Kirana Express board:
 - **Lines 5–12** · Imports and the SVG element helper (as in `charts.js`).
 - **Line 16** · `project({x, z})`: turn floor coordinates into flat drawing coordinates,
   tilted so it looks like the 3D view (an "isometric" projection).
-- **Lines 17–29** · Work out the drawing's edges from every node and the middle of the
+- **Lines 17–31** · Work out the drawing's edges from every node and the middle of the
   curved edge, plus padding, so nothing is cut off.
-- **Lines 31–50** · The SVG, with a hatch pattern for "down" and its own small
+- **Lines 33–52** · The SVG, with a hatch pattern for "down" and its own small
   stylesheet. The marching dashes are a CSS animation (`@keyframes march`) that moves the
   dash pattern along the line.
-- **Lines 52–63** · Each edge as a quadratic curve (`M` start, `Q` control point and
+- **Lines 54–65** · Each edge as a quadratic curve (`M` start, `Q` control point and
   end): a faint rail, and the flow line on top.
-- **Lines 65–74** · Each node: a diamond (`polygon`), its name above, its value inside.
-- **Lines 77–95** · `update`: set each diamond's state and text ("DOWN" or "73 %"). For
+- **Lines 67–76** · Each node: a diamond (`polygon`), its name above, its value inside.
+- **Lines 79–97** · `update`: set each diamond's state and text ("DOWN" or "73 %"). For
   each edge, show strength three ways (opacity, dash spacing, colour), so it doesn't rely
   on colour alone, and only animate when motion is allowed and something flows.
-- **Line 94** · `dispose()`: remove the drawing.
+- **Line 96** · `dispose()`: remove the drawing.
 
 ### `scene3d.js`, piece 1
 
@@ -515,52 +578,55 @@ On your Kirana Express board:
   ("readable like a drawing, not a cinematic fly-through").
 - **Line 8** · Import all of Three.js as `THREE` (the import map says where it is).
 - **Lines 12–13** · 14 blocks per edge; they travel 0.12 of an edge per second.
-- **Lines 16–25** · Read the app's colours from its CSS variables (`--bone`, `--signal`,
-  `--fault`...), so the 3D view matches the rest of the page.
-- **Lines 27–30** · The renderer: smooth edges, a transparent background, sharp on
+- **Lines 16–27** · Read the app's colours from its CSS variables (`--bone`, `--signal`,
+  `--fault`...), so the 3D view matches the rest of the page. `affected` (line 23) is a
+  colour 55 % of the way from normal (`--bone`) to amber (`--signal`): working, but hurt.
+- **Lines 29–32** · The renderer: smooth edges, a transparent background, sharp on
   high-resolution screens (but at most 2×, for speed). Its canvas goes into the stage and
   is hidden from screen readers (the table twin speaks instead).
-- **Lines 32–36** · The scene, soft light everywhere, and a sun up and to the side.
-- **Lines 38–43** · The middle of the layout, and an **orthographic** camera placed up and
+- **Lines 34–38** · The scene, soft light everywhere, and a sun up and to the side.
+- **Lines 40–45** · The middle of the layout, and an **orthographic** camera placed up and
   to the side of it, looking at it.
-- **Lines 45–49** · A faint floor grid.
+- **Lines 47–51** · A faint floor grid.
 
 ### Piece 2
 
-- **Lines 52–75** · For each node: a flat box (the plinth) with its outline, and a tall
+- **Lines 54–77** · For each node: a flat box (the plinth) with its outline, and a tall
   box (the column) on top, added to the scene. Its label is an ordinary HTML `<div>`
   placed over the canvas (text in HTML is sharper and easier than text in 3D).
-- **Lines 78–100** · For each edge: a 3D curve (straight edges are curves with the
+- **Lines 80–102** · For each edge: a 3D curve (straight edges are curves with the
   control point in the middle), a faint line along it, and an **InstancedMesh**: one
   object that draws 14 copies of a tiny box very cheaply, each at its own position.
 
 ### Piece 3
 
-- **Lines 103–128** · `resize()`: make the whole layout fit the box, whatever its shape.
-  Skip if the box has no size yet (line 107). Then measure every node (bottom and top of
+- **Lines 105–130** · `resize()`: make the whole layout fit the box, whatever its shape.
+  Skip if the box has no size yet (line 109). Then measure every node (bottom and top of
   its column) and every edge **as the camera sees them**, find the edges of that, widen
   the narrower side to the box's shape, and set the camera's window to it.
-- **Lines 130–137** · `placeLabels()`: for each node, find where the top of its column
+- **Lines 132–139** · `placeLabels()`: for each node, find where the top of its column
   lands on the screen (`.project(camera)` gives -1…1), and move its HTML label there.
 
 ### Piece 4
 
-- **Lines 140–142** · Reusable objects (made once, not 60 times a second), the clock, and
+- **Lines 142–144** · Reusable objects (made once, not 60 times a second), the clock, and
   the frame handle.
-- **Lines 144–157** · `moveParticles()`: per edge, show as many blocks as the flow allows
+- **Lines 146–159** · `moveParticles()`: per edge, show as many blocks as the flow allows
   (14 × strength), each spread evenly along the curve and moved forward by the clock
   (frozen with reduced motion). `% 1` wraps them back to the start.
-- **Lines 159–163** · `draw()`: move blocks, render, place labels.
-- **Lines 165–171** · `loop(now)`: advance the clock by the real time since the last frame,
+- **Lines 161–165** · `draw()`: move blocks, render, place labels.
+- **Lines 167–173** · `loop(now)`: advance the clock by the real time since the last frame,
   draw, and ask for the next frame. Only started if motion is allowed.
-- **Lines 173–174** · A `ResizeObserver` calls `resize()` whenever the box changes size
+- **Lines 175–176** · A `ResizeObserver` calls `resize()` whenever the box changes size
   (and once at the start).
-- **Lines 176–197** · `update({health, flows})`: per node, set the column's height
-  (never quite zero: a stub reads as "down"), its position (standing on the plinth), its
-  colour and its label ("DOWN" or "73 %", built with text nodes). Per edge, store the
+- **Lines 180–200** · `update({health, flows, notes})`: per node, take its knock-on note
+  if `knockOnAt` gave one (`notes = {}` means "none" when a caller leaves it out). Set the
+  column's height (never quite zero: a stub reads as "down"), its position (standing on the
+  plinth), its colour (the note's state wins, so "affected" parts turn light amber at full
+  height) and its label (the note's text, else "DOWN" or "73 %", built with text nodes). Per edge, store the
   strength and colour the blocks. With reduced motion, draw once now.
-- **Lines 198–202** · `dispose()`: stop the loop, the observer and the renderer.
-- **Lines 206–213** · `webglAvailable()`: try to get a WebGL drawing context from a
+- **Lines 201–205** · `dispose()`: stop the loop, the observer and the renderer.
+- **Lines 209–216** · `webglAvailable()`: try to get a WebGL drawing context from a
   throwaway canvas; any failure means no.
 
 ## 🛠️ If it didn't work
@@ -568,7 +634,7 @@ On your Kirana Express board:
 | You see | Fix |
 |---|---|
 | The stage is empty, no error | The box had no size when the page loaded (a hidden tab). Resize the window: `ResizeObserver` redraws it. |
-| Labels are in the top-left corner | `placeLabels` ran before `resize`. Reload; check lines 173–174. |
+| Labels are in the top-left corner | `placeLabels` ran before `resize`. Reload; check lines 175–176. |
 | Everything is DOWN at every hour | That's the engine's data for this run: check the timeline in `/api/v1/runs/<id>/`. The view only draws it. |
 
 ## ❓ Quiz
@@ -577,6 +643,7 @@ On your Kirana Express board:
 2. Where does a part's health come from?
 3. Why are the node labels HTML and not 3D text?
 4. What do the travelling blocks show, and why are there fewer during an outage?
+5. The courier is down. Why is the warehouse light amber and not red?
 
 ---
 
@@ -588,5 +655,7 @@ On your Kirana Express board:
 2. Only from the engine's hourly row (`row.components`); unknown parts are drawn normal.
 3. HTML text is sharp at any size, easy to style, and simpler than 3D text.
 4. Orders getting through on that edge. The count is 14 × the edge's flow strength.
+5. The warehouse still works, but parcels pile up there with nowhere to go: it's **affected**
+   by the outage (a knock-on effect), not broken itself.
 
 </details>

@@ -75,7 +75,7 @@ Create these four files in `templates/simulations/`.
         <span class="aside" id="view-kind">loading</span></div>
       <div class="stage" id="stage" role="img" aria-label="Diagram of the business as connected components; a text table follows for screen readers."></div>
       <div class="stage-legend" aria-hidden="true">
-        <span>Normal</span><span class="l-degraded">Degraded</span><span class="l-failed">Down</span>
+        <span>Normal</span><span class="l-affected">Affected by the outage</span><span class="l-degraded">Degraded</span><span class="l-failed">Down</span>
         <em>Moving dots: orders getting through. Fewer dots, less flow.</em>
       </div>
       <table class="sr-only" aria-live="polite"><caption>Component health at the selected hour</caption><tbody id="sr-health"></tbody></table>
@@ -301,7 +301,8 @@ The sliders and the 3D view are the JavaScript's job: the next four lessons read
   an empty `controls` box for sliders, a status line, and hidden "Save as a new run" and
   "Back to saved run" buttons.
 - **Lines 38–47** · **S-02 System view:** the `stage` box the 3D or 2D drawing goes in,
-  described for screen readers (`role="img"` and `aria-label`), a legend, and a hidden
+  described for screen readers (`role="img"` and `aria-label`), a legend (normal, affected
+  by the outage, degraded, down), and a hidden
   table (`sr-only`) the JavaScript fills with each component's health.
 - **Lines 50–53** · **S-03 Gauges** at the selected hour.
 - **Lines 57–71** · **S-04 Timeline:** Play, a clock, the outage band, the hour slider
