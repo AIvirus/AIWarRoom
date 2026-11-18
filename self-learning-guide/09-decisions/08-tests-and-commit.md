@@ -50,7 +50,7 @@ git commit -m "Part 9: decisions and the brief"
 
 ## Check
 
-- `pytest` prints `246 passed` (194 before + 52 new).
+- `pytest` prints `247 passed` (195 before + 52 new).
 - `git log --oneline` shows six commits.
 
 **Try breaking it on purpose:** in `decisions/services/brief.py` line 119, change

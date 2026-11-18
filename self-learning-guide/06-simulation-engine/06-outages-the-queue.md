@@ -184,9 +184,9 @@ def simulate_fulfilment(inputs: DisruptionInputs, strategy: str) -> dict:
     )
 ```
 
-### Piece 5: the shared output shape (lines 296–349)
+### Piece 5: the shared output shape (lines 296–353)
 
-<!-- source: simulation_engine/disruption.py:296-349 -->
+<!-- source: simulation_engine/disruption.py:296-353 -->
 ```python
 # --------------------------------------------------------------------------------------
 # Shared output shape
@@ -210,11 +210,15 @@ def _outcome(inputs, *, affected, recovered, lost, cost, hours_down, recovery_ho
     lost_contribution = lost_revenue * pct(inputs.contribution_margin)
 
     # Running totals for the gauges: lost contribution + cost so far, hour by hour.
+    # Revenue lost so far feeds the System View's knock-on labels ("₹48,000 refunded").
     margin = aov * pct(inputs.contribution_margin)
-    running = ZERO
+    running = revenue_running = ZERO
     for row in rows:
-        running += Decimal(str(row["lost"])) * margin + Decimal(str(row["cost"]))
+        lost_now = Decimal(str(row["lost"]))
+        running += lost_now * margin + Decimal(str(row["cost"]))
+        revenue_running += lost_now * aov
         row["impact_cum"] = display(running)
+        row["lost_revenue_cum"] = display(revenue_running)
 
     metrics = {
         "affected_orders": metric("Orders affected", affected, "orders"),
@@ -354,13 +358,14 @@ You should see `delayed_orders 294.00`, `lost_orders 7.88`,
   must be given **by name** (`affected=...`), so they can't be mixed up.
 - **Lines 313–315** · The chain from lesson 6.1: lost orders × order value = lost
   revenue; × margin = lost contribution.
-- **Lines 317–322** · A running total of the impact, hour by hour, for the gauges:
-  lost contribution so far + cost so far.
-- **Lines 324–344** · All the metrics, each with a label that says exactly what it is
-  (line 333: "contribution lost + response cost"). `**extra` adds the mode's own extra
+- **Lines 317–326** · Two running totals, hour by hour. `impact_cum` (for the gauges) is
+  lost contribution so far + cost so far. `lost_revenue_cum` is lost orders so far × order
+  value: the System View's "₹1,57,075 refunded" label (lesson 10.12) reads it.
+- **Lines 328–348** · All the metrics, each with a label that says exactly what it is
+  (line 337: "contribution lost + response cost"). `**extra` adds the mode's own extra
   metrics.
-- **Line 345** · The result: metrics and timeline.
-- **Lines 348–349** · The busiest hour's load on this part, for a warning in lesson 6.7
+- **Line 349** · The result: metrics and timeline.
+- **Lines 352–353** · The busiest hour's load on this part, for a warning in lesson 6.7
   ("normal capacity is below peak demand").
 
 ## If it didn't work

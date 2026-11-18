@@ -112,7 +112,7 @@ git push
 
 ## Check
 
-- `pytest` prints `271 passed` (266 + 5).
+- `pytest` prints `272 passed` (267 + 5).
 - GitHub shows a green tick for the commit, and Render deploys it.
 
 **Try breaking it on purpose:** delete the `.env` line (line 2) from `.dockerignore` and

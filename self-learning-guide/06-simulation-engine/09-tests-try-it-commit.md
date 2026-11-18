@@ -131,8 +131,8 @@ git commit -m "Part 6: simulation engine"
 
 ## Check
 
-- `pytest` prints `104 passed` (52 before + 52 new).
-- `pytest -p no:django simulation_engine` prints `56 passed, 1 warning`: the whole
+- `pytest` prints `105 passed` (52 before + 53 new).
+- `pytest -p no:django simulation_engine` prints `57 passed, 1 warning`: the whole
   engine, tested without Django.
 - The browser run gives 21000.00 / 20420.00 / 10050.00.
 - `git log --oneline` shows three commits.
@@ -162,7 +162,7 @@ their own were forgotten. Put it back.
 | 137–143 | `test_sensitivity_is_sorted_by_swing_and_symmetric_inputs_move_cash_both_ways` | Biggest swing first; price ±10 % is 450 and 550. |
 | 146–148 | `test_same_inputs_same_output` | 3 tests: the same inputs always give the same months. |
 
-### `simulation_engine/tests/test_disruption.py` (22 tests)
+### `simulation_engine/tests/test_disruption.py` (23 tests)
 
 | Lines | Test | Proves |
 |---|---|---|
@@ -184,6 +184,7 @@ their own were forgotten. Put it back.
 | 220–230 | `test_capacity_shortfall_without_outage_is_not_blamed_on_the_outage` | A normal-day backlog isn't blamed on the outage. |
 | 233–242 | `test_backlog_not_cleared_in_horizon_reports_no_recovery_time` | Never recovered in the period → no recovery time, not a made-up one. |
 | 245–250 | `test_timeline_has_one_row_per_hour_and_running_impact_matches_total` | 24 rows; the running total ends at the total impact. |
+| 253–257 | `test_running_revenue_lost_matches_total` | For a warehouse outage and a payment outage, the hour-by-hour revenue lost (`lost_revenue_cum`) only grows, and ends at the total revenue lost. The System View's revenue label reads it (lesson 10.12). |
 
 ### `simulation_engine/tests/test_runner.py` (8 tests)
 

@@ -157,9 +157,11 @@ input[type="range"]:hover::-webkit-slider-thumb { background: var(--signal); }
 .stage .node-label b { display: block; font-family: var(--font-data); font-weight: 500; letter-spacing: 0; }
 .stage .node-label.degraded { border-color: var(--signal); color: var(--signal); }
 .stage .node-label.failed { border-color: var(--fault); color: var(--fault); }
+.stage .node-label.affected { border-color: var(--signal); border-style: dashed; color: var(--signal); }
 .stage-legend { display: flex; flex-wrap: wrap; gap: var(--s2) var(--s4); padding: var(--s2) var(--s3); border-top: 1px solid var(--rule); font-size: var(--text-xs); color: var(--dim); }
 .stage-legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; margin-right: 6px; vertical-align: -1px; background: var(--bone); }
 .stage-legend .l-degraded::before { background: var(--signal); }
+.stage-legend .l-affected::before { background: color-mix(in srgb, var(--bone) 45%, var(--signal)); border: 1px dashed var(--signal); }
 .stage-legend .l-failed::before { background: repeating-linear-gradient(45deg, var(--fault) 0 2px, transparent 2px 4px); border: 1px solid var(--fault); }
 
 .gauge { padding: var(--s3); border-bottom: 1px solid var(--rule); }

@@ -61,3 +61,52 @@ export function healthAt(row, topology) {
 }
 
 export const stateOf = (h) => (h <= 0.02 ? "failed" : h < 0.98 ? "degraded" : "normal");
+
+// Knock-on effects at one hour: parts that still work but are hurt by the outage.
+// Every figure is read from the engine's rows (backlog, served vs demand, revenue lost so
+// far); nothing is estimated here. Takes healthAt()'s result and returns it with:
+//   notes  { nodeId: { state, text } } for the parts affected right now; a note's state is
+//          "affected" unless the part itself is down or degraded
+//   flows  edge strengths, lowered after a payment outage: unpaid orders never reach
+//          revenue, the warehouse or the courier
+export function knockOnAt(rows, topology, lossMode, { health, flows }) {
+  const row = rows[rows.length - 1];
+  const failed = topology.failedKind;
+  const count = (n) => Math.round(n).toLocaleString("en-IN");
+  const notes = {};
+  const note = (id, text) => {
+    const own = stateOf(health[id]);
+    notes[id] = { state: own === "normal" ? "affected" : own, text };
+  };
+
+  if (lossMode === "fulfilment" && row.backlog >= 0.5) {
+    const waiting = count(row.backlog);
+    if (failed === "logistics") {
+      note("warehouse", `${waiting} parcels stuck`);
+      if (stateOf(health.logistics) === "normal") note("logistics", `clearing ${waiting}`);
+    } else {
+      note("warehouse", stateOf(health.warehouse) === "normal" ? `clearing ${waiting}` : `down · ${waiting} waiting`);
+      if (stateOf(health.warehouse) !== "normal") note("logistics", "no parcels to ship");
+    }
+    note("customers", `${waiting} orders late`);
+  }
+
+  let paid = 1; // share of this hour's orders that got through checkout
+  if (lossMode === "checkout" && row.demand > 0 && row.served < row.demand * 0.98) {
+    paid = row.served / row.demand;
+    const failedSoFar = rows.reduce((sum, r) => sum + (r.demand - r.served), 0);
+    note("customers", `${count(failedSoFar)} payments failed`);
+    note("warehouse", `${count(row.served)} of ${count(row.demand)} orders this hour`);
+  }
+  const afterPayment = ["payment>revenue", "storefront>warehouse", "warehouse>logistics", "logistics>customers"];
+  const strengths = topology.flows.map(([a, b], i) =>
+    afterPayment.includes(`${a}>${b}`) ? Math.min(flows[i], paid) : flows[i],
+  );
+
+  // Runs saved before the engine added lost_revenue_cum simply show no revenue note.
+  if (row.lost_revenue_cum >= 1) {
+    const verb = lossMode === "fulfilment" ? "refunded" : "lost";
+    notes.revenue = { state: "affected", text: `₹${count(row.lost_revenue_cum)} ${verb}` };
+  }
+  return { health, flows: strengths, notes };
+}

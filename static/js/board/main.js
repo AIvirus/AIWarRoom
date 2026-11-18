@@ -7,7 +7,7 @@
 import { api, ApiError, debounce, prefersReducedMotion } from "../lib/api.js";
 import { alignedStep, clockLabel, figure, money } from "../lib/format.js";
 import { createSchematic2D } from "./schematic2d.js";
-import { buildTopology, healthAt, stateOf } from "./topology.js";
+import { buildTopology, healthAt, knockOnAt, stateOf } from "./topology.js";
 
 const data = JSON.parse(document.getElementById("page-data").textContent);
 const reducedMotion = prefersReducedMotion();
@@ -111,15 +111,18 @@ function renderHour() {
       ratio: Number(m.mitigation_cost.value) ? costSoFar / Number(m.mitigation_cost.value) : 0 }),
   ].join("");
 
-  const { health, flows } = healthAt(row, topology);
-  view?.update({ health, flows });
+  const { health, flows, notes } = knockOnAt(rows, topology, data.template.loss_mode, healthAt(row, topology));
+  view?.update({ health, flows, notes });
   // Component names are user input: build with text nodes, never innerHTML.
   $("sr-health").replaceChildren(...topology.nodes.map((n) => {
     const tr = document.createElement("tr");
     const th = document.createElement("th");
     const td = document.createElement("td");
     th.textContent = n.label;
-    td.textContent = `${stateOf(health[n.id])}, ${Math.round(health[n.id] * 100)} %`;
+    const note = notes[n.id];
+    td.textContent = note
+      ? `${note.state}, ${note.text}`
+      : `${stateOf(health[n.id])}, ${Math.round(health[n.id] * 100)} %`;
     tr.append(th, td);
     return tr;
   }));
@@ -340,9 +343,8 @@ function setPlaying(on) {
   }, 400 / state.speed);
 }
 $("play").addEventListener("click", () => setPlaying(!state.playing));
-$("speed").addEventListener("click", () => {
-  state.speed = state.speed === 1 ? 4 : 1;
-  $("speed").textContent = `${state.speed}×`;
+$("speed").addEventListener("change", (event) => {
+  state.speed = Number(event.target.value); // 0.25× = 1.6 s per hour, 4× = 0.1 s
   if (state.playing) setPlaying(true);
 });
 $("scrubber").addEventListener("input", (event) => {
