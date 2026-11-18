@@ -147,6 +147,7 @@ Make a folder `accounts/tests/` with an empty `__init__.py`, then copy
 | 151–152 | `test_api_requires_authentication` | The API refuses visitors who aren't logged in (403). |
 | 155–159 | `test_me_endpoint_reports_current_organization` | `/api/v1/me/` returns the right email and organization. |
 | 162–164 | `test_healthz_reports_database` | The health check answers `ok` (tests use SQLite). |
+| 167–182 | `test_login_ignores_email_capitals` | Sign up as `Alice@Kirana.test`, log out, then log in typing it the **same** way: it works, because log-in lowercases the email like sign-up does (lesson 4.7). |
 
 The tests marked **Key test** are the most important in the whole project: they're the security wall.
 
@@ -176,7 +177,7 @@ git commit -m "Part 4: Django foundations"
 
 ## Check
 
-- `pytest` prints `16 passed`.
+- `pytest` prints `17 passed`.
 - `ruff format .` tidies a few files (for example the `apps.py` files `startapp` made with
   single quotes). Then `ruff check .` prints `All checks passed!`.
 - `git log --oneline` shows your commit.

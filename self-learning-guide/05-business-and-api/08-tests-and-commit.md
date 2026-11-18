@@ -122,7 +122,7 @@ git commit -m "Part 5: business model and API"
 
 ## Check
 
-- `pytest` prints `52 passed` (16 from Part 4 + 36 new).
+- `pytest` prints `53 passed` (17 from Part 4 + 36 new).
 - `ruff check .` prints `All checks passed!`.
 - `git log --oneline` shows two commits.
 

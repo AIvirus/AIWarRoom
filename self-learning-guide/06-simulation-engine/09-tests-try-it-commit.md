@@ -131,7 +131,7 @@ git commit -m "Part 6: simulation engine"
 
 ## Check
 
-- `pytest` prints `105 passed` (52 before + 53 new).
+- `pytest` prints `106 passed` (53 before + 53 new).
 - `pytest -p no:django simulation_engine` prints `57 passed, 1 warning`: the whole
   engine, tested without Django.
 - The browser run gives 21000.00 / 20420.00 / 10050.00.
