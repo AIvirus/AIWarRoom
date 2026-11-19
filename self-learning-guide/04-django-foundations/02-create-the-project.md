@@ -12,6 +12,11 @@ cooking: lots of small steps, each one simple.
 
 ### Step 1 · Make the folder and virtual environment
 
+`my-warroom` is **your own** copy of the project, and it doesn't exist until you make it
+here. Keep it apart from the finished reference project (the `AI WarRoom` folder), so you
+can compare the two at any time. Every later lesson that says "in `my-warroom`" means this
+folder.
+
 In the terminal, go to your `learning` folder, then:
 
 ```bash

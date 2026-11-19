@@ -126,7 +126,7 @@ thin views ───────────────────────
 | `config/` | Settings split, URLs, one API error shape, health check |
 
 Design rationale: `docs/DESIGN_NOTE.md`. Original plan: `docs/PLAN.md`.
-Module-by-module teaching map: `docs/TEACHING_NOTES.md`.
+Step-by-step course for building it yourself: `self-learning-guide/README.md`.
 
 ## Screens
 

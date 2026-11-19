@@ -156,42 +156,42 @@ Now try `compare(before, before)`. It's `[]`: nothing changed, no alerts.
 
 ## Line by line
 
-- **Lines 1–7** · Docstring: two scans in, a list of changes out, no AI.
-- **Line 9** · `re`, to strip a price down to its digits.
-- **Line 10** · `dataclass` and `field`.
-- **Line 11** · `Decimal` for exact money (Part 1), and `InvalidOperation`, the error
+- **Lines 1–8** · Docstring: two scans in, a list of changes out, no AI.
+- **Line 10** · `re`, to strip a price down to its digits.
+- **Line 11** · `dataclass` and `field`.
+- **Line 12** · `Decimal` for exact money (Part 1), and `InvalidOperation`, the error
   `Decimal` raises for text that isn't a number.
-- **Line 13** · The warning line: a 10 % move.
-- **Lines 16–21** · `Change`: one difference. `kind` and `severity` use the same words as
+- **Line 14** · The warning line: a 10 % move.
+- **Lines 17–22** · `Change`: one difference. `kind` and `severity` use the same words as
   the `Alert` table (lesson 7.3), so a `Change` becomes an `Alert` row directly.
-- **Lines 24–28** · `_price_value`: `"₹1299.50"` → `Decimal("1299.50")`. If that fails,
+- **Lines 25–29** · `_price_value`: `"₹1299.50"` → `Decimal("1299.50")`. If that fails,
   `None`.
-- **Line 31** · `_price_change(url, before, after)`: compare one page's price lists.
-- **Lines 32–33** · Same prices (in any order)? No change.
-- **Line 34** · Prices that disappeared, and prices that appeared, using set
+- **Line 32** · `_price_change(url, before, after)`: compare one page's price lists.
+- **Lines 33–34** · Same prices (in any order)? No change.
+- **Line 35** · Prices that disappeared, and prices that appeared, using set
   subtraction (`a - b`: in `a` but not in `b`).
-- **Lines 36–37** · Every price as a number, sorted, dropping any that failed.
-- **Lines 38–39** · Start as "info", with no measured move.
-- **Lines 40–44** · If both scans have prices: take the middle one of each (`len // 2` is
+- **Lines 36–38** · Every price as a number, sorted, dropping any that failed.
+- **Lines 39–40** · Start as "info", with no measured move.
+- **Lines 41–45** · If both scans have prices: take the middle one of each (`len // 2` is
   the middle position), work out the move as a fraction, and if it's 10 % or more either
   way (`abs`), make it a warning.
-- **Lines 45–47** · The summary, adding "(typical price up 17 %)" when there's a move.
+- **Lines 46–48** · The summary, adding "(typical price up 17 %)" when there's a move.
   `:.0f` prints a number with no decimals.
-- **Lines 48–54** · Build the change. `detail` keeps up to 20 removed and added prices,
+- **Lines 49–55** · Build the change. `detail` keeps up to 20 removed and added prices,
   and the move as text like `"16.7"`.
-- **Lines 57–62** · `compare(...)`. The competitor sets are optional; `frozenset()` is an
+- **Lines 58–63** · `compare(...)`. The competitor sets are optional; `frozenset()` is an
   empty set that can't be changed by accident.
-- **Lines 63–64** · Turn each list of pages into a dictionary `{url: page}`, so we can
+- **Lines 64–65** · Turn each list of pages into a dictionary `{url: page}`, so we can
   find a page by its address.
-- **Line 65** · The list we'll fill.
-- **Lines 67–68** · Addresses before but not after: removed pages. `.keys()` of two
+- **Line 66** · The list we'll fill.
+- **Lines 68–69** · Addresses before but not after: removed pages. `.keys()` of two
   dictionaries can be subtracted like sets.
-- **Lines 69–70** · After but not before: new pages.
-- **Line 72** · Addresses in **both** (`&` is "in both").
-- **Lines 73–76** · Price changes on that page. `.get("prices", [])`: an empty list if a
+- **Lines 70–71** · After but not before: new pages.
+- **Line 73** · Addresses in **both** (`&` is "in both").
+- **Lines 74–77** · Price changes on that page. `.get("prices", [])`: an empty list if a
   saved page has no `prices` key.
-- **Lines 77–86** · New product names on that page.
-- **Lines 88–97** · New competitor names, with the "check the source" note.
+- **Lines 78–87** · New product names on that page.
+- **Lines 89–97** · New competitor names, with the "check the source" note.
 - **Line 98** · Return every change.
 
 ## If it didn't work

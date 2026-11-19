@@ -26,7 +26,11 @@ Two Python tools you haven't used yet:
 
 ## Do
 
-In `my-warroom`, make the folder and its empty package files:
+`my-warroom` is **your own** project folder, the one you made yourself in lesson 4.2
+(`mkdir my-warroom`). It is **not** part of the reference project, so you won't find it
+inside the `AI WarRoom` folder. Open a terminal **inside `my-warroom`** (VS Code:
+**File → Open Folder → my-warroom**, then **Terminal → New Terminal**). In there, make the
+folder and its empty package files:
 
 ```bash
 mkdir -p simulation_engine/tests

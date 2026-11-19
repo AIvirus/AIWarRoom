@@ -1,6 +1,6 @@
 # 10.12 · The system view
 
-**Time:** 75 minutes · **Before this:** [10.11](10-the-situation-board.md). **Reading
+**Time:** 75 minutes · **Before this:** [10.11](11-the-situation-board.md). **Reading
 lesson:** the files are in `static/js/board/`.
 
 ## Read
@@ -537,18 +537,19 @@ On your Kirana Express board:
 
 - **Lines 1–2** · Comment: a floor grid, x across and z deep, used by both views.
 - **Lines 4–12** · `LAYOUT`: where each **kind** of part sits, and its default label.
-- **Lines 14–27** · `FLOWS`: the edges orders move along. The last one has a third value,
+- **Lines 14–25** · `FLOWS`: the edges orders move along. The last one has a third value,
   a **bend**, so deliveries curve back to customers around the front instead of cutting
   through the warehouse.
-- **Lines 30–32** · `controlPoint(from, to, bend)`: the point a curved edge bends towards
+- **Lines 27–30** · `controlPoint(from, to, bend)`: the point a curved edge bends towards
   (for a straight edge, the middle).
-- **Lines 34–47** · `buildTopology(components, failedKind)`: one node per kind, labelled
+- **Lines 32–45** · `buildTopology(components, failedKind)`: one node per kind, labelled
   with the business's **own** component names when it has them ("Razorpay (primary
   gateway)"), joined with `+` if there are several, and remembering their keys.
-- **Lines 51–63** · `healthAt(row, topology)`: for each node, the **lowest** health of its
+- **Lines 47–61** · `healthAt(row, topology)`: for each node, the **lowest** health of its
   components in this hour's row (one broken part is enough), or 1 (normal) if the engine
   said nothing. Lines 53–55 handle a business with no components set up: the engine then
-  reports the failing **kind** itself. Each edge's flow is the weaker of its two ends.
+  reports the failing **kind** itself. Line 58: each edge's flow is the weaker of its two
+  ends.
 - **Line 63** · `stateOf(h)`: ≤ 2 % is "failed", under 98 % "degraded", else "normal".
 - **Lines 65–71** · Comment: `knockOnAt` finds the parts that **still work** but are hurt by
   the outage. Every number comes from the engine's rows; this file only chooses the words.
@@ -582,20 +583,24 @@ On your Kirana Express board:
 
 - **Lines 1–3** · Comment: when it's used, and "same update() call".
 - **Lines 5–12** · Imports and the SVG element helper (as in `charts.js`).
+- **Line 14** · `createSchematic2D(container, topology, { reducedMotion })`: the same
+  inputs as the 3D view.
 - **Line 16** · `project({x, z})`: turn floor coordinates into flat drawing coordinates,
   tilted so it looks like the 3D view (an "isometric" projection).
-- **Lines 17–31** · Work out the drawing's edges from every node and the middle of the
+- **Lines 17–29** · Work out the drawing's edges from every node and the middle of the
   curved edge, plus padding, so nothing is cut off.
-- **Lines 33–52** · The SVG, with a hatch pattern for "down" and its own small
+- **Lines 31–50** · The SVG, with a hatch pattern for "down" and its own small
   stylesheet. The marching dashes are a CSS animation (`@keyframes march`) that moves the
   dash pattern along the line.
-- **Lines 54–65** · Each edge as a quadratic curve (`M` start, `Q` control point and
+- **Lines 52–63** · Each edge as a quadratic curve (`M` start, `Q` control point and
   end): a faint rail, and the flow line on top.
-- **Lines 67–76** · Each node: a diamond (`polygon`), its name above, its value inside.
-- **Lines 79–97** · `update`: set each diamond's state and text ("DOWN" or "73 %"). For
+- **Lines 65–75** · Each node: a diamond (`polygon`), its name above, its value inside.
+  Then the drawing goes on the page.
+- **Lines 79–93** · `update`: set each diamond's state and text ("DOWN" or "73 %"). For
   each edge, show strength three ways (opacity, dash spacing, colour), so it doesn't rely
-  on colour alone, and only animate when motion is allowed and something flows.
-- **Line 96** · `dispose()`: remove the drawing.
+  on colour alone, and only animate when motion is allowed and something flows. The 2D
+  view ignores the knock-on `notes`: those labels are drawn in 3D only.
+- **Line 94** · `dispose()`: remove the drawing.
 
 ### `scene3d.js`, piece 1
 

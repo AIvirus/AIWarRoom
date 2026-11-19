@@ -24,8 +24,17 @@ different. So instead of Django's single `settings.py`, we make a **folder** of 
 2. Make a folder `config/settings/` with an empty file `__init__.py` inside. (An
    `__init__.py` file turns a folder into a Python **package**, so `config.settings.base`
    can be imported.)
-3. Create the four files below.
-4. Replace `manage.py`, `config/wsgi.py` and `config/asgi.py` with the versions below.
+3. Create the four settings files. Their full code is further down this page, each under
+   its own heading: `config/settings/base.py`, `local.py`, `production.py` and
+   `test.py`. `base.py` is long, so it comes in **four code blocks**. Type all four, in
+   order, into the **same** file. After each block there is a "Line N" explanation; read
+   it, but don't type it.
+4. Replace `manage.py`, `config/wsgi.py` and `config/asgi.py` with the versions under the
+   headings `manage.py` and `config/wsgi.py and config/asgi.py`, at the end of this page.
+
+All of these files go in **your own** `my-warroom` folder, the one you made in lesson 4.2.
+The code shown here is copied from the finished reference project, so you can compare
+your file with the real one.
 
 ### `config/settings/base.py`
 
