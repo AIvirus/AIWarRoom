@@ -28,6 +28,3 @@ media/
 .idea/
 .DS_Store
 Thumbs.db
-
-# Local editor/agent config
-.claude/
